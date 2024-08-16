@@ -1,0 +1,905 @@
+:root {
+    --primary-color: #6200ee;
+    --secondary-color: #03dac6;
+    --background-color: #121212;
+    --surface-color: #1e1e1e;
+    --on-surface-color: #ffffff;
+    --text-primary-color: rgba(255, 255, 255, 0.87);
+    --text-secondary-color: rgba(255, 255, 255, 0.60);
+    --rails-color: #D30001;
+    --react-color: #61DAFB;
+    --mysql-color: #4479A1;
+    --python-color: #3776AB;
+    --aws-color: #FF9900;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-primary-color);
+    line-height: 1.6;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background-color: var(--surface-color);
+    padding: 5px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 20px;
+}
+
+nav ul li a {
+    color: var(--text-primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    font-size: 1.1em;
+    position: relative;
+    padding: 10px 0;
+}
+
+nav ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--secondary-color);
+    transition: width 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: var(--secondary-color);
+}
+
+nav ul li a:hover::after {
+    width: 100%;
+}
+
+/* 自己紹介セクション */
+#about {
+    padding: 40px 0;
+}
+
+#about h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    color: var(--secondary-color);
+    text-align: center;
+}
+
+.about-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: var(--surface-color);
+    padding: 30px;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.profile-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 30px;
+    border: 3px solid var(--secondary-color);
+}
+
+.about-text {
+    flex: 1;
+}
+
+.about-text p {
+    margin-bottom: 10px;
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+/* 経歴セクション */
+#experience {
+    padding: 60px 0;
+}
+
+#experience h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    color: var(--secondary-color);
+    text-align: center;
+}
+
+.timeline {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* 縦棒のスタイル調整 */
+.timeline::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    background-color: var(--secondary-color);
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -2px;
+    z-index: 1;
+}
+
+/* タイムラインアイテムの調整 */
+.timeline-item {
+    padding: 10px 0;
+    position: relative;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+/* 点（丸）のスタイル調整 */
+.timeline-item::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: var(--secondary-color);
+    border: 4px solid var(--secondary-color);
+    top: 15px;
+    border-radius: 50%;
+    z-index: 3;
+}
+
+/* 左側のアイテム */
+.timeline-item:nth-child(odd) {
+    left: 0;
+    padding-right: 40px;
+}
+
+.timeline-item:nth-child(odd)::after {
+    right: -14px;
+}
+
+/* 右側のアイテム */
+.timeline-item:nth-child(even) {
+    left: 45%;
+    padding-left: 40px;
+}
+
+.timeline-item:nth-child(even)::after {
+    left: -14px;
+}
+
+/* タイムラインコンテンツのスタイル調整 */
+.timeline-content {
+    padding: 20px 30px;
+    background-color: var(--surface-color);
+    position: relative;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+
+/* 左側のコンテンツにマージンを追加 */
+.timeline-item:nth-child(odd) .timeline-content {
+    margin-right: 40px;
+}
+
+/* 右側のコンテンツにマージンを追加 */
+.timeline-item:nth-child(even) .timeline-content {
+    margin-left: 40px;
+}
+
+/* タイムラインコンテンツの背景を透明にし、縦棒が見えるようにする */
+.timeline-content::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+/* 左側のコンテンツの矢印 */
+.timeline-item:nth-child(odd) .timeline-content::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: -15px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 0 10px 15px;
+    border-color: transparent transparent transparent var(--surface-color);
+}
+
+/* 右側のコンテンツの矢印 */
+.timeline-item:nth-child(even) .timeline-content::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: -15px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 15px 10px 0;
+    border-color: transparent var(--surface-color) transparent transparent;
+}
+
+/* 日付のスタイリング */
+.timeline-date {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--secondary-color);
+}
+
+/* 左側の日付を右寄せにする */
+.timeline-item:nth-child(odd) .timeline-date {
+    text-align: right;
+}
+
+/* レスポンシブデザイン用の調整 */
+@media screen and (max-width: 768px) {
+    .about-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-image {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .about-text {
+        text-align: center;
+    }
+
+    .social-links {
+        justify-content: center;
+    }
+
+    .timeline::after {
+        left: 31px;
+    }
+
+    .timeline-item {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+    }
+
+    .timeline-item::after {
+        left: 21px;
+    }
+
+    .timeline-item:nth-child(even) {
+        left: 0;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-content::before,
+    .timeline-item:nth-child(even) .timeline-content::before {
+        display: none;
+    }
+}
+
+.hero {
+    text-align: center;
+    padding: 150px 0 80px;
+}
+
+.hero h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3.5em;
+    margin-bottom: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.hero p {
+    font-size: 1.3em;
+    color: var(--text-secondary-color);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#projects {
+    padding: 60px 0;
+}
+
+#projects h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    color: var(--secondary-color);
+    text-align: center;
+}
+
+.projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    padding: 60px 0;
+}
+
+.project-card {
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 1.5s ease;
+    cursor: pointer;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(3, 218, 198, 0.3);
+}
+
+.project-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.project-card .content {
+    padding: 25px;
+}
+
+.project-card h3 {
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 0;
+    color: var(--secondary-color);
+    font-size: 1.4em;
+}
+
+.project-card p {
+    color: var(--text-secondary-color);
+    font-size: 1em;
+    margin-bottom: 20px;
+}
+
+.project-card .technologies {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.project-card .technologies span {
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.btn {
+    display: none;
+}
+
+#skills {
+    padding: 60px 0;
+    text-align: center;
+}
+
+#skills h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    color: var(--secondary-color);
+    text-align: center;
+}
+
+.skill-categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 40px;
+    margin-bottom: 40px;
+    background-color: var(--surface-color);
+    padding: 30px;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.skill-category {
+    flex: 1;
+    min-width: 280px;
+    max-width: 350px;
+}
+
+.skill-category h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: var(--text-primary-color);
+}
+
+.skill-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.skill-list li {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.skill-name {
+    display: inline-block;
+    width: 120px;
+    font-weight: 500;
+    color: var(--text-primary-color);
+}
+
+.skill-bar {
+    display: inline-block;
+    width: calc(100% - 130px);
+    height: 8px;
+    background-color: var(--background-color);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.skill-level {
+    height: 100%;
+    background-color: var(--secondary-color);
+    border-radius: 4px;
+    transition: width 0.5s ease, box-shadow 0.3s ease;
+}
+
+.skill-bar:hover .skill-level {
+    box-shadow: 0 0 10px var(--secondary-color);
+}
+
+.skill-legend {
+    margin-top: 30px;
+    text-align: left;
+    padding: 20px;
+    background-color: var(--surface-color);
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.skill-legend h4 {
+    margin-bottom: 10px;
+    color: var(--text-primary-color);
+}
+
+.skill-legend ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.skill-legend li {
+    margin-bottom: 5px;
+    color: var(--text-secondary-color);
+}
+
+.certifications {
+    margin-top: 40px;
+    background-color: var(--surface-color);
+    padding: 30px;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.certifications h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: var(--text-primary-color);
+}
+
+.certifications ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.certifications li {
+    background-color: var(--background-color);
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 500;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.certifications li:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+footer {
+    background-color: var(--surface-color);
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 60px;
+}
+
+footer p {
+    font-size: 0.9em;
+    color: var(--text-secondary-color);
+}
+
+#contact {
+    padding: 60px 0;
+    text-align: center;
+}
+
+#contact h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    color: var(--secondary-color);
+}
+
+#contact form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#contact input,
+#contact textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--surface-color);
+    color: var(--text-primary-color);
+}
+
+#contact textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+#contact button {
+    background-color: var(--secondary-color);
+    color: var(--background-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#contact button:hover {
+    background-color: #02b8a2;
+}
+
+/* モーダルスタイル */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal.show {
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: var(--surface-color);
+    margin: 0 auto;
+    padding: 40px;
+    width: 90%;
+    max-width: 800px;
+    height: 70vh;
+    max-height: 700px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transform: scale(0.7);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%) scale(0.7);
+}
+
+.modal.show .modal-content {
+    transform: translateY(-50%) scale(1);
+}
+
+.modal-content h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: var(--secondary-color);
+}
+
+.modal-content p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.modal-content a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.modal-content a:hover {
+    color: #02b8a2;
+    text-decoration: none;
+}
+
+.modal-content img {
+    width: 100%;
+    max-height: 40vh;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.modal-content .technologies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+.modal-content .technologies span {
+    background-color: var(--background-color);
+    color: var(--text-primary-color);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.close {
+    color: var(--text-secondary-color);
+    font-size: 28px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1;
+}
+
+.close:hover,
+.close:focus {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+#blog {
+    padding: 60px 0;
+}
+
+#blog h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    color: var(--secondary-color);
+    text-align: center;
+}
+
+.blog-posts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 20px 0;
+}
+
+.blog-post {
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-post:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(3, 218, 198, 0.3);
+}
+
+.blog-post img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.blog-post h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.4em;
+    margin: 15px 20px;
+    color: var(--text-primary-color);
+}
+
+.blog-post .post-meta {
+    font-size: 0.9em;
+    color: var(--text-secondary-color);
+    margin: 0 20px 10px;
+}
+
+.blog-post p {
+    margin: 0 20px 20px;
+    color: var(--text-secondary-color);
+}
+
+.blog-post .read-more {
+    display: inline-block;
+    margin: 0 20px 20px;
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.blog-post .read-more:hover {
+    color: #02b8a2;
+}
+
+.modal-content .github-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.modal-content .github-link:hover {
+    color: #02b8a2;
+    text-decoration: none;
+}
+
+.modal-content .github-link i {
+    margin-left: 10px;
+    font-size: 1.2em;
+}
+
+/* スクロールアニメーション用のスタイル */
+.scroll-animation {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.slide-in {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* タイムラインアイテムのアニメーション */
+.timeline-item {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.timeline-item:nth-child(even) {
+    transform: translateX(50px);
+}
+
+/* スキルバーのアニメーション */
+.skill-bar .skill-level {
+    height: 100%;
+    background-color: var(--secondary-color);
+    border-radius: 4px;
+    transition: width 1s ease;
+    width: 100%;
+}
+
+.skill-animate .skill-level {
+    width: 100%;
+}
+
+.timeline-item.scroll-animation {
+    opacity: 0;
+    transform: translateX(-50px);
+}
+
+.timeline-item:nth-child(even).scroll-animation {
+    transform: translateX(50px);
+}
+
+.timeline-item.slide-in {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.skill-bar.scroll-animation .skill-level {
+    width: 100%;
+}
+
+/* スキル名を常に表示 */
+.skill-name {
+    display: inline-block;
+    width: 120px;
+    font-weight: 500;
+    color: var(--text-primary-color);
+    position: relative;
+    z-index: 1;
+}
+
+/* ソーシャルリンクのスタイル */
+.social-links {
+    margin-top: 20px;
+}
+
+.social-links a {
+    color: var(--text-secondary-color);
+    font-size: 1.5em;
+    margin-right: 15px;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--secondary-color);
+}
+
+/* reCAPTCHAのスタイル */
+#contact .g-recaptcha {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 300px) {
+    #contact .g-recaptcha {
+        transform: scale(0.77);
+        transform-origin: 0 0;
+    }
+}
