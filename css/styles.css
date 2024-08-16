@@ -207,28 +207,36 @@ nav ul li a:hover::after {
     background-color: var(--surface-color);
     position: relative;
     border-radius: 6px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 2;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* 左側のコンテンツにマージンを追加 */
-.timeline-item:nth-child(odd) .timeline-content {
-    margin-right: 40px;
+.timeline-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(3, 218, 198, 0.3);
 }
 
-/* 右側のコンテンツにマージンを追加 */
-.timeline-item:nth-child(even) .timeline-content {
-    margin-left: 40px;
-}
-
-/* タイムラインコンテンツの背景を透明にし、縦棒が見えるようにする */
-.timeline-content::before {
-    content: '';
+/* クリック可能なことを示すアイコンを復活 */
+.timeline-content::after {
+    content: '\f0a9';
+    /* FontAwesomeの右矢印アイコン */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
     position: absolute;
-    top: 15px;
-    width: 0;
-    height: 0;
-    border-style: solid;
+    right: 10px;
+    bottom: 10px;
+    font-size: 1.2em;
+    color: var(--secondary-color);
+    opacity: 0.7;
+    /* 少し透明に */
+    transition: opacity 0.3s ease;
+}
+
+.timeline-content:hover::after {
+    opacity: 1;
+    /* ホバー時に完全に不透明に */
 }
 
 /* 左側のコンテンツの矢印 */
@@ -242,6 +250,7 @@ nav ul li a:hover::after {
     border-style: solid;
     border-width: 10px 0 10px 15px;
     border-color: transparent transparent transparent var(--surface-color);
+    transition: border-color 0.3s ease;
 }
 
 /* 右側のコンテンツの矢印 */
@@ -255,6 +264,16 @@ nav ul li a:hover::after {
     border-style: solid;
     border-width: 10px 15px 10px 0;
     border-color: transparent var(--surface-color) transparent transparent;
+    transition: border-color 0.3s ease;
+}
+
+/* ホバー時の矢印の色変更（必要に応じて） */
+.timeline-content:hover::before {
+    border-color: transparent transparent transparent var(--surface-color) !important;
+}
+
+.timeline-item:nth-child(even) .timeline-content:hover::before {
+    border-color: transparent var(--surface-color) transparent transparent !important;
 }
 
 /* 日付のスタイリング */
@@ -357,13 +376,42 @@ nav ul li a:hover::after {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 1.5s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
+    position: relative;
+    /* 追加: 矢印の位置決めのため */
 }
 
 .project-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 15px rgba(3, 218, 198, 0.3);
+}
+
+/* project-cardに矢印を追加 */
+.project-card::after {
+    content: '\f0a9';
+    /* FontAwesomeの右矢印アイコン */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 1.2em;
+    color: var(--secondary-color);
+    opacity: 0.7;
+    /* 少し透明に */
+    transition: opacity 0.3s ease;
+}
+
+.project-card:hover::after {
+    opacity: 1;
+    /* ホバー時に完全に不透明に */
+}
+
+/* project-cardの内容のパディングを調整 */
+.project-card .content {
+    padding: 25px 25px 35px;
+    /* 下部のパディングを増やして矢印用のスペースを確保 */
 }
 
 .project-card img {
@@ -743,11 +791,32 @@ footer p {
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: inherit;
 }
 
 .blog-post:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 15px rgba(3, 218, 198, 0.3);
+}
+
+.blog-post::after {
+    content: '\f0a9';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 1.2em;
+    color: var(--secondary-color);
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.blog-post:hover::after {
+    opacity: 1;
 }
 
 .blog-post img {
@@ -770,21 +839,49 @@ footer p {
 }
 
 .blog-post p {
-    margin: 0 20px 20px;
+    margin: 0 20px 40px;
     color: var(--text-secondary-color);
 }
 
-.blog-post .read-more {
-    display: inline-block;
-    margin: 0 20px 20px;
+.blog-post::after {
+    content: '\f0a9';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 1.2em;
     color: var(--secondary-color);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
 }
 
-.blog-post .read-more:hover {
-    color: #02b8a2;
+.blog-post:hover::after {
+    opacity: 1;
+}
+
+.blog-post h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.4em;
+    margin: 15px 20px;
+    color: var(--text-primary-color);
+}
+
+.blog-post .post-meta {
+    font-size: 0.9em;
+    color: var(--text-secondary-color);
+    margin: 0 20px 10px;
+}
+
+.blog-post p {
+    margin: 0 20px 40px;
+    color: var(--text-secondary-color);
+}
+
+.blog-post img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
 }
 
 .modal-content .github-link {
@@ -902,4 +999,67 @@ footer p {
         transform: scale(0.77);
         transform-origin: 0 0;
     }
+}
+
+.blog-post .source {
+    font-size: 0.8em;
+    color: var(--text-secondary-color);
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 5px 10px;
+    border-radius: 15px;
+    z-index: 1;
+}
+
+.blog-post .source i {
+    margin-right: 5px;
+    font-size: 1.2em;
+}
+
+.blog-post .source span {
+    font-weight: bold;
+}
+
+/* ソースアイコンの色 */
+.blog-post .source .fa-github {
+    color: #ffffff;
+}
+
+.blog-post .source .fa-quora {
+    color: #ffffff;
+}
+
+.blog-post .source .fa-notebook {
+    color: #ffffff;
+}
+
+/* ホバー時のエフェクト */
+.blog-post:hover .source {
+    transform: translateY(-2px);
+    transition: transform 0.3s ease;
+}
+
+.blog-post:hover .source i,
+.blog-post:hover .source span {
+    transform: none;
+}
+
+/* blog-postの矢印位置調整 */
+.blog-post::after {
+    bottom: 20px;
+}
+
+/* blog-postの内容のパディングを調整 */
+.blog-post h3,
+.blog-post .post-meta,
+.blog-post p {
+    padding: 0 20px;
+}
+
+.blog-post p:last-child {
+    padding-bottom: 40px;
 }

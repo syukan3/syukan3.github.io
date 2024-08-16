@@ -78,7 +78,7 @@
                 <!-- Timeline item -->
                 <div class="timeline-item">
                     <div class="timeline-date">2022年 - 現在</div>
-                    <div class="timeline-content">
+                    <div class="timeline-content" data-modal="modal-experience-1">
                         <h3>シニアフルスタックエンジニア</h3>
                         <h4>テックイノベーション株式会社</h4>
                         <ul>
@@ -90,7 +90,7 @@
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-date">2019年 - 2022年</div>
-                    <div class="timeline-content">
+                    <div class="timeline-content" data-modal="modal-experience-2">
                         <h3>フルスタックエンジニア</h3>
                         <h4>グローバルソフト株式会社</h4>
                         <ul>
@@ -102,7 +102,7 @@
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-date">2017年 - 2019年</div>
-                    <div class="timeline-content">
+                    <div class="timeline-content" data-modal="modal-experience-3">
                         <h3>ジュニアソフトウェアエンジニア</h3>
                         <h4>スタートアップテック株式会社</h4>
                         <ul>
@@ -255,28 +255,40 @@
         <section id="blog" aria-label="ブログ">
             <h2>ブログ</h2>
             <div class="blog-posts">
-                <article class="blog-post">
+                <a href="https://example.com/ai-machine-learning-trends" target="_blank" rel="noopener noreferrer"
+                    class="blog-post">
+                    <div class="source">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </div>
                     <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?w=800"
                         alt="AI and Machine Learning">
                     <h3>AIと機械学習の最新トレンド</h3>
                     <p class="post-meta">投稿日: 2024年7月15日</p>
                     <p>AI技術は日々進化しています。この記事では、最新のAIと機械学習のトレンドについて解説します。</p>
-                    <a href="#" class="read-more">続きを読む</a>
-                </article>
-                <article class="blog-post">
+                </a>
+                <a href="https://example.com/web-development-best-practices" target="_blank" rel="noopener noreferrer"
+                    class="blog-post">
+                    <div class="source">
+                        <i class="fab fa-quora"></i>
+                        <span>Qiita</span>
+                    </div>
                     <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800" alt="Web Development">
                     <h3>Web開発におけるベストプラクティス</h3>
                     <p class="post-meta">投稿日: 2024年6月22日</p>
                     <p>効率的で保守性の高いWeb開発を行うためのベストプラクティスをご紹介します。</p>
-                    <a href="#" class="read-more">続きを読む</a>
-                </article>
-                <article class="blog-post">
+                </a>
+                <a href="https://example.com/data-visualization-importance" target="_blank" rel="noopener noreferrer"
+                    class="blog-post">
+                    <div class="source">
+                        <i class="fas fa-notebook"></i>
+                        <span>note</span>
+                    </div>
                     <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800" alt="Data Visualization">
                     <h3>データ可視化の重要性と手法</h3>
                     <p class="post-meta">投稿日: 2024年5月10日</p>
                     <p>データ可視化は情報を効果的に伝える重要な手段です。本記事では、効果的なデータ可視化の手法を解説します。</p>
-                    <a href="#" class="read-more">続きを読む</a>
-                </article>
+                </a>
             </div>
         </section>
 
@@ -305,10 +317,10 @@
             <h3>MosaicAI</h3>
             <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
                 alt="MosaicAIの画像">
-            <p>MosaicAIは、複数の最先端AI言語モデル（ChatGPT、Claude、Gemini、Perplexity）を統一的なインターフェースで利用できるオープンソースのPythonライブラリです。</p>
+            <p>MosaicAIは、複数の最先端AI言語モデ（ChatGPT、Claude、Gemini、Perplexity）を統一的なインターフェースで利用できるオープンソースのPythonライブラリです。</p>
             <p>主な特徴：</p>
             <ul>
-                <li>複数のAI言語モデルを簡単に利用できる統一されたインターフェース</li>
+                <li>複数AI言語モデルを簡単に利用できる統一されたインターフェース</li>
                 <li>API Keyの安全な管理と再利用</li>
                 <li>拡張性を持つ設計で、新しいAIモデルの追加が容易</li>
                 <li>テキスト生成、画像説明生成、JSON生成機能</li>
@@ -322,7 +334,7 @@
                     <i class="fab fa-github"></i>
                 </a>
             </p>
-            <p>開発期間：2ヶ月（継続的に更新中）</p>
+            <p>開発期間：2ヶ月（継続的に更中）</p>
             <div class="technologies">
                 <span class="python">Python</span>
                 <span class="ai">AI</span>
@@ -377,6 +389,63 @@
                 <span class="mysql">MySQL</span>
                 <span class="aws">AWS</span>
             </div>
+        </div>
+    </div>
+
+    <div id="modal-experience-1" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>シニアフルスタックエンジニア</h3>
+            <h4>テックイノベーション株式会社</h4>
+            <p>期間: 2022年 - 現在</p>
+            <h5>主な責任と成果:</h5>
+            <ul>
+                <li>大規模Webアプリケーションの設計と実装を主導</li>
+                <li>チームのパフォーマンス向上とコード品質の改善に貢献</li>
+                <li>新人エンジニアのメンタリングとトレーニングを担当</li>
+            </ul>
+            <h5>使用技術:</h5>
+            <p>Ruby on Rails, React, AWS, Docker</p>
+            <h5>プロジェクト例:</h5>
+            <p>ECサイトのマイクロサービス化、AIを活用した商品レコメンデーションシステムの開発</p>
+        </div>
+    </div>
+
+    <div id="modal-experience-2" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>フルスタックエンジニア</h3>
+            <h4>グローバルソフト株式会社</h4>
+            <p>期間: 2019年 - 2022年</p>
+            <h5>主な責任と成果:</h5>
+            <ul>
+                <li>複数のクライアントプロジェクトで、フロントエンドからバックエンドまでを担当</li>
+                <li>Ruby on RailsとReact使用した規模リファクタリングプロジェクトをリード</li>
+                <li>アジャイル開発手法を導入し、チームの生産性を20%向上</li>
+            </ul>
+            <h5>使用技術:</h5>
+            <p>Ruby on Rails, React, MySQL, AWS</p>
+            <h5>プロジェクト例:</h5>
+            <p>SNSアプリの開発、データ分析ダッシュボードの構築</p>
+        </div>
+    </div>
+
+    <div id="modal-experience-3" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>ジュニアソフトウェアエンジニア</h3>
+            <h4>スタートアップテック株式会社</h4>
+            <p>期間: 2017年 - 2019年</p>
+            <h5>主な責任と成果:</h5>
+            <ul>
+                <li>Webアプリケーションの開発と保守を担当</li>
+                <li>ユーザー認証システムの実装とセキュリティ強化に貢献</li>
+                <li>自動化テストの導入により、バグの発生率を50%削減</li>
+            </ul>
+            <h5>使用技術:</h5>
+            <p>Ruby on Rails, JavaScript, MySQL</p>
+            <h5>プロジェクト例:</h5>
+            <p>予約システムの開発、顧客管理システムの構築</p>
         </div>
     </div>
 
