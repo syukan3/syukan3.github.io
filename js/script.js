@@ -48,20 +48,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
-        modal.style.display = 'block';
-        setTimeout(() => {
-            modal.classList.add('show');
-        }, 10);
-        document.body.style.overflow = 'hidden';
+        if (modal) {
+            modal.style.display = 'block';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
     }
 
     function closeModal(modalId) {
         const modal = document.getElementById(modalId);
-        modal.classList.remove('show');
-        setTimeout(() => {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }, 300);
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
     }
 
     modals.forEach(modal => {
@@ -140,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 observer.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.2 }); // threshold を小さくして早めに検出
+    }, { threshold: 0.2 }); // threshold を小さ��して早めに検出
 
     skillBars.forEach(bar => skillObserver.observe(bar));
 
@@ -181,6 +185,21 @@ document.addEventListener('DOMContentLoaded', function () {
         animationClass: 'slide-in'
     });
 
+    // 追加: timeline-contentにクリックイベントを追加
+    const timelineContents = document.querySelectorAll('.timeline-content');
+    timelineContents.forEach(content => {
+        content.addEventListener('mouseenter', () => {
+            content.style.cursor = 'pointer';
+        });
+        content.addEventListener('mouseleave', () => {
+            content.style.cursor = 'default';
+        });
+        content.addEventListener('click', () => {
+            const modalId = content.getAttribute('data-modal');
+            openModal(modalId);
+        });
+    });
+
     // Contact form submission
     const contactForm = document.getElementById('contact-form');
     contactForm.addEventListener('submit', function (e) {
@@ -205,18 +224,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
-    modal.style.display = 'block';
-    document.body.classList.add('modal-open');
-    setTimeout(() => {
-        modal.classList.add('show');
-    }, 10);
+    if (modal) {
+        modal.style.display = 'block';
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
-    modal.classList.remove('show');
-    setTimeout(() => {
-        modal.style.display = 'none';
-        document.body.classList.remove('modal-open');
-    }, 300);
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }, 300);
+    }
 }
