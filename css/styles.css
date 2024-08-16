@@ -1063,3 +1063,20 @@ footer p {
 .blog-post p:last-child {
     padding-bottom: 40px;
 }
+
+#mobile-warning-modal .modal-content {
+    max-width: 90%;
+    width: 300px;
+    height: auto;
+    text-align: center;
+    padding: 20px;
+}
+
+#mobile-warning-modal h3 {
+    margin-bottom: 15px;
+}
+
+#mobile-warning-modal p {
+    font-size: 14px;
+    line-height: 1.5;
+}

@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 observer.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.2 }); // threshold を小さ��して早めに検出
+    }, { threshold: 0.2 });
 
     skillBars.forEach(bar => skillObserver.observe(bar));
 
@@ -220,6 +220,24 @@ document.addEventListener('DOMContentLoaded', function () {
         contactForm.reset();
         grecaptcha.reset();
     });
+
+    // スマートフォン検出とモーダル表示
+    function isMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    function showMobileWarning() {
+        const modal = document.getElementById('mobile-warning-modal');
+        modal.style.display = 'block';
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+        document.body.style.overflow = 'hidden';
+    }
+
+    if (isMobile()) {
+        showMobileWarning();
+    }
 });
 
 function openModal(modalId) {
