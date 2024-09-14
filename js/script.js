@@ -223,41 +223,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // スマートフォン検出とモーダル表示
     function isMobile() {
+        console.log(navigator.userAgent); // ユーザーエージェントをコンソールに出力
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 
-    function showMobileWarning() {
-        const modal = document.getElementById('mobile-warning-modal');
-        modal.style.display = 'block';
-        setTimeout(() => {
-            modal.classList.add('show');
-        }, 10);
-        document.body.style.overflow = 'hidden';
-    }
-
+    // モバイルデバイスの場合、mobile-block.htmlにリダイレクト
     if (isMobile()) {
-        showMobileWarning();
+        window.location.href = 'mobile-block.html';
     }
 });
-
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.style.display = 'block';
-        setTimeout(() => {
-            modal.classList.add('show');
-        }, 10);
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('show');
-        setTimeout(() => {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }, 300);
-    }
-}
