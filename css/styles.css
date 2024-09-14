@@ -222,7 +222,7 @@ nav ul li a:hover::after {
 .timeline-content::after {
     content: '\f0a9';
     /* FontAwesomeの右矢印アイコン */
-    font-family: 'Font Awesome 5 Free';
+    font-family: 'Font Awesome 6 Free';
     font-weight: 900;
     position: absolute;
     right: 10px;
@@ -682,7 +682,6 @@ footer p {
     max-height: 700px;
     border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    transform: scale(0.7);
     transition: transform 0.3s ease;
     overflow-y: auto;
     display: flex;
