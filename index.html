@@ -32,7 +32,7 @@
                 <li><a href="#projects">プロジェクト</a></li>
                 <li><a href="#skills">スキル</a></li>
                 <li><a href="#blog">ブログ</a></li>
-                <li><a href="#contact">お問い合わせ</a></li>
+                <!-- <li><a href="#contact">お問い合わせ</a></li> -->
             </ul>
         </nav>
     </header>
@@ -134,43 +134,41 @@
             <div class="projects">
                 <!-- Project card -->
                 <div class="project-card" data-modal="modal1">
-                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                        alt="MosaicAI">
+                    <img src="images/project_mosaicai.webp" alt="MosaicAI">
                     <div class="content">
                         <h3>MosaicAI</h3>
                         <p>複数のAI言語モデルを統一的に利用できるオープンソースPythonライブラリ</p>
                         <div class="technologies">
                             <span class="python">Python</span>
                             <span class="ai">AI</span>
-                            <span class="opensource">Open Source</span>
+                            <span class="MIT">MIT</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="project-card" data-modal="modal2">
-                    <img src="https://images.unsplash.com/photo-1609921212029-bb5a28e60960?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                        alt="画像処理アプリケーション">
+                    <img src="images/project_gaugenix.webp" alt="Gaugenix">
                     <div class="content">
-                        <h3>画像フィルターアプリ</h3>
-                        <p>PythonとOpenCVを使用した画像処理アリケーション</p>
+                        <h3>Gaugenix</h3>
+                        <p>IoTデバイスで計器の画像を撮影し、AI解析で値を取得するシステム</p>
                         <div class="technologies">
+                            <span class="nextjs">Next.js</span>
+                            <span class="supabase">Supabase</span>
                             <span class="python">Python</span>
-                            <span class="aws">AWS S3</span>
+                            <span class="ai">AI</span>
+                            <span class="aws">AWS</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="project-card" data-modal="modal3">
-                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                        alt="データ分析ダッシュボード">
+                    <img src="images/project_wolverine_ruby.webp" alt="Wolverine Ruby">
                     <div class="content">
-                        <h3>売上分析ダッシュボード</h3>
-                        <p>PythonとReactを使用したデータ可視化ツール</p>
+                        <h3>Wolverine Ruby</h3>
+                        <p>自律型プログラムバグ修復ツール ChatGPT APIリリース直後に開発</p>
                         <div class="technologies">
-                            <span class="python">Python</span>
-                            <span class="react">React</span>
-                            <span class="mysql">MySQL</span>
-                            <span class="aws">AWS</span>
+                            <span class="ruby">Ruby</span>
+                            <span class="aws">OpenAI GPT-3.5 API</span>
                         </div>
                     </div>
                 </div>
@@ -386,7 +384,7 @@
         </section>
 
         <!-- Contact section -->
-        <section id="contact" aria-label="お問い合わせ">
+        <!-- <section id="contact" aria-label="お問い合わせ">
             <h2>お問い合わせ</h2>
             <form id="contact-form">
                 <input type="text" name="name" placeholder="お名前" required>
@@ -395,7 +393,7 @@
                 <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
                 <button type="submit">送信</button>
             </form>
-        </section>
+        </section> -->
 
     </main>
 
@@ -408,8 +406,7 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h3>MosaicAI</h3>
-            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                alt="MosaicAIの画像">
+            <img src="images/project_mosaicai.webp" alt="MosaicAI">
             <p>MosaicAIは、複数の最先端AI言語モデル（ChatGPT、Claude、Gemini、Perplexity）を統一的なインターフェースで利用できるオープンソースのPythonライブラリです。</p>
             <p>主な特徴：</p>
             <ul>
@@ -440,22 +437,25 @@
     <div id="modal2" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h3>画像フィルターアプリ</h3>
-            <img src="https://images.unsplash.com/photo-1609921212029-bb5a28e60960?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                alt="画像フィルターアプリの画像">
-            <p>PythonとOpenCVを使用した画像処理アプリケーション。ユーザーがアップロードした画像に様々なフィルターや効果を適用できます。</p>
+            <h3>Gaugenix</h3>
+            <img src="images/project_gaugenix.webp" alt="Gaugenix">
+            <p>Gaugenixは、IoTデバイスを用いて計器の画像を撮影し、AI解析によってその値を取得するシステムです。工場やプラントなどの現場において、人手に頼っていた計器の読み取り作業を自動化し、データ収集の効率化と人為的なミス削減を実現します。</p>
+            <p>例えば、温度計や圧力計などのアナログ計器の画像を、設置されたカメラで定期的に撮影します。撮影された画像は、AIモデルによって解析され、計器の目盛りを読み取り、数値データに変換されます。取得されたデータは、クラウド上に保存され、ユーザーインターフェースを通じて確認したり、他のシステムと連携したりすることができます。</p >
             <p>主な機能：</p>
             <ul>
-                <li>画像のアップロードとプレビュー</li>
-                <li>複数のフィルター（白黒、セピア、ぼかしなど）</li>
-                <li>画像の回転、反転、リサイズ</li>
-                <li>処理済み画像のダウンロード</li>
-                <li>AWS S3を使用した画像の保存と管理</li>
+                <li>リアルタイムでのデータ取得と分析</li>
+                <li>ユーザーインターフェースによる簡単な操作</li>
+                <li>データの可視化とレポート生成</li>
+                <li>クラウドストレージへのデータ保存</li>
+                <li>APIを通じた他システムとの連携</li>
             </ul>
-            <p>開発期間：2ヶ月</p>
+            <p>開発期間：1年3ヶ月（継続的に更新中）</p>
             <div class="technologies">
+                <span class="nextjs">Next.js</span>
+                <span class="supabase">Supabase</span>
                 <span class="python">Python</span>
-                <span class="aws">AWS S3</span>
+                <span class="ai">AI</span>
+                <span class="aws">AWS</span>
             </div>
         </div>
     </div>
@@ -463,24 +463,19 @@
     <div id="modal3" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h3>売上分析ダッシュボード</h3>
-            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                alt="売上分析ダッシュボードの画像">
-            <p>PythonとReactを使用したデータ可視化ツール。企業の売上データをリアルタイムで分析し、わかりやすいグラフで表示します。</p>
+            <h3>Wolverine Ruby</h3>
+            <img src="images/project_wolverine_ruby.webp" alt="Wolverine Ruby">
+            <p>自律型プログラムバグ修復ツール ChatGPT APIリリース直後に開発しました。</p>
             <p>主な機能：</p>
             <ul>
-                <li>日次、週次、月次の売上推移グラフ</li>
-                <li>製品カテゴリ別の売上比率</li>
-                <li>地域別の売上ヒートマップ</li>
-                <li>顧客セグメント分析</li>
-                <li>カスタマイズ可能なダッシュボードレイアウト</li>
+                <li>ChatGPT APIを利用したバグ検出と修正提案</li>
+                <li>自動修正機能の実装</li>
+                <li>Rubyコードの静的解析と品質向上</li>
             </ul>
-            <p>開発期間：4ヶ月</p>
+            <p>開発期間：1週間</p>
             <div class="technologies">
-                <span class="python">Python</span>
-                <span class="react">React</span>
-                <span class="mysql">MySQL</span>
-                <span class="aws">AWS</span>
+                <span class="ruby">Ruby</span>
+                <span class="aws">OpenAI GPT-3.5 API</span>
             </div>
         </div>
     </div>
