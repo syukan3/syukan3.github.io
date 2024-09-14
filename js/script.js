@@ -136,11 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const skillLevel = entry.target.querySelector('.skill-level');
                 const width = skillLevel.getAttribute('data-width');
                 skillLevel.style.transition = 'width 1s ease-in-out';
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        skillLevel.style.width = width;
-                    });
-                });
+                skillLevel.style.width = width; // スキルレベルの幅を更新
                 observer.unobserve(entry.target);
             }
         });
@@ -148,8 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     skillBars.forEach(bar => skillObserver.observe(bar));
 
-
-    // スクロールアニメーション用の関数
+    // スクロールアニメーション用の��数
     function createScrollAnimation(elements, options = {}) {
         const defaultOptions = {
             threshold: 0.1,
@@ -213,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // reCAPTCHAが完了した場合、フォーム送信を進める
-        // ここで通常はサーバーにフォームデータを送信します
+        // ここで通���はサーバーにフォームデータを送信します
         console.log('reCAPTCHAでフォームが送信されました');
 
         // 送信後にフォームとreCAPTCHAをリセット
