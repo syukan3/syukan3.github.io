@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="フルスタックエンジニアのポートフォリオサイト。プロジェクト、スキル、経歴などを紹介しています。">
-    <title>Software Engineer Portfolio</title>
+    <meta name="description" content="フルスタックエンジニアの実績紹介サイト。プロジェクト、スキル、経歴などを紹介しています。">
+    <title>Full Stack Engineer Sakae Shunsuke Profile</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700&display=swap"
         rel="stylesheet">
@@ -14,8 +14,8 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <!-- Open Graph Protocol tags -->
-    <meta property="og:title" content="Software Engineer Portfolio - フルスタックエンジニアのポートフォリオ">
-    <meta property="og:description" content="フルスタックエンジニアのポートフォリオサイト。5年以上の経験を持つエンジニアが手がけたプロジェクト、スキル、経歴などを紹介しています。">
+    <meta property="og:title" content="Full Stack Engineer Sakae Shunsuke Profile">
+    <meta property="og:description" content="フルスタックエンジニアの実績紹介サイト。5年以上の経験を持つエンジニアが手がけたプロジェクト、スキル、経歴などを紹介しています。">
     <meta property="og:image" content="https://example.com/og-image.jpg">
     <meta property="og:url" content="https://example.com">
     <meta property="og:type" content="website">
@@ -32,29 +32,38 @@
                 <li><a href="#projects">プロジェクト</a></li>
                 <li><a href="#skills">スキル</a></li>
                 <li><a href="#blog">ブログ</a></li>
-                <li><a href="#contact">お問い合わせ</a></li>
+                <!-- <li><a href="#contact">お問い合わせ</a></li> -->
             </ul>
         </nav>
     </header>
 
-    <main class="container">
-        <!-- Hero section -->
-        <section id="home" class="hero" aria-label="ホーム">
-            <h1>ソフトウェアエンジニアポートフォリオ</h1>
-            <p>フルスタックエンジニア</p>
-        </section>
+    <!-- Hero section -->
+    <section id="home" class="hero" aria-label="ホーム">
+        <div class="hero-content">
+            <h1>Sakae Shunsuke</h1>
+            <p>ソフトウェアエンジニア / フルスタックエンジニア</p>
+        </div>
+        <img src="images/hero.webp" alt="hero" class="hero-image">
+    </section>
 
+    <main class="container">
         <!-- About section -->
         <section id="about" aria-label="自己紹介">
             <h2>自己紹介</h2>
             <div class="about-content">
-                <img src="https://images.unsplash.com/photo-1568707043650-eb03f2536825?q=80&w=2187&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="プロフィール写真" class="profile-image">
-                <!-- <img src="images/profile.webp" alt="プロフィール写真" class="profile-image"> -->
+                <img src="images/profile.webp" alt="プロフィール写真" class="profile-image">
                 <div class="about-text">
-                    <p>はじめまして、私は[あなたの名前]です。フルスタックエンジニアとして、Webアプリケーション開発に情熱を注いでいます。5年以上の経験を持ち、最新のテクノロジーを活用して革新的なソリューションを生み出すことに喜びを感じています。
+                    <p>
+                        はじめまして、栄 俊介（Sakae Shunsuke）です。
                     </p>
-                    <p>私の強みは、複雑な問題を解決する能力と、チームメンバーと効果的にコラボレーションすることです。常に新しい技術を学び、自己成長を続けることを大切にしています。</p>
+                    <p>
+                        フルスタックエンジニアとしてシステム開発に携わり、会社のシステム責任者としてサービス開発・運営を主導してきました。<br>
+                        Ruby on Rails、Python、React/Next.js、AWS を駆使し、要件定義から運用まで一貫した開発プロセスを担当しています。
+                    </p>
+                    <p>
+                        最近は生成AIを活用したシステム開発に興味があり、Cursor + v0 + Supabase を活用したシステム開発を行っています。<br>
+                        常に新しい技術や知識を吸収し、チーム全体の生産性を高めて、より質の高いサービスを提供できるよう努めています。
+                    </p>
                     <div class="social-links">
                         <a href="https://github.com/syukan3/MosaicAI" target="_blank" rel="noopener noreferrer"
                             aria-label="GitHub"><i class="fab fa-github"></i></a>
@@ -80,11 +89,11 @@
                     <div class="timeline-date">2022年11月 - 現在</div>
                     <div class="timeline-content" data-modal="modal-experience-1">
                         <h3>HiJoJo Partners株式会社</h3>
-                        <h4>ソリューションアーキテクト</h4>
+                        <h4>システム責任者、ソリューションアーキテクト</h4>
                         <ul>
-                            <li>大規模Webアプリケーションの設計と実装を主導</li>
-                            <li>チームのパフォーマンス向上とコード品質の改善に貢献</li>
-                            <li>新人エンジニアのメンタリングとトレーニングを担当</li>
+                            <li>オンラインファンド販売システム HiJoJo.comの開発・保守・運用を主導</li>
+                            <li>高可用性とスケーラビリティを確保し、システムの安定稼働を実現</li>
+                            <li>情報システム業務全般を担当し、社内システムの運用・保守や課題解決対応を行う</li>
                         </ul>
                     </div>
                 </div>
@@ -95,7 +104,7 @@
                         <h4>フルスタックエンジニア</h4>
                         <ul>
                             <li>画像分析による属性取得システムの開発</li>
-                            <li>配信システム・CMS開発</li>
+                            <li>コンテンツ配信システム・CMS開発</li>
                             <li>工数管理システムの開発（開発工数実績把握）</li>
                             <li>保守管理システムの開発 (Webアプリ)</li>
                             <li>受付システム（来客チェックイン）</li>
@@ -108,7 +117,7 @@
                         <h3>いすゞ自動車株式会社</h3>
                         <h4>生産部門 生産準備第3グループ</h4>
                         <ul>
-                            <li>新規プロジェクトの生産管理</li>
+                            <li>新車プロジェクト生産管理</li>
                             <li>帳票のペーパーレス化（改善業務）</li>
                             <li>RPAによる生産システムの自動入力化（改善業務）</li>
                         </ul>
@@ -120,9 +129,8 @@
                         <h3>岡山大学 大学院自然科学研究科</h3>
                         <h4>電気エネルギー・システム制御工学研究室</h4>
                         <ul>
-                            <li>電力系統の安定性に関する研究</li>
-                            <li>電力系統シミュレーション</li>
-                            <li>修士論文執筆</li>
+                            <li>太陽光発電と燃料電池車を用いた住宅用分散型発電システムのエネルギー管理手法に関する研究</li>
+                            <li>国際学会での論文発表 (IEEE Industry Application Society Annual Meeting)</li>
                         </ul>
                     </div>
                 </div>
@@ -135,43 +143,41 @@
             <div class="projects">
                 <!-- Project card -->
                 <div class="project-card" data-modal="modal1">
-                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                        alt="MosaicAI">
+                    <img src="images/project_mosaicai.webp" alt="MosaicAI">
                     <div class="content">
                         <h3>MosaicAI</h3>
                         <p>複数のAI言語モデルを統一的に利用できるオープンソースPythonライブラリ</p>
                         <div class="technologies">
                             <span class="python">Python</span>
                             <span class="ai">AI</span>
-                            <span class="opensource">Open Source</span>
+                            <span class="MIT">MIT</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="project-card" data-modal="modal2">
-                    <img src="https://images.unsplash.com/photo-1609921212029-bb5a28e60960?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                        alt="画像処理アプリケーション">
+                    <img src="images/project_gaugenix.webp" alt="Gaugenix">
                     <div class="content">
-                        <h3>画像フィルターアプリ</h3>
-                        <p>PythonとOpenCVを使用した画像処理アリケーション</p>
+                        <h3>Gaugenix</h3>
+                        <p>IoTデバイスで計器の画像を撮影し、AI解析で値を取得するシステム</p>
                         <div class="technologies">
+                            <span class="nextjs">Next.js</span>
+                            <span class="supabase">Supabase</span>
                             <span class="python">Python</span>
-                            <span class="aws">AWS S3</span>
+                            <span class="ai">AI</span>
+                            <span class="aws">AWS</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="project-card" data-modal="modal3">
-                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                        alt="データ分析ダッシュボード">
+                    <img src="images/project_wolverine_ruby.webp" alt="Wolverine Ruby">
                     <div class="content">
-                        <h3>売上分析ダッシュボード</h3>
-                        <p>PythonとReactを使用したデータ可視化ツール</p>
+                        <h3>Wolverine Ruby</h3>
+                        <p>自律型プログラムバグ修復ツール ChatGPT APIリリース直後に開発</p>
                         <div class="technologies">
-                            <span class="python">Python</span>
-                            <span class="react">React</span>
-                            <span class="mysql">MySQL</span>
-                            <span class="aws">AWS</span>
+                            <span class="ruby">Ruby</span>
+                            <span class="aws">OpenAI GPT-3.5 API</span>
                         </div>
                     </div>
                 </div>
@@ -282,40 +288,40 @@
                     </ul>
                 </div>
             </div>
-            <div class="aws-services">
+            <div class="skill-categories aws-services">
                 <h3>AWS利用サービス</h3>
-                <div class="service-category">
+                <div class="skill-category">
                     <h4>コアサービス</h4>
                     <div class="service-tags">
                         <span class="service-tag">EC2</span>
+                        <span class="service-tag">RDS</span>
+                        <span class="service-tag">CloudFront</span>
                         <span class="service-tag">S3</span>
                         <span class="service-tag">IAM</span>
                         <span class="service-tag">Route 53</span>
-                        <span class="service-tag">CloudFront</span>
                         <span class="service-tag">ElastiCache</span>
                         <span class="service-tag">CloudFormation</span>
                         <span class="service-tag">ECR</span>
                         <span class="service-tag">ECS</span>
-                        <span class="service-tag">RDS</span>
                         <span class="service-tag">WAF</span>
                     </div>
                 </div>
-                <div class="service-category">
+                <div class="skill-category">
                     <h4>統合サービス</h4>
                     <div class="service-tags">
-                        <span class="service-tag">Cloud9</span>
+                        <span class="service-tag">IoT Core</span>
+                        <span class="service-tag">IoT Greengrass</span>
+                        <span class="service-tag">IoT Events</span>
                         <span class="service-tag">Amazon EventBridge</span>
                         <span class="service-tag">Step Functions</span>
                         <span class="service-tag">Cognito</span>
                         <span class="service-tag">SES</span>
                         <span class="service-tag">AWS Amplify</span>
-                        <span class="service-tag">IoT Core</span>
-                        <span class="service-tag">IoT Greengrass</span>
-                        <span class="service-tag">IoT Events</span>
                         <span class="service-tag">CodePipeline</span>
+                        <span class="service-tag">Cloud9</span>
                     </div>
                 </div>
-                <div class="service-category">
+                <div class="skill-category">
                     <h4>AI/ML・処理サービス</h4>
                     <div class="service-tags">
                         <span class="service-tag">Amazon Bedrock</span>
@@ -387,7 +393,7 @@
         </section>
 
         <!-- Contact section -->
-        <section id="contact" aria-label="お問い合わせ">
+        <!-- <section id="contact" aria-label="お問い合わせ">
             <h2>お問い合わせ</h2>
             <form id="contact-form">
                 <input type="text" name="name" placeholder="お名前" required>
@@ -396,7 +402,7 @@
                 <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
                 <button type="submit">送信</button>
             </form>
-        </section>
+        </section> -->
 
     </main>
 
@@ -409,8 +415,7 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h3>MosaicAI</h3>
-            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                alt="MosaicAIの画像">
+            <img src="images/project_mosaicai.webp" alt="MosaicAI">
             <p>MosaicAIは、複数の最先端AI言語モデル（ChatGPT、Claude、Gemini、Perplexity）を統一的なインターフェースで利用できるオープンソースのPythonライブラリです。</p>
             <p>主な特徴：</p>
             <ul>
@@ -441,22 +446,27 @@
     <div id="modal2" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h3>画像フィルターアプリ</h3>
-            <img src="https://images.unsplash.com/photo-1609921212029-bb5a28e60960?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                alt="画像フィルターアプリの画像">
-            <p>PythonとOpenCVを使用した画像処理アプリケーション。ユーザーがアップロードした画像に様々なフィルターや効果を適用できます。</p>
+            <h3>Gaugenix</h3>
+            <img src="images/project_gaugenix.webp" alt="Gaugenix">
+            <p>Gaugenixは、IoTデバイスを用いて計器の画像を撮影し、AI解析によってその値を取得するシステムです。工場やプラントなどの現場において、人手に頼っていた計器の読み取り作業を自動化し、データ収集の効率化と人為的なミス削減を実現します。
+            </p>
+            <p>例えば、温度計や圧力計などのアナログ計器の画像を、設置されたカメラで定期的に撮影します。撮影された画像は、AIモデルによって解析され、計器の目盛りを読み取り、数値データに変換されます。取得されたデータは、クラウド上に保存され、ユーザーインターフェースを通じて確認したり、他のシステムと連携したりすることができます。
+            </p>
             <p>主な機能：</p>
             <ul>
-                <li>画像のアップロードとプレビュー</li>
-                <li>複数のフィルター（白黒、セピア、ぼかしなど）</li>
-                <li>画像の回転、反転、リサイズ</li>
-                <li>処理済み画像のダウンロード</li>
-                <li>AWS S3を使用した画像の保存と管理</li>
+                <li>リアルタイムでのデータ取得と分析</li>
+                <li>ユーザーインターフェースによる簡単な操作</li>
+                <li>データの可視化とレポート生成</li>
+                <li>クラウドストレージへのデータ保存</li>
+                <li>APIを通じた他システムとの連携</li>
             </ul>
-            <p>開発期間：2ヶ月</p>
+            <p>開発期間：1年3ヶ月（継続的に更新中）</p>
             <div class="technologies">
+                <span class="nextjs">Next.js</span>
+                <span class="supabase">Supabase</span>
                 <span class="python">Python</span>
-                <span class="aws">AWS S3</span>
+                <span class="ai">AI</span>
+                <span class="aws">AWS</span>
             </div>
         </div>
     </div>
@@ -464,24 +474,19 @@
     <div id="modal3" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h3>売上分析ダッシュボード</h3>
-            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                alt="売上分析ダッシュボードの画像">
-            <p>PythonとReactを使用したデータ可視化ツール。企業の売上データをリアルタイムで分析し、わかりやすいグラフで表示します。</p>
+            <h3>Wolverine Ruby</h3>
+            <img src="images/project_wolverine_ruby.webp" alt="Wolverine Ruby">
+            <p>自律型プログラムバグ修復ツール ChatGPT APIリリース直後に開発しました。</p>
             <p>主な機能：</p>
             <ul>
-                <li>日次、週次、月次の売上推移グラフ</li>
-                <li>製品カテゴリ別の売上比率</li>
-                <li>地域別の売上ヒートマップ</li>
-                <li>顧客セグメント分析</li>
-                <li>カスタマイズ可能なダッシュボードレイアウト</li>
+                <li>ChatGPT APIを利用したバグ検出と修正提案</li>
+                <li>自動修正機能の実装</li>
+                <li>Rubyードの静的解析と品質向上</li>
             </ul>
-            <p>開発期間：4ヶ月</p>
+            <p>開発期間：1週間</p>
             <div class="technologies">
-                <span class="python">Python</span>
-                <span class="react">React</span>
-                <span class="mysql">MySQL</span>
-                <span class="aws">AWS</span>
+                <span class="ruby">Ruby</span>
+                <span class="aws">OpenAI GPT-3.5 API</span>
             </div>
         </div>
     </div>
@@ -489,26 +494,63 @@
     <div id="modal-experience-1" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h3>ソリューションアーキテクト</h3>
-            <h4>HiJoJo Partners株式会社</h4>
+            <h3>HiJoJo Partners株式会社</h3>
+            <h4>ソリューションアーキテクト</h4>
             <p>期間: 2022年11月 - 現在</p>
             <h5>主な責任と成果:</h5>
             <ul>
-                <li>大規模Webアプリケーションの設計と実装を主導</li>
-                <li>チームのパフォーマンス向上とコード品質の改善に貢献</li>
-                <li>新人エンジニアのメンタリングとトレーニングを担当</li>
+                <li>
+                    <b>2022年11月～2024年4月：ソリューションアーキテクト</b><br>
+                    <ul>
+                        <li>
+                            <b>オンラインファンド販売システム HiJoJo.com</b>
+                            <ul>
+                                <li>開発・保守・運用を主導</li>
+                                <li>高可用性とスケーラビリティを確保</li>
+                                <li>AWSクラウドを活用し、システムの安定稼働を実現</li>
+                            </ul>
+                            ◆環境：Linux, nginx, AWS<br>
+                            ◆言語/DB：Ruby/Rails, Javascript, MySQL, Slim<br>
+                            1名/ソリューションアーキテクト
+                        </li>
+                        <li>
+                            <b>情報システム業務</b>
+                            <ul>
+                                <li>社内システムの運用・保守</li>
+                                <li>課題解決対応</li>
+                                <li>ITインフラストラクチャの管理</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <b>2024年5月～現在：システム責任者</b><br>
+                    システム全体のライフサイクルマネジメントを統括し、安定的なサービス提供と継続的な改善
+                </li>
             </ul>
-            <h5>使用技術:</h5>
-            <p>Ruby on Rails, React, AWS, Docker</p>
             <h5>プロジェクト例:</h5>
-            <p>ECサイトのマイクロサービス化、AIを活用した商品レコメンデーションシステムの開発</p>
+            <ul>
+                <li>Ruby バージョンアップ
+                    <ul>
+                        <li>2.7.6 → 3.2.1 → 3.3.0</li>
+                    </ul>
+                </li>
+                <li>Rails バージョンアップ
+                    <ul>
+                        <li>5.2.8.1 → 6.1 → 7.1.3.2</li>
+                    </ul>
+                </li>
+                <li>ファンド譲渡機能、金額時間優先機能、売上から経理業務に必要な情報を出力する機能</li>
+                <li>販売委託用サイト（パートナーウェブサイト）開発</li>
+                <li>セキュリティとコンプライアンスを重視し、金融規制に準拠したシステムを構築</li>
+            </ul>
         </div>
     </div>
     <div id="modal-experience-2" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h3>フルスタックエンジニア</h3>
-            <h4>ピーディーシー株式会社</h4>
+            <h3>ピーディーシー株式会社</h3>
+            <h4>フルスタックエンジニア</h4>
             <p>期間: 2019年8月 - 2022年11月</p>
             <p>雇用形態：正社員</p>
             <p>役割：フルスタックエンジニア</p>
@@ -520,7 +562,7 @@
                     ・インシデント管理機能<br>
                     ・コールセンター機能（Amazon Connect）<br>
                     ・カスタマーポータル機能<br>
-                    要件定義、日程調整<br>
+                    要件定義、日程調整、設計、開発、試験<br>
                     ◆環境：Linux, nginx, AWS<br>
                     ◆言語/DB：Ruby/Rails, Javascript, MySQL, Slim, Sass<br>
                     2名/プログラマー (もう1人はマネジメント)
