@@ -202,7 +202,7 @@ nav ul li a:hover::after {
     left: -14px;
 }
 
-/* タイムライ���コンテンツのスタイル調整 */
+/* タイムラインコンテンツのスタイル調整 */
 .timeline-content {
     padding: 20px 30px;
     background-color: var(--surface-color);
@@ -569,57 +569,59 @@ nav ul li a:hover::after {
 }
 
 .aws-services {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
-    margin-bottom: 40px;
-    background-color: var(--surface-color);
-    padding: 30px;
-    border-radius: 6px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    justify-content: center;
+    align-items: center;
 }
 
 .aws-services h3 {
-    /* aws-services内のh3にスタイルを適用 */
-    grid-column: 1 / -1;
-    /* 全ての列にまたがるようにする */
+    width: 100%;
+    text-align: center;
     margin-bottom: 20px;
-    /* 下マージンを追加 */
     font-family: 'Montserrat', sans-serif;
     font-size: 1.5em;
     color: var(--text-primary-color);
-    text-align: center;
 }
 
-.service-category {
-    /* カテゴリ内の要素を縦並びにする */
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.aws-services .skill-category {
+    flex: 1 1 300px;
+    min-width: 0;
 }
 
-.service-tags {
+.aws-services .service-tags {
     display: flex;
     flex-wrap: wrap;
-    /* タグが折り返すようにする */
     gap: 10px;
 }
 
-.service-tag {
+.aws-services .service-tag {
+    font-family: 'Montserrat', sans-serif;
     background-color: #333;
-    /* 背景色 */
     color: #eee;
-    /* 文字色 */
     padding: 8px 12px;
-    /* パディング */
     border-radius: 20px;
-    /* 角丸 */
     font-size: 0.9em;
-    /* フォントサイズ */
     font-weight: 500;
-    /* フォントウェイト */
     white-space: nowrap;
-    /* 折り返しなし */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* certificationsと同じtransitionを追加 */
+}
+
+.aws-services .service-tag:hover {
+    transform: translateY(-3px); /* ホバー時に少し上に移動 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* certificationsと同じbox-shadowを追加 */
+}
+
+@media screen and (max-width: 768px) {
+    .aws-services {
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .aws-services .skill-category {
+        width: 100%;
+    }
 }
 
 .certifications {
@@ -647,26 +649,20 @@ nav ul li a:hover::after {
 }
 
 .certifications li {
+    font-family: 'Montserrat', sans-serif;
     background-color: #333;
-    /* 背景色を#333に変更 */
     color: #eee;
-    /* 文字色を#eeeに変更 */
     padding: 8px 12px;
-    /* パディングを調整 */
     border-radius: 20px;
-    /* 角丸を調整 */
     font-weight: 500;
     font-size: 0.9em;
-    /* フォントサイズを追加 */
     white-space: nowrap;
-    /* 折り返しなしを追加 */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    /* ホバーエフェクトを追加 */
 }
 
 .certifications li:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* 影を追加 */
 }
 
 footer {
@@ -993,7 +989,7 @@ footer p {
     transform: translateX(0);
 }
 
-/* タイムラインアイテムのアニメーション */
+/* タイムラインイテムのアニメーション */
 .timeline-item {
     opacity: 1;
     transform: translateX(0);
@@ -1004,7 +1000,7 @@ footer p {
     transform: translateX(50px);
 }
 
-/* スキルバーのアニメーション */
+/* スキルバのアニメーション */
 .skill-bar .skill-level {
     height: 100%;
     background-color: var(--secondary-color);
