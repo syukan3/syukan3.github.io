@@ -166,6 +166,7 @@ nav ul li a:hover::after {
     position: relative;
     width: 50%;
     box-sizing: border-box;
+    z-index: 2;
 }
 
 /* 点（丸）のスタイル調整 */
@@ -201,14 +202,14 @@ nav ul li a:hover::after {
     left: -14px;
 }
 
-/* タイムライ���コンテンツのスタイル調整 */
+/* タイムラインコンテンツのスタイル調整 */
 .timeline-content {
     padding: 20px 30px;
     background-color: var(--surface-color);
     position: relative;
     border-radius: 6px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 2;
+    z-index: 3;
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -316,6 +317,7 @@ nav ul li a:hover::after {
         width: 100%;
         padding-left: 70px;
         padding-right: 25px;
+        left: 0;
     }
 
     .timeline-item::after {
@@ -334,7 +336,41 @@ nav ul li a:hover::after {
 
 .hero {
     text-align: center;
-    padding: 150px 0 80px;
+    padding: 150px 0 100px;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 55vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    filter: brightness(0.5);
+    z-index: 0;
+}
+
+/* hero コンテンツの位置調整 */
+.hero-content {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+    text-align: center;
+    padding: 0 20px;
+}
+
+/* レスポンシブ対応 */
+@media screen and (max-width: 768px) {
+    .hero {
+        padding: 100px 0 80px;
+    }
 }
 
 .hero h1 {
@@ -567,46 +603,62 @@ nav ul li a:hover::after {
 }
 
 .aws-services {
-    display: grid; /* gridレイアウトに変更 */
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* レスポンシブに対応 */
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
-    margin-bottom: 40px;
-    background-color: var(--surface-color);
-    padding: 30px;
-    border-radius: 6px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    justify-content: center;
+    align-items: flex-start;
 }
 
-.aws-services h3 { /* aws-services内のh3にスタイルを適用 */
-    grid-column: 1 / -1; /* 全ての列にまたがるようにする */
-    margin-bottom: 20px; /* 下マージンを追加 */
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1.5em; 
-    color: var(--text-primary-color);
+.aws-services h3 {
+    width: 100%;
     text-align: center;
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5em;
+    color: var(--text-primary-color);
 }
 
-.service-category {
-    /* カテゴリ内の要素を縦並びにする */
-    display: flex;
-    flex-direction: column;
-    gap: 10px; 
+.aws-services .skill-category {
+    flex: 1 1 300px;
+    min-width: 0;
 }
 
-.service-tags {
+.aws-services .service-tags {
     display: flex;
-    flex-wrap: wrap; /* タグが折り返すようにする */
+    flex-wrap: wrap;
     gap: 10px;
 }
 
-.service-tag {
-    background-color: #333; /* 背景色 */
-    color: #eee; /* 文字色 */
-    padding: 8px 12px; /* パディング */
-    border-radius: 20px; /* 角丸 */
-    font-size: 0.9em; /* フォントサイズ */
-    font-weight: 500; /* フォントウェイト */
-    white-space: nowrap; /* 折り返しなし */
+.aws-services .service-tag {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #333;
+    color: #eee;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* certificationsと同じtransitionを追加 */
+}
+
+.aws-services .service-tag:hover {
+    transform: translateY(-3px);
+    /* ホバー時に少し上に移動 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    /* certificationsと同じbox-shadowを追加 */
+}
+
+@media screen and (max-width: 768px) {
+    .aws-services {
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .aws-services .skill-category {
+        width: 100%;
+    }
 }
 
 .certifications {
@@ -634,19 +686,21 @@ nav ul li a:hover::after {
 }
 
 .certifications li {
-    background-color: #333; /* 背景色を#333に変更 */
-    color: #eee; /* 文字色を#eeeに変更 */
-    padding: 8px 12px; /* パディングを調整 */
-    border-radius: 20px; /* 角丸を調整 */
+    font-family: 'Montserrat', sans-serif;
+    background-color: #333;
+    color: #eee;
+    padding: 8px 12px;
+    border-radius: 20px;
     font-weight: 500;
-    font-size: 0.9em; /* フォントサイズを追加 */
-    white-space: nowrap; /* 折り返しなしを追加 */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* ホバーエフェクトを追加 */
+    font-size: 0.9em;
+    white-space: nowrap;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .certifications li:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    /* 影を追加 */
 }
 
 footer {
@@ -973,7 +1027,7 @@ footer p {
     transform: translateX(0);
 }
 
-/* タイムラインアイテムのアニメーション */
+/* タイムラインイテムのアニメーション */
 .timeline-item {
     opacity: 1;
     transform: translateX(0);
@@ -984,7 +1038,7 @@ footer p {
     transform: translateX(50px);
 }
 
-/* スキルバーのアニメーション */
+/* スキルバのアニメーション */
 .skill-bar .skill-level {
     height: 100%;
     background-color: var(--secondary-color);
