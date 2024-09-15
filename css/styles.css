@@ -744,7 +744,7 @@ footer p {
 }
 
 #contact textarea {
-    height: 150px;
+    height: 200px;
     resize: vertical;
 }
 
@@ -759,6 +759,22 @@ footer p {
 }
 
 #contact button:hover {
+    background-color: #02b8a2;
+}
+
+.contact-button {
+    background-color: var(--secondary-color);
+    color: var(--background-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: normal;
+    transition: background-color 0.3s ease;
+}
+
+.contact-button:hover {
     background-color: #02b8a2;
 }
 
