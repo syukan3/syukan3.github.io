@@ -340,7 +340,7 @@ nav ul li a:hover::after {
     position: relative;
     overflow: hidden;
     width: 100%;
-    height: 55vh;
+    height: 70vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1187,4 +1187,44 @@ footer p {
 #mobile-warning-modal p {
     font-size: 14px;
     line-height: 1.5;
+}
+
+/* Hero section のスタイル調整 */
+.hero {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+}
+
+.hero-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.spotlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: 1;
 }
