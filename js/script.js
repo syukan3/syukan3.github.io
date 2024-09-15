@@ -196,25 +196,42 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Contact form submission
-    // const contactForm = document.getElementById('contact-form');
-    // contactForm.addEventListener('submit', function (e) {
-    //     e.preventDefault();
+    const contactForm = document.getElementById('contact-form');
+    contactForm.addEventListener('submit', function (e) {
+        e.preventDefault();
 
-    //     const recaptchaResponse = grecaptcha.getResponse();
+        const recaptchaResponse = grecaptcha.getResponse();
 
-    //     if (!recaptchaResponse) {
-    //         alert('reCAPTCHAを完了してください。');
-    //         return;
-    //     }
+        if (!recaptchaResponse) {
+            alert('reCAPTCHAを完了してください。');
+            return;
+        }
 
-    //     // reCAPTCHAが完了した場合、フォーム送信を進める
-    //     // ここで通はサーバーにフォームデータを送信します
-    //     console.log('reCAPTCHAでフォームが送信されました');
+        // reCAPTCHAが完了した場合、フォーム送信を進める
+        const formData = new FormData(contactForm);
+        formData.append('recaptcha_response', recaptchaResponse);
 
-    //     // 送信後にフォームとreCAPTCHAをリセット
-    //     contactForm.reset();
-    //     grecaptcha.reset();
-    // });
+        fetch('https://5kpdn47l2j4ovl3fuiuro2wf3q0oixif.lambda-url.ap-northeast-1.on.aws/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('reCAPTCHAとフォームデータが送信されました:', data);
+            // 送信後にフォームとreCAPTCHAをリセット
+            contactForm.reset();
+            grecaptcha.reset();
+        })
+        .catch(error => {
+            console.error('送信中にエラーが発生しました:', error);
+            alert('送信中にエラーが発生しました。');
+        });
+    });
 
     // スマートフォン検出とモーダル表示
     function isMobile() {
