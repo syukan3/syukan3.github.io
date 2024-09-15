@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     skillBars.forEach(bar => skillObserver.observe(bar));
 
-    // スクロールアニメーション用の��数
+    // スクロールアニメーション用の数
     function createScrollAnimation(elements, options = {}) {
         const defaultOptions = {
             threshold: 0.1,
@@ -196,29 +196,28 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Contact form submission
-    const contactForm = document.getElementById('contact-form');
-    contactForm.addEventListener('submit', function (e) {
-        e.preventDefault();
+    // const contactForm = document.getElementById('contact-form');
+    // contactForm.addEventListener('submit', function (e) {
+    //     e.preventDefault();
 
-        const recaptchaResponse = grecaptcha.getResponse();
+    //     const recaptchaResponse = grecaptcha.getResponse();
 
-        if (!recaptchaResponse) {
-            alert('reCAPTCHAを完了してください。');
-            return;
-        }
+    //     if (!recaptchaResponse) {
+    //         alert('reCAPTCHAを完了してください。');
+    //         return;
+    //     }
 
-        // reCAPTCHAが完了した場合、フォーム送信を進める
-        // ここで通���はサーバーにフォームデータを送信します
-        console.log('reCAPTCHAでフォームが送信されました');
+    //     // reCAPTCHAが完了した場合、フォーム送信を進める
+    //     // ここで通はサーバーにフォームデータを送信します
+    //     console.log('reCAPTCHAでフォームが送信されました');
 
-        // 送信後にフォームとreCAPTCHAをリセット
-        contactForm.reset();
-        grecaptcha.reset();
-    });
+    //     // 送信後にフォームとreCAPTCHAをリセット
+    //     contactForm.reset();
+    //     grecaptcha.reset();
+    // });
 
     // スマートフォン検出とモーダル表示
     function isMobile() {
-        console.log(navigator.userAgent); // ユーザーエージェントをコンソールに出力
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 
@@ -226,4 +225,41 @@ document.addEventListener('DOMContentLoaded', function () {
     if (isMobile()) {
         window.location.href = 'mobile-block.html';
     }
+
+    // スポットライト効果の追加
+    const spotlight = document.querySelector('.spotlight');
+    let time = 0;
+
+    function animate() {
+        time += 0.003; // アニメーション速度
+        const x1 = (Math.sin(time) + 1) / 2;
+        const y1 = (Math.cos(time * 0.8) + 1) / 2;
+        const x2 = (Math.sin(time * 1.2 + 2) + 1) / 2;
+        const y2 = (Math.cos(time * 0.9 + 1) + 1) / 2;
+
+        const width = spotlight.offsetWidth;
+        const height = spotlight.offsetHeight;
+
+        const spotlight1X = x1 * width;
+        const spotlight1Y = y1 * height;
+        const spotlight2X = x2 * width;
+        const spotlight2Y = y2 * height;
+
+        spotlight.style.background = `
+            radial-gradient(
+                circle 200px at ${spotlight1X}px ${spotlight1Y}px,
+                rgba(255, 255, 255, 0.7),
+                transparent 70%
+            ),
+            radial-gradient(
+                circle 200px at ${spotlight2X}px ${spotlight2Y}px,
+                rgba(3, 218, 198, 0.7),
+                transparent 70%
+            )
+        `;
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
 });
