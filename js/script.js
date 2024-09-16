@@ -355,4 +355,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (spotlight) {
         animate();
     }
+
+    // フォントの読み込みを確認
+    if (document.fonts) {
+        document.fonts.ready.then(function () {
+            console.log('All fonts are loaded and ready');
+            document.body.classList.add('fonts-loaded'); 
+        });
+    }
 });
