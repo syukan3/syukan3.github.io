@@ -207,15 +207,21 @@ document.addEventListener('DOMContentLoaded', function () {
             grecaptcha.enterprise.ready(function () {
                 grecaptcha.enterprise.execute('6LdTCEUqAAAAAI6AkAc5CuVYcLPqPHlRXz0OG9Xj', { action: 'submit' })
                     .then(function (token) {
-                        // reCAPTCHA v3のトークンをフォームデータに追加
+                        // フォームデータを取得
                         const formData = new FormData(contactForm);
                         formData.append('recaptcha_response', token);
 
+                        // FormDataをJSONに変換
+                        const jsonData = {};
+                        formData.forEach((value, key) => {
+                            jsonData[key] = value;
+                        });
+
                         fetch('https://5kpdn47l2j4ovl3fuiuro2wf3q0oixif.lambda-url.ap-northeast-1.on.aws/', {
                             method: 'POST',
-                            body: formData,
+                            body: JSON.stringify(jsonData),
                             headers: {
-                                'Content-Type': 'multipart/form-data'
+                                'Content-Type': 'application/json'
                             }
                         })
                             .then(response => {
