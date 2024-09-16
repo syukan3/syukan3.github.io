@@ -210,12 +210,19 @@ document.addEventListener('DOMContentLoaded', function () {
                         // フォームデータを取得
                         const formData = new FormData(contactForm);
                         formData.append('recaptcha_response', token);
-    
-                        console.log('Sending form data:', Object.fromEntries(formData));
-    
+
+                        // FormDataをJSONに変換
+                        const jsonData = {};
+                        formData.forEach((value, key) => jsonData[key] = value);
+
+                        console.log('Sending form data:', jsonData);
+
                         fetch('https://5kpdn47l2j4ovl3fuiuro2wf3q0oixif.lambda-url.ap-northeast-1.on.aws/', {
                             method: 'POST',
-                            body: formData
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(jsonData)
                         })
                         .then(response => {
                             console.log('Response status:', response.status);
@@ -240,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
             });
         }
-    
+
         // フォーム送信時に検証を実行
         contactForm.addEventListener('submit', function (event) {
             event.preventDefault(); // フォームのデフォルトの送信動作を防止
