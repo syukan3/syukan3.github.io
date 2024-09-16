@@ -210,40 +210,37 @@ document.addEventListener('DOMContentLoaded', function () {
                         // フォームデータを取得
                         const formData = new FormData(contactForm);
                         formData.append('recaptcha_response', token);
-
-                        // FormDataをJSONに変換
-                        const jsonData = {};
-                        formData.forEach((value, key) => {
-                            jsonData[key] = value;
-                        });
-
+    
+                        console.log('Sending form data:', Object.fromEntries(formData));
+    
                         fetch('https://5kpdn47l2j4ovl3fuiuro2wf3q0oixif.lambda-url.ap-northeast-1.on.aws/', {
                             method: 'POST',
-                            body: JSON.stringify(jsonData),
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
+                            body: formData
                         })
-                            .then(response => {
-                                if (!response.ok) {
-                                    // エラーレスポンスの詳細を表示
-                                    console.error('Error response:', response.status, response.statusText);
-                                }
-                                return response.json();
-                            })
-                            .then(data => {
-                                console.log('reCAPTCHAとフォームデータが送信されました:', data);
-                                // 送信後にフォームをリセット
-                                contactForm.reset();
-                            })
-                            .catch(error => {
-                                console.error('送信中にエラーが発生しました:', error);
-                                alert('送信中にエラーが発生しました。');
-                            });
+                        .then(response => {
+                            console.log('Response status:', response.status);
+                            console.log('Response headers:', Object.fromEntries(response.headers));
+                            if (!response.ok) {
+                                return response.text().then(text => {
+                                    throw new Error(`HTTP error! status: ${response.status}, message: ${text}`);
+                                });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('reCAPTCHAとフォームデータが送信されました:', data);
+                            // 送信後にフォームをリセット
+                            contactForm.reset();
+                            alert('フォームが正常に送信されました。');
+                        })
+                        .catch(error => {
+                            console.error('送信中にエラーが発生しました:', error);
+                            alert(`送信中にエラーが発生しました: ${error.message}`);
+                        });
                     });
             });
         }
-
+    
         // フォーム送信時に検証を実行
         contactForm.addEventListener('submit', function (event) {
             event.preventDefault(); // フォームのデフォルトの送信動作を防止
