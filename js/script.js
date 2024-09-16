@@ -217,7 +217,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         })
                             .then(response => {
                                 if (!response.ok) {
-                                    throw new Error('Network response was not ok');
+                                    // エラーレスポンスの詳細を表示
+                                    console.error('Error response:', response.status, response.statusText);
+                                    throw new Error(`Network response was not ok (status: ${response.status})`);
                                 }
                                 return response.json();
                             })
