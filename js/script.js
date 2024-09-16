@@ -247,9 +247,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // スポットライト効果の追加
     const spotlight = document.querySelector('.spotlight');
-    let time = 0;
 
     function animate() {
+        if (!spotlight) return; // spotlightが存在しない場合は関数を終了
+
         time += 0.003; // アニメーション速度
         const x1 = (Math.sin(time) + 1) / 2;
         const y1 = (Math.cos(time * 0.8) + 1) / 2;
@@ -280,5 +281,8 @@ document.addEventListener('DOMContentLoaded', function () {
         requestAnimationFrame(animate);
     }
 
-    animate();
+    if (spotlight) {
+        let time = 0;
+        animate();
+    }
 });
