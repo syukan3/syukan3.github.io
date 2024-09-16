@@ -203,33 +203,35 @@ document.addEventListener('DOMContentLoaded', function () {
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
         // reCAPTCHA v3のトークンを取得
-        grecaptcha.ready(function () {
-            grecaptcha.execute('6LdTCEUqAAAAAI6AkAc5CuVYcLPqPHlRXz0OG9Xj', { action: 'submit' })
-                .then(function (token) {
-                    // reCAPTCHA v3のトークンをフォームデータに追加
-                    const formData = new FormData(contactForm);
-                    formData.append('recaptcha_response', token);
+        window.addEventListener('load', function() {
+            grecaptcha.ready(function () {
+                grecaptcha.execute('6LdTCEUqAAAAAI6AkAc5CuVYcLPqPHlRXz0OG9Xj', { action: 'submit' })
+                    .then(function (token) {
+                        // reCAPTCHA v3のトークンをフォームデータに追加
+                        const formData = new FormData(contactForm);
+                        formData.append('recaptcha_response', token);
 
-                    fetch('https://5kpdn47l2j4ovl3fuiuro2wf3q0oixif.lambda-url.ap-northeast-1.on.aws/', {
-                        method: 'POST',
-                        body: formData
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
+                        fetch('https://5kpdn47l2j4ovl3fuiuro2wf3q0oixif.lambda-url.ap-northeast-1.on.aws/', {
+                            method: 'POST',
+                            body: formData
                         })
-                        .then(data => {
-                            console.log('reCAPTCHAとフォームデータが送信されました:', data);
-                            // 送信後にフォームをリセット
-                            contactForm.reset();
-                        })
-                        .catch(error => {
-                            console.error('送信中にエラーが発生しました:', error);
-                            alert('送信中にエラーが発生しました。');
-                        });
-                });
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log('reCAPTCHAとフォームデータが送信されました:', data);
+                                // 送信後にフォームをリセット
+                                contactForm.reset();
+                            })
+                            .catch(error => {
+                                console.error('送信中にエラーが発生しました:', error);
+                                alert('送信中にエラーが発生しました。');
+                            });
+                    });
+            });
         });
     } else {
         console.log("Contact form not found on this page.");
