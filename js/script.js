@@ -204,8 +204,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (contactForm) {
         // reCAPTCHA v3のトークンを取得
         function getRecaptchaTokenAndSubmit() {
-            grecaptcha.ready(function () {
-                grecaptcha.execute('6LdTCEUqAAAAAI6AkAc5CuVYcLPqPHlRXz0OG9Xj', { action: 'submit' })
+            grecaptcha.enterprise.ready(function () {
+                grecaptcha.enterprise.execute('6LdTCEUqAAAAAI6AkAc5CuVYcLPqPHlRXz0OG9Xj', { action: 'submit' })
                     .then(function (token) {
                         // reCAPTCHA v3のトークンをフォームデータに追加
                         const formData = new FormData(contactForm);
