@@ -202,6 +202,51 @@ document.addEventListener('DOMContentLoaded', function () {
     // Contact form submission
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
+        // ポップアップを生成する関数
+        function createPopup(type, message) {
+            const popup = document.createElement('div');
+            popup.className = `popup ${type}`;
+            popup.style.position = 'fixed';
+            popup.style.top = '20px';
+            popup.style.left = '50%';
+            popup.style.transform = 'translateX(-50%)';
+            popup.style.backgroundColor = type === 'success' ? '#4CAF50' : '#F44336';
+            popup.style.color = 'white';
+            popup.style.padding = '20px';
+            popup.style.borderRadius = '5px';
+            popup.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            popup.style.zIndex = '1000';
+            popup.style.display = 'flex';
+            popup.style.alignItems = 'flex-start';
+            popup.style.maxWidth = '90%';
+            popup.style.width = '400px';
+
+            const icon = document.createElement('span');
+            icon.innerHTML = type === 'success' ? '✅' : '❌';
+            icon.style.marginRight = '15px';
+            icon.style.fontSize = '24px';
+            icon.style.flexShrink = '0';
+
+            const textContainer = document.createElement('div');
+            textContainer.style.flex = '1';
+
+            message.split('\n').forEach(line => {
+                const paragraph = document.createElement('p');
+                paragraph.textContent = line;
+                paragraph.style.margin = '0 0 10px 0';
+                textContainer.appendChild(paragraph);
+            });
+
+            popup.appendChild(icon);
+            popup.appendChild(textContainer);
+
+            document.body.appendChild(popup);
+
+            setTimeout(() => {
+                popup.remove();
+            }, 5000);
+        }
+
         // reCAPTCHA v3のトークンを取得
         function getRecaptchaTokenAndSubmit() {
             grecaptcha.enterprise.ready(function () {
@@ -210,40 +255,34 @@ document.addEventListener('DOMContentLoaded', function () {
                         // フォームデータを取得
                         const formData = new FormData(contactForm);
                         formData.append('recaptcha_response', token);
-    
-                        console.log('Sending form data:', Object.fromEntries(formData));
-    
+
                         fetch('https://5kpdn47l2j4ovl3fuiuro2wf3q0oixif.lambda-url.ap-northeast-1.on.aws/', {
                             method: 'POST',
                             body: formData
                         })
-                        .then(response => {
-                            console.log('Response status:', response.status);
-                            console.log('Response headers:', Object.fromEntries(response.headers));
-                            if (!response.ok) {
-                                return response.text().then(text => {
-                                    throw new Error(`HTTP error! status: ${response.status}, message: ${text}`);
-                                });
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            console.log('reCAPTCHAとフォームデータが送信されました:', data);
-                            // 送信後にフォームをリセット
-                            contactForm.reset();
-                            alert('フォームが正常に送信されました。');
-                        })
-                        .catch(error => {
-                            console.error('送信中にエラーが発生しました:', error);
-                            alert(`送信中にエラーが発生しました: ${error.message}`);
-                        });
+                            .then(response => {
+                                console.log('サーバーからのレスポンス:', response);
+                                if (!response.ok) {
+                                    throw new Error(`HTTP error! status: ${response.status}`);
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log('reCAPTCHAとフォームデータが送信されました:', data);
+                                contactForm.reset();
+                                createPopup('success', 'メッセージが正常に送信されました。\n確認次第、返信いたします。');
+                            })
+                            .catch(error => {
+                                console.error('送信中にエラーが発生しました:', error);
+                                createPopup('error', 'メッセージの送信中にエラーが発生しました。\nもう一度お試しください。');
+                            });
                     });
             });
         }
-    
+
         // フォーム送信時に検証を実行
         contactForm.addEventListener('submit', function (event) {
-            event.preventDefault(); // フォームのデフォルトの送信動作を防止
+            event.preventDefault();
             getRecaptchaTokenAndSubmit();
         });
     } else {
