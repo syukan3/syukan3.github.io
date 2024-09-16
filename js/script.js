@@ -271,10 +271,20 @@ document.addEventListener('DOMContentLoaded', function () {
                                 console.log('reCAPTCHAとフォームデータが送信されました:', data);
                                 contactForm.reset();
                                 createPopup('success', 'メッセージが正常に送信されました。\n確認次第、返信いたします。');
+                                // 送信ボタンを有効化し、元の状態に戻す
+                                const submitButton = contactForm.querySelector('button[type="submit"]');
+                                submitButton.disabled = false;
+                                submitButton.innerHTML = '送信';
+                                submitButton.style.backgroundColor = ''; // ボタンの色を元に戻す
                             })
                             .catch(error => {
                                 console.error('送信中にエラーが発生しました:', error);
                                 createPopup('error', 'メッセージの送信中にエラーが発生しました。\nもう一度お試しください。');
+                                // 送信ボタンを有効化し、元の状態に戻す
+                                const submitButton = contactForm.querySelector('button[type="submit"]');
+                                submitButton.disabled = false;
+                                submitButton.innerHTML = '送信';
+                                submitButton.style.backgroundColor = ''; // ボタンの色を元に戻す
                             });
                     });
             });
@@ -283,6 +293,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // フォーム送信時に検証を実行
         contactForm.addEventListener('submit', function (event) {
             event.preventDefault();
+            // 送信ボタンを無効化し、ローディング状態にする
+            const submitButton = contactForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; // くるくる回るアイコンを追加
+            submitButton.style.backgroundColor = 'gray'; // ボタンの色をグレーにする
+
             getRecaptchaTokenAndSubmit();
         });
     } else {
