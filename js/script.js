@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
         // reCAPTCHA v3のトークンを取得
-        window.addEventListener('load', function() {
+        function getRecaptchaTokenAndSubmit() {
             grecaptcha.ready(function () {
                 grecaptcha.execute('6LdTCEUqAAAAAI6AkAc5CuVYcLPqPHlRXz0OG9Xj', { action: 'submit' })
                     .then(function (token) {
@@ -232,6 +232,13 @@ document.addEventListener('DOMContentLoaded', function () {
                             });
                     });
             });
+        }
+
+        // ページロード時とフォーム送信時に検証を実行
+        window.addEventListener('load', getRecaptchaTokenAndSubmit);
+        contactForm.addEventListener('submit', function (event) {
+            event.preventDefault(); // フォームのデフォルトの送信動作を防止
+            getRecaptchaTokenAndSubmit();
         });
     } else {
         console.log("Contact form not found on this page.");
