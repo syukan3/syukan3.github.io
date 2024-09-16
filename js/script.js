@@ -219,7 +219,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 if (!response.ok) {
                                     // エラーレスポンスの詳細を表示
                                     console.error('Error response:', response.status, response.statusText);
-                                    throw new Error(`Network response was not ok (status: ${response.status})`);
                                 }
                                 return response.json();
                             })
@@ -236,8 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // ページロード時とフォーム送信時に検証を実行
-        window.addEventListener('load', getRecaptchaTokenAndSubmit);
+        // フォーム送信時に検証を実行
         contactForm.addEventListener('submit', function (event) {
             event.preventDefault(); // フォームのデフォルトの送信動作を防止
             getRecaptchaTokenAndSubmit();
