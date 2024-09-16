@@ -11,36 +11,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // プロジェクトカードのアニメーション
     const projectCards = document.querySelectorAll('.project-card');
-    const observerOptions = {
-        threshold: 0.1
-    };
+    if (projectCards.length > 0) {
+        const observerOptions = {
+            threshold: 0.1
+        };
 
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = 1;
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
-            }
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        projectCards.forEach(card => {
+            card.style.opacity = 0;
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(card);
         });
-    }, observerOptions);
-
-    projectCards.forEach(card => {
-        card.style.opacity = 0;
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        observer.observe(card);
-    });
+    }
 
     // ヘッダーの透明度変更
-    window.addEventListener('scroll', () => {
-        const header = document.getElementById('header');
-        if (window.scrollY > 100) {
-            header.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
-        } else {
-            header.style.backgroundColor = 'var(--surface-color)';
-        }
-    });
+    const header = document.getElementById('header');
+    if (header) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
+            } else {
+                header.style.backgroundColor = 'var(--surface-color)';
+            }
+        });
+    }
 
     // モーダル関連のコード
     const modals = document.querySelectorAll('.modal');
@@ -197,42 +201,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Contact form submission
     const contactForm = document.getElementById('contact-form');
-    if (contactForm) { // フォーム要素が存在するかどうかを確認
-        contactForm.addEventListener('submit', function (e) {
-            e.preventDefault();
+    if (contactForm) {
+        // reCAPTCHA v3のトークンを取得
+        grecaptcha.ready(function () {
+            grecaptcha.execute('6LdTCEUqAAAAAI6AkAc5CuVYcLPqPHlRXz0OG9Xj', { action: 'submit' })
+                .then(function (token) {
+                    // reCAPTCHA v3のトークンをフォームデータに追加
+                    const formData = new FormData(contactForm);
+                    formData.append('recaptcha_response', token);
 
-            // reCAPTCHA v3のトークンを取得
-            grecaptcha.ready(function () {
-                grecaptcha.execute('6LdTCEUqAAAAAI6AkAc5CuVYcLPqPHlRXz0OG9Xj', { action: 'submit' })
-                    .then(function (token) {
-                        // reCAPTCHA v3のトークンをフォームデータに追加
-                        const formData = new FormData(contactForm);
-                        formData.append('recaptcha_response', token);
-
-                        fetch('https://5kpdn47l2j4ovl3fuiuro2wf3q0oixif.lambda-url.ap-northeast-1.on.aws/', {
-                            method: 'POST',
-                            body: formData
+                    fetch('https://5kpdn47l2j4ovl3fuiuro2wf3q0oixif.lambda-url.ap-northeast-1.on.aws/', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
                         })
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Network response was not ok');
-                                }
-                                return response.json();
-                            })
-                            .then(data => {
-                                console.log('reCAPTCHAとフォームデータが送信されました:', data);
-                                // 送信後にフォームをリセット
-                                contactForm.reset();
-                            })
-                            .catch(error => {
-                                console.error('送信中にエラーが発生しました:', error);
-                                alert('送信中にエラーが発生しました。');
-                            });
-                    });
-            });
+                        .then(data => {
+                            console.log('reCAPTCHAとフォームデータが送信されました:', data);
+                            // 送信後にフォームをリセット
+                            contactForm.reset();
+                        })
+                        .catch(error => {
+                            console.error('送信中にエラーが発生しました:', error);
+                            alert('送信中にエラーが発生しました。');
+                        });
+                });
         });
     } else {
-        console.error("Contact form element not found.");
+        console.log("Contact form not found on this page.");
     }
 
     // スマートフォン検出とモーダル表示
@@ -247,6 +247,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // スポットライト効果の追加
     const spotlight = document.querySelector('.spotlight');
+    let time = 0; // グローバルスコープで time を定義
 
     function animate() {
         if (!spotlight) return; // spotlightが存在しない場合は関数を終了
@@ -282,7 +283,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (spotlight) {
-        let time = 0;
         animate();
     }
 });
