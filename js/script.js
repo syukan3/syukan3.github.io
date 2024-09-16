@@ -213,7 +213,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         fetch('https://5kpdn47l2j4ovl3fuiuro2wf3q0oixif.lambda-url.ap-northeast-1.on.aws/', {
                             method: 'POST',
-                            body: formData
+                            body: formData,
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
                         })
                             .then(response => {
                                 if (!response.ok) {
