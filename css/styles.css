@@ -1115,10 +1115,33 @@ footer p {
 }
 
 .social-links a {
-    color: var(--text-secondary-color);
+    color: var(--text-primary-color);
     font-size: 1.5em;
-    margin-right: 15px;
+    margin: 0 10px;
     transition: color 0.3s ease;
+    position: relative;
+}
+
+.social-links a::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.social-links a:hover::after {
+    opacity: 1;
+    visibility: visible;
 }
 
 .social-links a:hover {
@@ -1257,4 +1280,99 @@ footer p {
     mix-blend-mode: screen;
     pointer-events: none;
     z-index: 1;
+}
+
+/* Language switch button */
+.lang-switch a {
+    padding: 5px 10px;
+    border: 1px solid var(--text-color);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.lang-switch a:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
+}
+
+.view-more-container {
+    text-align: right;
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+    padding-right: 1rem;
+}
+
+/* ブログセクション用の特別なマージン */
+#blog .view-more-container {
+    margin-top: 1rem;
+}
+
+.view-more-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1.2rem;
+    background-color: transparent;
+    color: var(--secondary-color);
+    text-decoration: none;
+    border-radius: 20px;
+    border: 1px solid var(--secondary-color);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 0.3px;
+}
+
+.view-more-button:hover {
+    background-color: var(--secondary-color);
+    color: var(--background-color);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(3, 218, 198, 0.2);
+}
+
+.view-more-button i {
+    margin-left: 0.5rem;
+    font-size: 0.8em;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.view-more-button:hover i {
+    transform: translateX(3px);
+}
+
+/* プロジェクトとブログの一覧ページのスタイル */
+.all-projects, .all-blogs {
+    padding-top: 120px;
+    padding-bottom: 60px;
+}
+
+.all-projects h1, .all-blogs h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5em;
+    margin-bottom: 40px;
+    color: var(--secondary-color);
+    text-align: center;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.all-projects h1::after, .all-blogs h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: var(--secondary-color);
+    border-radius: 2px;
+}
+
+.projects-grid, .blog-posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2.5rem;
+    padding: 2rem 0;
+    margin: 0 auto;
+    max-width: 1400px;
 }

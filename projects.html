@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="フルスタックエンジニアのプロジェクト一覧。AI、IoT、Web開発など、さまざまな分野のプロジェクトを紹介しています。">
+    <title>プロジェクト一覧 - Full Stack Engineer Sakae Shunsuke</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap"
+        media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Open Graph Protocol tags -->
+    <meta property="og:title" content="プロジェクト一覧 - Full Stack Engineer Sakae Shunsuke">
+    <meta property="og:description" content="フルスタックエンジニアのプロジェクト一覧。AI、IoT、Web開発など、さまざまな分野のプロジェクトを紹介しています。">
+    <meta property="og:image" content="https://example.com/og-image.jpg">
+    <meta property="og:url" content="https://example.com/projects.html">
+    <meta property="og:type" content="website">
+</head>
+
+<body>
+    <header id="header">
+        <nav aria-label="メインナビゲーション">
+            <ul>
+                <li><a href="index.html">ホーム</a></li>
+                <li><a href="index.html#about">自己紹介</a></li>
+                <li><a href="index.html#experience">経歴</a></li>
+                <li><a href="index.html#projects">プロジェクト</a></li>
+                <li><a href="index.html#skills">スキル</a></li>
+                <li><a href="index.html#blog">ブログ</a></li>
+                <li><a href="contact.html" target="_blank" rel="noopener noreferrer">お問い合わせ</a></li>
+                <li class="lang-switch"><a href="projects_en.html">English</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section id="all-projects" class="all-projects">
+            <h1>プロジェクト一覧</h1>
+            <div class="projects-grid">
+                <!-- 既存のプロジェクト -->
+                <div class="project-card" data-modal="modal4">
+                    <img src="images/project_censify.webp" alt="Censify">
+                    <div class="content">
+                        <h3>Censify</h3>
+                        <p>不適切な表現を検出するAPIサービス。LLMを活用した高精度な判定を実現。</p>
+                        <div class="technologies">
+                            <span class="typescript">TypeScript</span>
+                            <span class="cloudflare">Cloudflare Workers</span>
+                            <span class="ai">AI</span>
+                            <span class="honejs">HonoJS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-modal="modal1">
+                    <img src="images/project_mosaicai.webp" alt="MosaicAI">
+                    <div class="content">
+                        <h3>MosaicAI</h3>
+                        <p>複数のAI言語モデルを統一的に利用できるオープンソースPythonライブラリ</p>
+                        <div class="technologies">
+                            <span class="python">Python</span>
+                            <span class="ai">AI</span>
+                            <span class="MIT">MIT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-modal="modal2">
+                    <img src="images/project_gaugenix.webp" alt="Gaugenix">
+                    <div class="content">
+                        <h3>Gaugenix</h3>
+                        <p>IoTデバイスで計器の画像を撮影し、AI解析で値を取得するシステム</p>
+                        <div class="technologies">
+                            <span class="nextjs">Next.js</span>
+                            <span class="supabase">Supabase</span>
+                            <span class="python">Python</span>
+                            <span class="ai">AI</span>
+                            <span class="aws">AWS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-modal="modal5">
+                    <img src="images/project_omniocr.webp" alt="OmniOCR">
+                    <div class="content">
+                        <h3>OmniOCR</h3>
+                        <p>画像やPDFからテキストを抽出し、構造化データに変換するAI OCRサービス。APIやWebhookで簡単に連携可能。</p>
+                        <div class="technologies">
+                            <span class="typescript">TypeScript</span>
+                            <span class="nextjs">Next.js</span>
+                            <span class="ai">AI</span>
+                            <span class="cloudflare">Cloudflare</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-modal="modal3">
+                    <img src="images/project_wolverine_ruby.webp" alt="Wolverine Ruby">
+                    <div class="content">
+                        <h3>Wolverine Ruby</h3>
+                        <p>自律型プログラムバグ修復ツール ChatGPT APIリリース直後に開発</p>
+                        <div class="technologies">
+                            <span class="ruby">Ruby</span>
+                            <span class="aws">OpenAI GPT-3.5 API</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Software Engineer Portfolio. All rights reserved.</p>
+    </footer>
+
+    <!-- Modals -->
+    <div id="modal4" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Censify</h3>
+            <img src="images/project_censify.webp" alt="Censify">
+            <p>Censifyは、ユーザーが入力したテキストから不適切な表現を検出し、その存在および類似度を返却するAPIサービスです。SNSやチャットサービスなどのUGC（ユーザー生成コンテンツ）における不適切表現のフィルタリングを、高精度かつ効率的に実現します。
+            </p>
+            <p><strong>サービスURL:</strong>
+                <a href="https://censify-lp.pages.dev" target="_blank" rel="noopener noreferrer" class="project-link">
+                    https://censify-lp.pages.dev
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </p>
+            <p>主な特徴：</p>
+            <ul>
+                <li>LLMを活用した高精度な不適切表現の検出
+                    <ul>
+                        <li>システムプロンプトに不適切リストとホワイトリストを組み込み</li>
+                        <li>類似度に基づく柔軟な判定（しきい値≥0.5で不適切と判定）</li>
+                        <li>ホワイトリストによる誤検知防止機能</li>
+                    </ul>
+                </li>
+                <li>高速なAPI提供
+                    <ul>
+                        <li>Cloudflare Workersによるエッジコンピューティング</li>
+                        <li>世界中のエッジロケーションで低レイテンシーを確保</li>
+                    </ul>
+                </li>
+                <li>拡張性と柔軟性
+                    <ul>
+                        <li>多言語対応（日本語、英語、その他主要言語）</li>
+                        <li>カスタム辞書機能によるユーザー固有の要件対応</li>
+                    </ul>
+                </li>
+                <li>セキュリティ対策
+                    <ul>
+                        <li>HTTPS通信の強制とAPIキー認証</li>
+                        <li>管理APIにおけるJWT認証</li>
+                        <li>アクセスログの監査機能</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>技術スタック：</p>
+            <ul>
+                <li>フロントエンド：HonoJS（TypeScript）</li>
+                <li>インフラ：Cloudflare Workers</li>
+                <li>AI/ML：大規模言語モデル（LLM）</li>
+            </ul>
+            <p>開発期間：2ヶ月（継続的に更新中）</p>
+            <div class="technologies">
+                <span class="typescript">TypeScript</span>
+                <span class="cloudflare">Cloudflare Workers</span>
+                <span class="ai">AI</span>
+                <span class="honejs">HonoJS</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal5" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>OmniOCR</h3>
+            <img src="images/project_omniocr.webp" alt="OmniOCR">
+            <p>OmniOCRは、画像やPDFからテキストを抽出し、構造化データに変換するAI
+                OCRサービスです。請求書や領収書の画像をアップロードするだけで、瞬時に構造化データに変換し、APIやWebhookで簡単に連携できます。</p>
+            <p><strong>サービスURL:</strong>
+                <a href="https://omni-ocr-lp.pages.dev/" target="_blank" rel="noopener noreferrer" class="project-link">
+                    https://omni-ocr-lp.pages.dev/
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </p>
+            <p>主な機能：</p>
+            <ul>
+                <li>高精度OCR
+                    <ul>
+                        <li>最新のAI技術を活用した高精度な文字認識</li>
+                        <li>複数言語対応（日本語、英語、その他主要言語）</li>
+                    </ul>
+                </li>
+                <li>柔軟なデータ構造化
+                    <ul>
+                        <li>抽出したデータを自由にマッピング</li>
+                        <li>JSONなどの構造化データに変換</li>
+                    </ul>
+                </li>
+                <li>APIとWebhook連携
+                    <ul>
+                        <li>RESTful APIとWebhookの提供</li>
+                        <li>他システムとの容易な連携</li>
+                    </ul>
+                </li>
+                <li>セキュアな管理
+                    <ul>
+                        <li>データの暗号化保存</li>
+                        <li>厳格なアクセス制御</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>技術スタック：</p>
+            <ul>
+                <li>フロントエンド：Next.js（TypeScript）</li>
+                <li>インフラ：Cloudflare Pages</li>
+                <li>AI/ML：大規模言語モデル（LLM）</li>
+            </ul>
+            <p>開発期間：2ヶ月（継続的に更新中）</p>
+            <div class="technologies">
+                <span class="typescript">TypeScript</span>
+                <span class="nextjs">Next.js</span>
+                <span class="ai">AI</span>
+                <span class="cloudflare">Cloudflare</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-experience-1" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>経歴</h3>
+            <p>ここに経歴の詳細を記述します。</p>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>
