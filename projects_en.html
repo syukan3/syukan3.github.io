@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Full Stack Engineer's project portfolio. Showcasing various projects in AI, IoT, and Web development.">
+    <title>Projects - Full Stack Engineer Sakae Shunsuke</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap"
+        media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Open Graph Protocol tags -->
+    <meta property="og:title" content="Projects - Full Stack Engineer Sakae Shunsuke">
+    <meta property="og:description"
+        content="Full Stack Engineer's project portfolio. Showcasing various projects in AI, IoT, and Web development.">
+    <meta property="og:image" content="https://example.com/og-image.jpg">
+    <meta property="og:url" content="https://example.com/projects_en.html">
+    <meta property="og:type" content="website">
+</head>
+
+<body>
+    <header id="header">
+        <nav aria-label="Main navigation">
+            <ul>
+                <li><a href="index_en.html">Home</a></li>
+                <li><a href="index_en.html#about">About</a></li>
+                <li><a href="index_en.html#experience">Experience</a></li>
+                <li><a href="index_en.html#projects">Projects</a></li>
+                <li><a href="index_en.html#skills">Skills</a></li>
+                <li><a href="index_en.html#blog">Blog</a></li>
+                <li><a href="contact_en.html" target="_blank" rel="noopener noreferrer">Contact</a></li>
+                <li class="lang-switch"><a href="projects.html">日本語</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section id="all-projects" class="all-projects">
+            <h1>Projects</h1>
+            <div class="projects-grid">
+                <!-- Existing Projects -->
+                <div class="project-card" data-modal="modal4">
+                    <img src="images/project_censify.webp" alt="Censify">
+                    <div class="content">
+                        <h3>Censify</h3>
+                        <p>API service for detecting inappropriate expressions. Achieves high-accuracy detection using
+                            LLM.</p>
+                        <div class="technologies">
+                            <span class="typescript">TypeScript</span>
+                            <span class="cloudflare">Cloudflare Workers</span>
+                            <span class="ai">AI</span>
+                            <span class="honejs">HonoJS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-modal="modal1">
+                    <img src="images/project_mosaicai.webp" alt="MosaicAI">
+                    <div class="content">
+                        <h3>MosaicAI</h3>
+                        <p>Open-source Python library for unified access to multiple AI language models</p>
+                        <div class="technologies">
+                            <span class="python">Python</span>
+                            <span class="ai">AI</span>
+                            <span class="MIT">MIT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-modal="modal2">
+                    <img src="images/project_gaugenix.webp" alt="Gaugenix">
+                    <div class="content">
+                        <h3>Gaugenix</h3>
+                        <p>System for capturing gauge images with IoT devices and retrieving values through AI analysis
+                        </p>
+                        <div class="technologies">
+                            <span class="nextjs">Next.js</span>
+                            <span class="supabase">Supabase</span>
+                            <span class="python">Python</span>
+                            <span class="ai">AI</span>
+                            <span class="aws">AWS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-modal="modal5">
+                    <img src="images/project_omniocr.webp" alt="OmniOCR">
+                    <div class="content">
+                        <h3>OmniOCR</h3>
+                        <p>AI OCR service that extracts text from images and PDFs and converts it into structured data.
+                            Easy integration via API and Webhook.</p>
+                        <div class="technologies">
+                            <span class="typescript">TypeScript</span>
+                            <span class="nextjs">Next.js</span>
+                            <span class="ai">AI</span>
+                            <span class="cloudflare">Cloudflare</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-modal="modal3">
+                    <img src="images/project_wolverine_ruby.webp" alt="Wolverine Ruby">
+                    <div class="content">
+                        <h3>Wolverine Ruby</h3>
+                        <p>Autonomous program bug repair tool developed right after ChatGPT API release</p>
+                        <div class="technologies">
+                            <span class="ruby">Ruby</span>
+                            <span class="aws">OpenAI GPT-3.5 API</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Software Engineer Portfolio. All rights reserved.</p>
+    </footer>
+
+    <!-- Modals -->
+    <div id="modal4" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Censify</h3>
+            <img src="images/project_censify.webp" alt="Censify">
+            <p>Censify is an API service that detects inappropriate expressions from user-input text and returns their
+                presence and similarity scores. It enables high-accuracy and efficient filtering of inappropriate
+                expressions in UGC (User Generated Content) such as SNS and chat services.</p>
+            <p><strong>Service URL:</strong>
+                <a href="https://censify-lp.pages.dev" target="_blank" rel="noopener noreferrer" class="project-link">
+                    https://censify-lp.pages.dev
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </p>
+            <p>Key Features:</p>
+            <ul>
+                <li>High-accuracy inappropriate expression detection using LLM
+                    <ul>
+                        <li>Integration of inappropriate list and whitelist in system prompt</li>
+                        <li>Flexible judgment based on similarity (threshold ≥0.5 for inappropriate)</li>
+                        <li>False detection prevention using whitelist</li>
+                    </ul>
+                </li>
+                <li>Fast API delivery
+                    <ul>
+                        <li>Edge computing with Cloudflare Workers</li>
+                        <li>Low latency ensured at edge locations worldwide</li>
+                    </ul>
+                </li>
+                <li>Scalability and flexibility
+                    <ul>
+                        <li>Multi-language support (Japanese, English, and other major languages)</li>
+                        <li>Custom dictionary feature for user-specific requirements</li>
+                    </ul>
+                </li>
+                <li>Security measures
+                    <ul>
+                        <li>Enforced HTTPS communication and API key authentication</li>
+                        <li>JWT authentication for management API</li>
+                        <li>Access log audit functionality</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>Tech Stack:</p>
+            <ul>
+                <li>Frontend: HonoJS (TypeScript)</li>
+                <li>Infrastructure: Cloudflare Workers</li>
+                <li>AI/ML: Large Language Model (LLM)</li>
+            </ul>
+            <p>Development Period: 2 months (Ongoing updates)</p>
+            <div class="technologies">
+                <span class="typescript">TypeScript</span>
+                <span class="cloudflare">Cloudflare Workers</span>
+                <span class="ai">AI</span>
+                <span class="honejs">HonoJS</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal5" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>OmniOCR</h3>
+            <img src="images/project_omniocr.webp" alt="OmniOCR">
+            <p>OmniOCR is an AI OCR service that extracts text from images and PDFs and converts it into structured
+                data. Simply upload images of invoices or receipts, and they are instantly converted into structured
+                data, easily integrated through API or Webhook.</p>
+            <p><strong>Service URL:</strong>
+                <a href="https://omni-ocr-lp.pages.dev/" target="_blank" rel="noopener noreferrer" class="project-link">
+                    https://omni-ocr-lp.pages.dev/
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </p>
+            <p>Key Features:</p>
+            <ul>
+                <li>High-accuracy OCR
+                    <ul>
+                        <li>High-precision character recognition using latest AI technology</li>
+                        <li>Multi-language support (Japanese, English, and other major languages)</li>
+                    </ul>
+                </li>
+                <li>Flexible Data Structuring
+                    <ul>
+                        <li>Free mapping of extracted data</li>
+                        <li>Conversion to structured data like JSON</li>
+                    </ul>
+                </li>
+                <li>API and Webhook Integration
+                    <ul>
+                        <li>Provision of RESTful API and Webhook</li>
+                        <li>Easy integration with other systems</li>
+                    </ul>
+                </li>
+                <li>Secure Management
+                    <ul>
+                        <li>Encrypted data storage</li>
+                        <li>Strict access control</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>Tech Stack:</p>
+            <ul>
+                <li>Frontend: Next.js (TypeScript)</li>
+                <li>Infrastructure: Cloudflare Pages</li>
+                <li>AI/ML: Large Language Model (LLM)</li>
+            </ul>
+            <p>Development Period: 2 months (Ongoing updates)</p>
+            <div class="technologies">
+                <span class="typescript">TypeScript</span>
+                <span class="nextjs">Next.js</span>
+                <span class="ai">AI</span>
+                <span class="cloudflare">Cloudflare</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>

@@ -23,11 +23,11 @@
     </script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QLXJBRYZZ8"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'G-QLXJBRYZZ8');
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-QLXJBRYZZ8');
     </script>
 
     <!-- Open Graph Protocol tags -->
@@ -50,6 +50,7 @@
                 <li><a href="#skills">スキル</a></li>
                 <li><a href="#blog">ブログ</a></li>
                 <li><a href="contact.html" target="_blank" rel="noopener noreferrer">お問い合わせ</a></li>
+                <li class="lang-switch"><a href="index_en.html">English</a></li>
             </ul>
         </nav>
     </header>
@@ -85,7 +86,10 @@
                     </p>
                     <div class="social-links">
                         <a href="https://github.com/syukan3/MosaicAI" target="_blank" rel="noopener noreferrer"
-                            aria-label="GitHub"><i class="fab fa-github"></i></a>
+                            aria-label="GitHub" data-tooltip="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="https://qiita.com/syukan3/yearly-summary/2024" target="_blank"
+                            rel="noopener noreferrer" aria-label="Qiita" data-tooltip="Qiita"><i
+                                class="fas fa-chart-line"></i></a>
                         <!-- <a href="https://www.linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer"
                             aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
                         <a href="https://x.com/yourusername" target="_blank" rel="noopener noreferrer"
@@ -161,6 +165,20 @@
             <h2 style="text-align: center;">プロジェクト</h2>
             <div class="projects">
                 <!-- Project card -->
+                <div class="project-card" data-modal="modal4">
+                    <img src="images/project_censify.webp" alt="Censify">
+                    <div class="content">
+                        <h3>Censify</h3>
+                        <p>不適切な表現を検出するAPIサービス。LLMを活用した高精度な判定を実現。</p>
+                        <div class="technologies">
+                            <span class="typescript">TypeScript</span>
+                            <span class="cloudflare">Cloudflare Workers</span>
+                            <span class="ai">AI</span>
+                            <span class="honejs">HonoJS</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="project-card" data-modal="modal1">
                     <img src="images/project_mosaicai.webp" alt="MosaicAI">
                     <div class="content">
@@ -188,18 +206,9 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="project-card" data-modal="modal3">
-                    <img src="images/project_wolverine_ruby.webp" alt="Wolverine Ruby">
-                    <div class="content">
-                        <h3>Wolverine Ruby</h3>
-                        <p>自律型プログラムバグ修復ツール ChatGPT APIリリース直後に開発</p>
-                        <div class="technologies">
-                            <span class="ruby">Ruby</span>
-                            <span class="aws">OpenAI GPT-3.5 API</span>
-                        </div>
-                    </div>
-                </div>
+            </div>
+            <div class="view-more-container">
+                <a href="projects.html" class="view-more-button">もっと見る <i class="fas fa-arrow-right"></i></a>
             </div>
         </section>
 
@@ -409,6 +418,9 @@
                     <p>AWS IoT CoreDynamoDBv2を使用してデバイスデータを効率的に保存・管理する方法を、DynamoDBとの違いを踏まえながら段階的に解説しています。</p>
                 </a>
             </div>
+            <div class="view-more-container">
+                <a href="blogs.html" class="view-more-button">もっと見る <i class="fas fa-arrow-right"></i></a>
+            </div>
         </section>
 
         <!-- Contact section -->
@@ -501,6 +513,64 @@
             <div class="technologies">
                 <span class="ruby">Ruby</span>
                 <span class="aws">OpenAI GPT-3.5 API</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal4" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Censify</h3>
+            <img src="images/project_censify.webp" alt="Censify">
+            <p>Censifyは、ユーザーが入力したテキストから不適切な表現を検出し、その存在および類似度を返却するAPIサービスです。SNSやチャットサービスなどのUGC（ユーザー生成コンテンツ）における不適切表現のフィルタリングを、高精度かつ効率的に実現します。
+            </p>
+            <p><strong>サービスURL:</strong>
+                <a href="https://censify-lp.pages.dev" target="_blank" rel="noopener noreferrer" class="project-link">
+                    https://censify-lp.pages.dev
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </p>
+            <p>主な特徴：</p>
+            <ul>
+                <li>LLMを活用した高精度な不適切表現の検出
+                    <ul>
+                        <li>システムプロンプトに不適切リストとホワイトリストを組み込み</li>
+                        <li>類似度に基づく柔軟な判定（しきい値≥0.5で不適切と判定）</li>
+                        <li>ホワイトリストによる誤検知防止機能</li>
+                    </ul>
+                </li>
+                <li>高速なAPI提供
+                    <ul>
+                        <li>Cloudflare Workersによるエッジコンピューティング</li>
+                        <li>世界中のエッジロケーションで低レイテンシーを確保</li>
+                    </ul>
+                </li>
+                <li>拡張性と柔軟性
+                    <ul>
+                        <li>多言語対応（日本語、英語、その他主要言語）</li>
+                        <li>カスタム辞書機能によるユーザー固有の要件対応</li>
+                    </ul>
+                </li>
+                <li>セキュリティ対策
+                    <ul>
+                        <li>HTTPS通信の強制とAPIキー認証</li>
+                        <li>管理APIにおけるJWT認証</li>
+                        <li>アクセスログの監査機能</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>技術スタック：</p>
+            <ul>
+                <li>フロントエンド：HonoJS（TypeScript）</li>
+                <li>インフラ：Cloudflare Workers</li>
+                <li>AI/ML：大規模言語モデル（LLM）</li>
+            </ul>
+            <p>開発期間：2ヶ月（継続的に更新中）</p>
+            <div class="technologies">
+                <span class="typescript">TypeScript</span>
+                <span class="cloudflare">Cloudflare Workers</span>
+                <span class="ai">AI</span>
+                <span class="honejs">HonoJS</span>
             </div>
         </div>
     </div>
