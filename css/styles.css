@@ -1258,3 +1258,16 @@ footer p {
     pointer-events: none;
     z-index: 1;
 }
+
+/* Language switch button */
+.lang-switch a {
+    padding: 5px 10px;
+    border: 1px solid var(--text-color);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.lang-switch a:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
+}
