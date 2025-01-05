@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="フルスタックエンジニアのプロジェクト一覧。AI、IoT、Web開発など、さまざまな分野のプロジェクトを紹介しています。">
+    <title>プロジェクト一覧 - Full Stack Engineer Sakae Shunsuke</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap"
+        media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Open Graph Protocol tags -->
+    <meta property="og:title" content="プロジェクト一覧 - Full Stack Engineer Sakae Shunsuke">
+    <meta property="og:description" content="フルスタックエンジニアのプロジェクト一覧。AI、IoT、Web開発など、さまざまな分野のプロジェクトを紹介しています。">
+    <meta property="og:image" content="https://example.com/og-image.jpg">
+    <meta property="og:url" content="https://example.com/projects.html">
+    <meta property="og:type" content="website">
+</head>
+
+<body>
+    <header id="header">
+        <nav aria-label="メインナビゲーション">
+            <ul>
+                <li><a href="index.html">ホーム</a></li>
+                <li><a href="index.html#about">自己紹介</a></li>
+                <li><a href="index.html#experience">経歴</a></li>
+                <li><a href="index.html#projects">プロジェクト</a></li>
+                <li><a href="index.html#skills">スキル</a></li>
+                <li><a href="index.html#blog">ブログ</a></li>
+                <li><a href="contact.html" target="_blank" rel="noopener noreferrer">お問い合わせ</a></li>
+                <li class="lang-switch"><a href="projects_en.html">English</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section id="all-projects" class="all-projects">
+            <h1>プロジェクト一覧</h1>
+            <div class="projects-grid">
+                <!-- 既存のプロジェクト -->
+                <div class="project-card" data-modal="modal1">
+                    <img src="images/project_mosaicai.webp" alt="MosaicAI">
+                    <div class="content">
+                        <h3>MosaicAI</h3>
+                        <p>複数のAI言語モデルを統一的に利用できるオープンソースPythonライブラリ</p>
+                        <div class="technologies">
+                            <span class="python">Python</span>
+                            <span class="ai">AI</span>
+                            <span class="MIT">MIT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-modal="modal2">
+                    <img src="images/project_gaugenix.webp" alt="Gaugenix">
+                    <div class="content">
+                        <h3>Gaugenix</h3>
+                        <p>IoTデバイスで計器の画像を撮影し、AI解析で値を取得するシステム</p>
+                        <div class="technologies">
+                            <span class="nextjs">Next.js</span>
+                            <span class="supabase">Supabase</span>
+                            <span class="python">Python</span>
+                            <span class="ai">AI</span>
+                            <span class="aws">AWS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-modal="modal3">
+                    <img src="images/project_wolverine_ruby.webp" alt="Wolverine Ruby">
+                    <div class="content">
+                        <h3>Wolverine Ruby</h3>
+                        <p>自律型プログラムバグ修復ツール ChatGPT APIリリース直後に開発</p>
+                        <div class="technologies">
+                            <span class="ruby">Ruby</span>
+                            <span class="aws">OpenAI GPT-3.5 API</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Software Engineer Portfolio. All rights reserved.</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>
