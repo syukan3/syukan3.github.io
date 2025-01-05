@@ -1115,10 +1115,33 @@ footer p {
 }
 
 .social-links a {
-    color: var(--text-secondary-color);
+    color: var(--text-primary-color);
     font-size: 1.5em;
-    margin-right: 15px;
+    margin: 0 10px;
     transition: color 0.3s ease;
+    position: relative;
+}
+
+.social-links a::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.social-links a:hover::after {
+    opacity: 1;
+    visibility: visible;
 }
 
 .social-links a:hover {
