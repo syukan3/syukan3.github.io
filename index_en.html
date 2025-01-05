@@ -51,8 +51,8 @@
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#skills">Skills</a></li>
                 <li><a href="#blog">Blog</a></li>
-                <li><a href="contact_en.html" target="_blank" rel="noopener noreferrer">Contact</a></li>
-                <li class="lang-switch"><a href="index.html">日本語</a></li>
+                <li><a href="contact.html" target="_blank" rel="noopener noreferrer">Contact</a></li>
+                <li class="lang-switch"><a href="index.html">Japanese</a></li>
             </ul>
         </nav>
     </header>
@@ -92,7 +92,10 @@
                     </p>
                     <div class="social-links">
                         <a href="https://github.com/syukan3/MosaicAI" target="_blank" rel="noopener noreferrer"
-                            aria-label="GitHub"><i class="fab fa-github"></i></a>
+                            aria-label="GitHub" data-tooltip="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="https://qiita.com/syukan3/yearly-summary/2024" target="_blank"
+                            rel="noopener noreferrer" aria-label="Qiita" data-tooltip="Qiita"><i
+                                class="fas fa-chart-line"></i></a>
                     </div>
                 </div>
             </div>
@@ -162,6 +165,21 @@
         <section id="projects" aria-label="Projects">
             <h2 style="text-align: center;">Projects</h2>
             <div class="projects">
+                <div class="project-card" data-modal="modal4">
+                    <img src="images/project_censify.webp" alt="Censify">
+                    <div class="content">
+                        <h3>Censify</h3>
+                        <p>API service for detecting inappropriate expressions. Achieves high-accuracy detection using
+                            LLM.</p>
+                        <div class="technologies">
+                            <span class="typescript">TypeScript</span>
+                            <span class="cloudflare">Cloudflare Workers</span>
+                            <span class="ai">AI</span>
+                            <span class="honejs">HonoJS</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="project-card" data-modal="modal1">
                     <img src="images/project_mosaicai.webp" alt="MosaicAI">
                     <div class="content">
@@ -190,18 +208,9 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="project-card" data-modal="modal3">
-                    <img src="images/project_wolverine_ruby.webp" alt="Wolverine Ruby">
-                    <div class="content">
-                        <h3>Wolverine Ruby</h3>
-                        <p>Autonomous program bug repair tool developed right after ChatGPT API release</p>
-                        <div class="technologies">
-                            <span class="ruby">Ruby</span>
-                            <span class="aws">OpenAI GPT-3.5 API</span>
-                        </div>
-                    </div>
-                </div>
+            </div>
+            <div class="view-more-container">
+                <a href="projects_en.html" class="view-more-button">View More <i class="fas fa-arrow-right"></i></a>
             </div>
         </section>
 
