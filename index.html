@@ -165,6 +165,20 @@
             <h2 style="text-align: center;">プロジェクト</h2>
             <div class="projects">
                 <!-- Project card -->
+                <div class="project-card" data-modal="modal4">
+                    <img src="images/project_censify.webp" alt="Censify">
+                    <div class="content">
+                        <h3>Censify</h3>
+                        <p>不適切な表現を検出するAPIサービス。LLMを活用した高精度な判定を実現。</p>
+                        <div class="technologies">
+                            <span class="typescript">TypeScript</span>
+                            <span class="cloudflare">Cloudflare Workers</span>
+                            <span class="ai">AI</span>
+                            <span class="honejs">HonoJS</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="project-card" data-modal="modal1">
                     <img src="images/project_mosaicai.webp" alt="MosaicAI">
                     <div class="content">
@@ -189,18 +203,6 @@
                             <span class="python">Python</span>
                             <span class="ai">AI</span>
                             <span class="aws">AWS</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card" data-modal="modal3">
-                    <img src="images/project_wolverine_ruby.webp" alt="Wolverine Ruby">
-                    <div class="content">
-                        <h3>Wolverine Ruby</h3>
-                        <p>自律型プログラムバグ修復ツール ChatGPT APIリリース直後に開発</p>
-                        <div class="technologies">
-                            <span class="ruby">Ruby</span>
-                            <span class="aws">OpenAI GPT-3.5 API</span>
                         </div>
                     </div>
                 </div>
@@ -511,6 +513,64 @@
             <div class="technologies">
                 <span class="ruby">Ruby</span>
                 <span class="aws">OpenAI GPT-3.5 API</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal4" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Censify</h3>
+            <img src="images/project_censify.webp" alt="Censify">
+            <p>Censifyは、ユーザーが入力したテキストから不適切な表現を検出し、その存在および類似度を返却するAPIサービスです。SNSやチャットサービスなどのUGC（ユーザー生成コンテンツ）における不適切表現のフィルタリングを、高精度かつ効率的に実現します。
+            </p>
+            <p><strong>サービスURL:</strong>
+                <a href="https://censify-lp.pages.dev" target="_blank" rel="noopener noreferrer" class="project-link">
+                    https://censify-lp.pages.dev
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </p>
+            <p>主な特徴：</p>
+            <ul>
+                <li>LLMを活用した高精度な不適切表現の検出
+                    <ul>
+                        <li>システムプロンプトに不適切リストとホワイトリストを組み込み</li>
+                        <li>類似度に基づく柔軟な判定（しきい値≥0.5で不適切と判定）</li>
+                        <li>ホワイトリストによる誤検知防止機能</li>
+                    </ul>
+                </li>
+                <li>高速なAPI提供
+                    <ul>
+                        <li>Cloudflare Workersによるエッジコンピューティング</li>
+                        <li>世界中のエッジロケーションで低レイテンシーを確保</li>
+                    </ul>
+                </li>
+                <li>拡張性と柔軟性
+                    <ul>
+                        <li>多言語対応（日本語、英語、その他主要言語）</li>
+                        <li>カスタム辞書機能によるユーザー固有の要件対応</li>
+                    </ul>
+                </li>
+                <li>セキュリティ対策
+                    <ul>
+                        <li>HTTPS通信の強制とAPIキー認証</li>
+                        <li>管理APIにおけるJWT認証</li>
+                        <li>アクセスログの監査機能</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>技術スタック：</p>
+            <ul>
+                <li>フロントエンド：HonoJS（TypeScript）</li>
+                <li>インフラ：Cloudflare Workers</li>
+                <li>AI/ML：大規模言語モデル（LLM）</li>
+            </ul>
+            <p>開発期間：2ヶ月（継続的に更新中）</p>
+            <div class="technologies">
+                <span class="typescript">TypeScript</span>
+                <span class="cloudflare">Cloudflare Workers</span>
+                <span class="ai">AI</span>
+                <span class="honejs">HonoJS</span>
             </div>
         </div>
     </div>
