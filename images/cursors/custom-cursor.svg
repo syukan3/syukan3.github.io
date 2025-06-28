@@ -1,0 +1,54 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cursorGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 回路基板パターン -->
+  <g opacity="0.3">
+    <path d="M 16 5 L 16 11 M 5 16 L 11 16 M 21 16 L 27 16 M 16 21 L 16 27" 
+          stroke="url(#cursorGradient)" 
+          stroke-width="1" 
+          fill="none"/>
+  </g>
+  
+  <!-- メインの十字カーソル -->
+  <g filter="url(#glow)">
+    <!-- 垂直線 -->
+    <rect x="15" y="5" width="2" height="22" fill="url(#cursorGradient)" opacity="0.9"/>
+    <!-- 水平線 -->
+    <rect x="5" y="15" width="22" height="2" fill="url(#cursorGradient)" opacity="0.9"/>
+    
+    <!-- 中央のノード（回路の接続点） -->
+    <circle cx="16" cy="16" r="4" fill="none" stroke="url(#cursorGradient)" stroke-width="2" opacity="0.8"/>
+    <circle cx="16" cy="16" r="2" fill="#ffffff" opacity="0.9"/>
+    
+    <!-- 四隅の小さなノード -->
+    <circle cx="16" cy="5" r="1.5" fill="url(#cursorGradient)" opacity="0.7"/>
+    <circle cx="16" cy="27" r="1.5" fill="url(#cursorGradient)" opacity="0.7"/>
+    <circle cx="5" cy="16" r="1.5" fill="url(#cursorGradient)" opacity="0.7"/>
+    <circle cx="27" cy="16" r="1.5" fill="url(#cursorGradient)" opacity="0.7"/>
+  </g>
+  
+  <!-- アニメーション用のパルス効果 -->
+  <circle cx="16" cy="16" r="6" fill="none" stroke="url(#cursorGradient)" stroke-width="0.5" opacity="0.5">
+    <animate attributeName="r" 
+             values="6;10;6" 
+             dur="2s" 
+             repeatCount="indefinite"/>
+    <animate attributeName="opacity" 
+             values="0.5;0;0.5" 
+             dur="2s" 
+             repeatCount="indefinite"/>
+  </circle>
+</svg>
