@@ -1,0 +1,275 @@
+/* Modern Hero Section Animations */
+
+/* Animated Gradient Background */
+.animated-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, 
+        rgba(139, 92, 246, 0.1) 0%, 
+        rgba(59, 130, 246, 0.1) 25%, 
+        rgba(139, 92, 246, 0.05) 50%, 
+        rgba(59, 130, 246, 0.1) 75%, 
+        rgba(139, 92, 246, 0.1) 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Floating Particles */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.particle {
+    position: absolute;
+    background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    animation: floatUp 8s linear infinite;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 0;
+        transform: translateY(100%) scale(0);
+    }
+    10% {
+        opacity: 0.8;
+        transform: translateY(90%) scale(1);
+    }
+    90% {
+        opacity: 0.8;
+        transform: translateY(10%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(0%) scale(0);
+    }
+}
+
+/* Glowing Orbs */
+.glow-orbs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.orb {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.3;
+    animation: orbFloat 20s ease-in-out infinite;
+}
+
+.orb:nth-child(1) {
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.8), transparent);
+    top: -150px;
+    left: -150px;
+    animation-delay: 0s;
+}
+
+.orb:nth-child(2) {
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.8), transparent);
+    bottom: -150px;
+    right: -150px;
+    animation-delay: 5s;
+}
+
+.orb:nth-child(3) {
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.6), transparent);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: 10s;
+}
+
+@keyframes orbFloat {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    33% {
+        transform: translate(50px, -50px) scale(1.1);
+    }
+    66% {
+        transform: translate(-50px, 50px) scale(0.9);
+    }
+}
+
+/* Wave Canvas */
+.wave-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0.3;
+}
+
+/* Glitch Effect - Refined */
+.glitch {
+    position: relative;
+    color: white;
+    font-size: 4rem;
+    letter-spacing: 0.05em;
+    animation: glitch-skew 1s infinite linear alternate-reverse;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glitch::before {
+    animation: glitch-1 0.5s infinite;
+    color: rgba(139, 92, 246, 0.9);
+    z-index: -1;
+}
+
+.glitch::after {
+    animation: glitch-2 0.5s infinite;
+    color: rgba(59, 130, 246, 0.9);
+    z-index: -2;
+}
+
+@keyframes glitch-1 {
+    0% {
+        clip: rect(44px, 450px, 56px, 0);
+        transform: skew(0.1deg);
+    }
+    20% {
+        clip: rect(22px, 450px, 67px, 0);
+        transform: skew(0.1deg);
+    }
+    40% {
+        clip: rect(88px, 450px, 11px, 0);
+        transform: skew(0.1deg);
+    }
+    60% {
+        clip: rect(35px, 450px, 90px, 0);
+        transform: skew(0.1deg);
+    }
+    80% {
+        clip: rect(10px, 450px, 83px, 0);
+        transform: skew(0.1deg);
+    }
+    100% {
+        clip: rect(0px, 450px, 100px, 0);
+        transform: skew(0deg);
+    }
+}
+
+@keyframes glitch-2 {
+    0% {
+        clip: rect(65px, 450px, 33px, 0);
+        transform: skew(-0.1deg);
+    }
+    20% {
+        clip: rect(77px, 450px, 44px, 0);
+        transform: skew(-0.1deg);
+    }
+    40% {
+        clip: rect(99px, 450px, 22px, 0);
+        transform: skew(-0.1deg);
+    }
+    60% {
+        clip: rect(15px, 450px, 88px, 0);
+        transform: skew(-0.1deg);
+    }
+    80% {
+        clip: rect(53px, 450px, 71px, 0);
+        transform: skew(-0.1deg);
+    }
+    100% {
+        clip: rect(0px, 450px, 100px, 0);
+        transform: skew(0deg);
+    }
+}
+
+@keyframes glitch-skew {
+    0%, 100% {
+        transform: skew(0deg);
+    }
+    20% {
+        transform: skew(-0.05deg);
+    }
+    40% {
+        transform: skew(0.05deg);
+    }
+    60% {
+        transform: skew(-0.05deg);
+    }
+    80% {
+        transform: skew(0.05deg);
+    }
+}
+
+/* Typewriter Effect */
+.typewriter {
+    overflow: hidden;
+    border-right: 0.15em solid var(--primary-light);
+    white-space: nowrap;
+    margin: 0 auto;
+    letter-spacing: 0.1em;
+    animation: 
+        typing 3.5s steps(40, end),
+        blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: var(--primary-light); }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .glitch {
+        font-size: 2.5rem;
+    }
+    
+    .typewriter {
+        font-size: 1.1em;
+    }
+    
+    .orb {
+        width: 200px;
+        height: 200px;
+    }
+}

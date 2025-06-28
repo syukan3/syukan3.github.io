@@ -9,11 +9,13 @@
     <title>Full Stack Engineer Sakae Shunsuke Profile</title>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style"
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap">
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         media="print" onload="this.media='all'">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/hero-animations.css">
+    <link rel="stylesheet" href="css/styles_responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script type="text/javascript">
         (function (c, l, a, r, i, t, y) {
@@ -61,10 +63,13 @@
     <section id="home" class="hero" aria-label="Home">
         <img src="images/hero.webp" alt="hero" class="hero-image">
         <div class="overlay"></div>
-        <div class="spotlight"></div>
+        <div class="animated-gradient"></div>
+        <div class="particles-container"></div>
+        <div class="glow-orbs"></div>
+        <canvas class="wave-canvas"></canvas>
         <div class="hero-content">
-            <h1>Sakae Shunsuke</h1>
-            <p>Software Engineer / Full Stack Engineer</p>
+            <h1 class="glitch" data-text="Sakae Shunsuke">Sakae Shunsuke</h1>
+            <p class="typewriter">Software Engineer / Full Stack Engineer</p>
         </div>
     </section>
 
@@ -442,7 +447,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2024 Software Engineer Portfolio. All rights reserved.</p>
+        <p>&copy; 2025 Software Engineer Portfolio. All rights reserved.</p>
     </footer>
 
     <!-- Modals -->
