@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="css/hero-animations.css">
     <link rel="stylesheet" href="css/styles_responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="text/javascript">
         (function (c, l, a, r, i, t, y) {
             c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
@@ -48,6 +49,7 @@
             <ul>
                 <li><a href="#home">ホーム</a></li>
                 <li><a href="#about">自己紹介</a></li>
+                <li><a href="#qiita-achievements">Qiita実績</a></li>
                 <li><a href="#experience">経歴</a></li>
                 <li><a href="#projects">プロジェクト</a></li>
                 <li><a href="#skills">スキル</a></li>
@@ -111,6 +113,99 @@
                             aria-label="Facebook"><i class="fab fa-facebook"></i></a>
                         <a href="https://www.instagram.com/yourusername" target="_blank" rel="noopener noreferrer"
                             aria-label="Instagram"><i class="fab fa-instagram"></i></a> -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Qiita Achievements section -->
+        <section id="qiita-achievements" aria-label="Qiitaの実績">
+            <h2>Qiita技術ブログ実績</h2>
+            <div class="achievements-container">
+                <div class="achievement-card glass-effect">
+                    <div class="achievement-header">
+                        <h3><i class="fas fa-trophy"></i> 100万ビュー達成への道のり</h3>
+                        <p class="achievement-subtitle">2024年11月開始時点から半年で目標達成</p>
+                    </div>
+                    <div class="achievement-content">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value">1,003,277</div>
+                                <div class="stat-label">総ビュー数</div>
+                                <div class="stat-date">2025年4月23日達成</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">600,000+</div>
+                                <div class="stat-label">増加ビュー数</div>
+                                <div class="stat-date">わずか5ヶ月半で達成</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">3,333+</div>
+                                <div class="stat-label">1日平均ビュー</div>
+                                <div class="stat-date">目標達成期間</div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="viewProgressChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="achievement-card glass-effect">
+                    <div class="achievement-header">
+                        <h3><i class="fas fa-chart-line"></i> 成長率とマイルストーン</h3>
+                        <p class="achievement-subtitle">月間10万ビューペースを実現</p>
+                    </div>
+                    <div class="achievement-content">
+                        <div class="milestone-timeline">
+                            <div class="milestone-item">
+                                <div class="milestone-icon"><i class="fas fa-flag-checkered"></i></div>
+                                <div class="milestone-content">
+                                    <div class="milestone-date">2019年2月25日</div>
+                                    <div class="milestone-title">Qiitaスタート</div>
+                                </div>
+                            </div>
+                            <div class="milestone-item">
+                                <div class="milestone-icon"><i class="fas fa-rocket"></i></div>
+                                <div class="milestone-content">
+                                    <div class="milestone-date">2024年11月3日</div>
+                                    <div class="milestone-title">400,131ビュー - チャレンジ開始</div>
+                                </div>
+                            </div>
+                            <div class="milestone-item highlight">
+                                <div class="milestone-icon"><i class="fas fa-star"></i></div>
+                                <div class="milestone-content">
+                                    <div class="milestone-date">2025年4月23日</div>
+                                    <div class="milestone-title">1,003,277ビュー - 目標達成！</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="growthRateChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="achievement-card glass-effect">
+                    <div class="achievement-header">
+                        <h3><i class="fas fa-percentage"></i> Qiita全体でのインパクト</h3>
+                        <p class="achievement-subtitle">月間5,000万PVの中での存在感</p>
+                    </div>
+                    <div class="achievement-content">
+                        <div class="impact-stats">
+                            <div class="impact-item">
+                                <div class="impact-label">Qiita月間ページビュー</div>
+                                <div class="impact-value">5,000万+</div>
+                            </div>
+                            <div class="impact-item highlight">
+                                <div class="impact-label">私の月間ページビュー</div>
+                                <div class="impact-value">10万+</div>
+                                <div class="impact-percentage">全体の0.2%達成</div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="impactChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>

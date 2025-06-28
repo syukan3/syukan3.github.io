@@ -1,4 +1,191 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Chart.js のデフォルト設定
+    Chart.defaults.color = '#ffffff';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+
+    // ビュー数推移グラフ
+    const viewProgressCtx = document.getElementById('viewProgressChart');
+    if (viewProgressCtx) {
+        new Chart(viewProgressCtx, {
+            type: 'line',
+            data: {
+                labels: ['2024/11/3', '2025/2/14', '2025/3/5', '2025/3/24', '2025/4/11', '2025/4/23'],
+                datasets: [{
+                    label: 'ビュー数',
+                    data: [400131, 602734, 708085, 806290, 907474, 1003277],
+                    borderColor: '#8B5CF6',
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#8B5CF6',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                return 'ビュー数: ' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // 月間成長率グラフ
+    const growthRateCtx = document.getElementById('growthRateChart');
+    if (growthRateCtx) {
+        new Chart(growthRateCtx, {
+            type: 'bar',
+            data: {
+                labels: ['開始前', '12月', '1月', '2月', '3月', '4月'],
+                datasets: [{
+                    label: '月間ビュー数',
+                    data: [30000, 45000, 65000, 85000, 95000, 100000],
+                    backgroundColor: [
+                        'rgba(139, 92, 246, 0.6)',
+                        'rgba(139, 92, 246, 0.7)',
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(59, 130, 246, 0.9)',
+                        'rgba(16, 185, 129, 0.9)'
+                    ],
+                    borderColor: [
+                        '#8B5CF6',
+                        '#8B5CF6',
+                        '#8B5CF6',
+                        '#3B82F6',
+                        '#3B82F6',
+                        '#10B981'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                return '月間ビュー: ' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // インパクトグラフ（ドーナツチャート）
+    const impactCtx = document.getElementById('impactChart');
+    if (impactCtx) {
+        new Chart(impactCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['私のビュー', 'その他のビュー'],
+                datasets: [{
+                    data: [100000, 49900000],
+                    backgroundColor: [
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(255, 255, 255, 0.1)'
+                    ],
+                    borderColor: [
+                        '#8B5CF6',
+                        'rgba(255, 255, 255, 0.2)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(2);
+                                return label + ': ' + percentage + '%';
+                            }
+                        }
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+    }
     // ナビゲーションのスムーズスクロール
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -41,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (window.scrollY > 100) {
                 header.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
             } else {
-                header.style.backgroundColor = 'var(--surface-color)';
+                header.style.backgroundColor = 'var(--glass-bg)';
             }
         });
     }

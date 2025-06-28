@@ -49,6 +49,15 @@
         height: 200px;
     }
     
+    /* Qiita Achievements responsive */
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .impact-stats {
+        grid-template-columns: 1fr;
+    }
+    
     .projects {
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: var(--space-lg);
@@ -167,6 +176,23 @@
         grid-template-columns: 1fr;
     }
     
+    /* Qiita Achievements mobile */
+    .achievement-card {
+        padding: var(--space-lg);
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+    }
+    
+    .milestone-timeline {
+        padding-left: var(--space-lg);
+    }
+    
+    .chart-container {
+        height: 250px;
+    }
+    
     .modal-content {
         width: 95%;
         height: 90vh;
@@ -236,6 +262,45 @@
     .contact-button {
         padding: var(--space-xs) var(--space-md);
         font-size: 0.875rem;
+    }
+    
+    /* Qiita Achievements extra small */
+    .achievement-card {
+        padding: var(--space-md);
+    }
+    
+    .achievement-header h3 {
+        font-size: 1.25rem;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+    }
+    
+    .milestone-timeline {
+        padding-left: var(--space-md);
+    }
+    
+    .milestone-icon {
+        width: 24px;
+        height: 24px;
+        left: -20px;
+    }
+    
+    .milestone-icon i {
+        font-size: 0.7rem;
+    }
+    
+    .impact-value {
+        font-size: 1.5rem;
+    }
+    
+    .chart-container {
+        height: 200px;
     }
     
     .technologies span {
