@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="css/hero-animations.css">
     <link rel="stylesheet" href="css/styles_responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="text/javascript">
         (function (c, l, a, r, i, t, y) {
             c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
@@ -68,8 +69,12 @@
         <div class="particles-container"></div>
         <div class="glow-orbs"></div>
         <canvas class="wave-canvas"></canvas>
+        <div class="spotlight-container">
+            <div class="spotlight"></div>
+            <div class="spotlight"></div>
+        </div>
         <div class="hero-content">
-            <h1 class="glitch" data-text="Sakae Shunsuke">Sakae Shunsuke</h1>
+            <h1 class="hero-title">Sakae Shunsuke</h1>
             <p class="typewriter">Software Engineer / Full Stack Engineer</p>
         </div>
     </section>
@@ -94,7 +99,10 @@
                         Recently, I've been interested in system development using generative AI, and I'm developing
                         systems using Claude Code for efficient development.<br>
                         I constantly strive to absorb new technologies and knowledge to improve team productivity and
-                        provide higher quality services.
+                        provide higher quality services.<br>
+                        <br>
+                        On my tech blog Qiita, I've achieved a cumulative 1.4 million impressions and actively share technical knowledge.<br>
+                        In 2025, I spoke at "<a href="https://increments.connpass.com/event/356654/" target="_blank" rel="noopener noreferrer" class="highlight-link">Qiita Bash - The Possibilities of Generative AI with MCP</a>" presenting the latest trends in AI development.
                     </p>
                     <div class="social-links">
                         <a href="https://github.com/syukan3/MosaicAI" target="_blank" rel="noopener noreferrer"
@@ -171,6 +179,20 @@
         <section id="projects" aria-label="Projects">
             <h2 style="text-align: center;">Projects</h2>
             <div class="projects">
+                <div class="project-card" data-modal="modal-qiita">
+                    <img src="images/blog_openai_filesearch.webp" alt="Tech Blog Growth Strategy">
+                    <div class="content">
+                        <h3>Tech Blog 1.5M Views Strategy</h3>
+                        <p>Achieved 1.43M views through strategic approach. Grew daily PV by 7x and published 270 articles.</p>
+                        <div class="technologies">
+                            <span class="qiita">Qiita</span>
+                            <span class="seo">SEO</span>
+                            <span class="analytics">Analytics</span>
+                            <span class="growth">Growth</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="project-card" data-modal="modal4">
                     <img src="images/project_censify.webp" alt="Censify">
                     <div class="content">
@@ -452,6 +474,126 @@
     </footer>
 
     <!-- Modals -->
+    <div id="modal-qiita" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Tech Blog 1.5M Views Strategy</h3>
+            <img src="images/blog_openai_filesearch.webp" alt="Tech Blog Growth Strategy">
+            <p>Through a strategic approach to technical blogging, I achieved a cumulative 1.43 million views. Starting a full-scale growth strategy in November 2024, I realized over 1 million view increase in just 8 months.</p>
+            
+            <h4>Achievements</h4>
+            <div class="qiita-stats-grid">
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">1,434,762</div>
+                    <div class="qiita-stat-label">Total Views</div>
+                </div>
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">270</div>
+                    <div class="qiita-stat-label">Articles Published</div>
+                </div>
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">5,000/day</div>
+                    <div class="qiita-stat-label">Current PV</div>
+                </div>
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">7x</div>
+                    <div class="qiita-stat-label">PV Growth Rate</div>
+                </div>
+            </div>
+            
+            <div class="qiita-charts-container">
+                <div class="qiita-chart-box">
+                    <h5>View Progress Chart</h5>
+                    <div class="chart-wrapper">
+                        <canvas id="qiitaViewProgressChart"></canvas>
+                    </div>
+                </div>
+                <div class="qiita-chart-box">
+                    <h5>Monthly Growth Rate</h5>
+                    <div class="chart-wrapper">
+                        <canvas id="qiitaGrowthRateChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <h4>Most Popular Article</h4>
+            <div class="popular-article-box">
+                <h5>"ChatGPT Deep Research Feature: Complete Guide & Review"</h5>
+                <div class="article-stats">
+                    <div class="article-stat">
+                        <span class="stat-icon">👀</span>
+                        <span class="stat-number">250,000+</span>
+                        <span class="stat-label">Views</span>
+                    </div>
+                    <div class="article-stat">
+                        <span class="stat-icon">❤️</span>
+                        <span class="stat-number">100</span>
+                        <span class="stat-label">Likes</span>
+                    </div>
+                </div>
+                <p>This article provides a comprehensive review and use cases of OpenAI's Deep Research feature. The analysis of the $200 cost-effectiveness was highly valued by many readers.</p>
+                <a href="https://qiita.com/syukan3/items/b2bd98d2f61a75777d38" target="_blank" rel="noopener noreferrer" class="article-link">
+                    Read Article <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
+            
+            <h4>Growth Strategy Points</h4>
+            <ul>
+                <li><strong>Consistent Publishing</strong>: Creating high-quality content with a goal of 1 article per day</li>
+                <li><strong>Trend Analysis</strong>: Focusing on high-demand topics like AI and cloud technologies</li>
+                <li><strong>SEO Optimization</strong>: Optimizing titles, tags, and structure to increase search traffic</li>
+                <li><strong>Reader Engagement</strong>: Building relationships with readers through comment responses and feedback</li>
+                <li><strong>Data Analysis</strong>: Using analytics to analyze trends and improve popular article patterns</li>
+            </ul>
+            
+            <h4>Key Milestones</h4>
+            <div class="qiita-visual-timeline">
+                <div class="timeline-progress-bar">
+                    <div class="timeline-progress-fill"></div>
+                </div>
+                <div class="qiita-timeline">
+                    <div class="qiita-milestone" data-year="2019">
+                        <span class="qiita-date">Feb 2019</span>
+                        <span class="qiita-event">Started Qiita</span>
+                        <span class="milestone-marker"></span>
+                    </div>
+                    <div class="qiita-milestone" data-year="2024">
+                        <span class="qiita-date">Nov 2024</span>
+                        <span class="qiita-event">400K views - Growth strategy begins</span>
+                        <span class="milestone-marker"></span>
+                    </div>
+                    <div class="qiita-milestone highlight" data-year="2025">
+                        <span class="qiita-date">Apr 2025</span>
+                        <span class="qiita-event">1.43M views achieved 🎉</span>
+                        <span class="milestone-marker success"></span>
+                    </div>
+                    <div class="qiita-milestone" data-year="2025">
+                        <span class="qiita-date">2025</span>
+                        <span class="qiita-event">Qiita Bash Speaker</span>
+                        <span class="milestone-marker"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <p>Based on this success experience, I share the importance of technical information dissemination and effective methods at various venues.</p>
+            
+            <p><strong>Qiita Profile:</strong>
+                <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="project-link">
+                    https://qiita.com/syukan3
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </p>
+            
+            <div class="technologies">
+                <span class="qiita">Qiita</span>
+                <span class="seo">SEO</span>
+                <span class="analytics">Analytics</span>
+                <span class="growth">Growth Hacking</span>
+                <span class="content">Content Strategy</span>
+            </div>
+        </div>
+    </div>
+
     <div id="modal1" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -592,6 +734,10 @@
                 <li>Development of sales commission website (partner website)</li>
                 <li>Built systems compliant with financial regulations, emphasizing security and compliance</li>
             </ul>
+            <h5>Project URL:</h5>
+            <p><a href="https://www.hijojo.com/" target="_blank" rel="noopener noreferrer">HiJoJo.com - Online Fund Sales System</a></p>
+            <h5>Ruby Business Cases:</h5>
+            <p><a href="https://www.ruby.or.jp/ja/showcase/case21" target="_blank" rel="noopener noreferrer">Nominated for Ruby Business Excellence Award 2017</a></p>
         </div>
     </div>
 
@@ -755,6 +901,83 @@
                     </ul>
                 </li>
             </ul>
+        </div>
+    </div>
+
+    <div id="modal4" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Censify</h3>
+            <img src="images/project_censify.webp" alt="Censify">
+            <p>Censify is an API service that detects inappropriate expressions from user input text and returns their presence and similarity. It achieves high-precision and efficient filtering of inappropriate expressions in UGC (User Generated Content) such as SNS and chat services.</p>
+            <p><strong>Service URL:</strong>
+                <a href="https://censify-lp.pages.dev" target="_blank" rel="noopener noreferrer" class="project-link">
+                    https://censify-lp.pages.dev
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </p>
+            <p>Key Features:</p>
+            <ul>
+                <li>High-precision inappropriate expression detection using LLM
+                    <ul>
+                        <li>Incorporation of inappropriate list and whitelist in system prompts</li>
+                        <li>Flexible judgment based on similarity (threshold ≥0.5 for inappropriate determination)</li>
+                        <li>False positive prevention with whitelist</li>
+                    </ul>
+                </li>
+                <li>High-speed API provision
+                    <ul>
+                        <li>Edge computing with Cloudflare Workers</li>
+                        <li>Low latency ensured at edge locations worldwide</li>
+                    </ul>
+                </li>
+                <li>Scalability and flexibility
+                    <ul>
+                        <li>Multi-language support (Japanese, English, other major languages)</li>
+                        <li>User-specific requirements support with custom dictionary function</li>
+                    </ul>
+                </li>
+                <li>Security measures
+                    <ul>
+                        <li>Forced HTTPS communication and API key authentication</li>
+                        <li>JWT authentication in management API</li>
+                        <li>Access log audit function</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>Technology Stack:</p>
+            <ul>
+                <li>Frontend: HonoJS (TypeScript)</li>
+                <li>Infrastructure: Cloudflare Workers</li>
+                <li>AI/ML: Large Language Model (LLM)</li>
+            </ul>
+            <p>Development Period: 2 months (Ongoing updates)</p>
+            <div class="technologies">
+                <span class="typescript">TypeScript</span>
+                <span class="cloudflare">Cloudflare Workers</span>
+                <span class="ai">AI</span>
+                <span class="honejs">HonoJS</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal3" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Wolverine Ruby</h3>
+            <img src="images/project_wolverine_ruby.webp" alt="Wolverine Ruby">
+            <p>Autonomous program bug repair tool developed immediately after the release of ChatGPT API.</p>
+            <p>Key Features:</p>
+            <ul>
+                <li>Bug detection and fix suggestions using ChatGPT API</li>
+                <li>Implementation of automatic correction function</li>
+                <li>Static analysis and quality improvement of Ruby code</li>
+            </ul>
+            <p>Development Period: 1 week</p>
+            <div class="technologies">
+                <span class="ruby">Ruby</span>
+                <span class="aws">OpenAI GPT-3.5 API</span>
+            </div>
         </div>
     </div>
 
