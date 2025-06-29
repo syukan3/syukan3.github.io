@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Chart.js のデフォルト設定
+    Chart.defaults.color = '#ffffff';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+
+
+
     // ナビゲーションのスムーズスクロール
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -41,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (window.scrollY > 100) {
                 header.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
             } else {
-                header.style.backgroundColor = 'var(--surface-color)';
+                header.style.backgroundColor = 'var(--glass-bg)';
             }
         });
     }
@@ -58,6 +65,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 modal.classList.add('show');
             }, 10);
             document.body.style.overflow = 'hidden';
+            
+            // Qiitaモーダルの場合、チャートを生成
+            if (modalId === 'modal-qiita') {
+                setTimeout(() => {
+                    initQiitaCharts();
+                }, 100);
+            }
         }
     }
 
@@ -68,8 +82,213 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => {
                 modal.style.display = 'none';
                 document.body.style.overflow = 'auto';
+                
+                // Qiitaモーダルの場合、チャートを破棄
+                if (modalId === 'modal-qiita') {
+                    destroyQiitaCharts();
+                }
             }, 300);
         }
+    }
+    
+    // Qiitaチャートの管理
+    let qiitaCharts = {};
+    
+    function initQiitaCharts() {
+        // 既存のチャートがあれば破棄
+        destroyQiitaCharts();
+        
+        // ビュー数推移グラフ
+        const viewProgressCtx = document.getElementById('qiitaViewProgressChart');
+        if (viewProgressCtx) {
+            const chartData = {
+                labels: ['2024/11/3', '2025/2/14', '2025/3/5', '2025/3/24', '2025/4/11', '2025/4/23', '2025/7/1'],
+                actualData: [400131, 602734, 708085, 806290, 907474, 1003277, 1434762]
+            };
+
+            qiitaCharts.viewProgress = new Chart(viewProgressCtx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: 'ビュー数',
+                        data: chartData.actualData,
+                        borderColor: '#8B5CF6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: '#8B5CF6',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeInOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: '#ffffff',
+                                usePointStyle: true,
+                                padding: 10
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed.y;
+                                    return 'ビュー数: ' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#ffffff'
+                            }
+                        },
+                        y: {
+                            min: 350000,
+                            max: 1500000,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#ffffff',
+                                callback: function(value) {
+                                    return (value / 10000).toFixed(0) + '万';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 月間成長率グラフ
+        const growthRateCtx = document.getElementById('qiitaGrowthRateChart');
+        if (growthRateCtx) {
+            const monthlyData = [30000, 45000, 65000, 85000, 95000, 100000];
+            const growthRates = monthlyData.map((value, index) => {
+                if (index === 0) return 0;
+                return ((value - monthlyData[index - 1]) / monthlyData[index - 1] * 100).toFixed(1);
+            });
+
+            qiitaCharts.growthRate = new Chart(growthRateCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['開始前', '12月', '1月', '2月', '3月', '4月'],
+                    datasets: [{
+                        label: '月間ビュー数',
+                        data: monthlyData,
+                        backgroundColor: function(context) {
+                            const value = context.parsed.y;
+                            if (value >= 100000) return 'rgba(16, 185, 129, 0.8)';
+                            if (value >= 80000) return 'rgba(59, 130, 246, 0.8)';
+                            return 'rgba(139, 92, 246, 0.8)';
+                        },
+                        borderColor: function(context) {
+                            const value = context.parsed.y;
+                            if (value >= 100000) return '#10B981';
+                            if (value >= 80000) return '#3B82F6';
+                            return '#8B5CF6';
+                        },
+                        borderWidth: 2,
+                        barPercentage: 0.7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1500,
+                        delay: function(context) {
+                            return context.dataIndex * 200;
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = '月間ビュー: ' + context.parsed.y.toLocaleString();
+                                    if (context.dataIndex > 0) {
+                                        return [label, `成長率: +${growthRates[context.dataIndex]}%`];
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            color: '#10B981',
+                            font: {
+                                weight: 'bold',
+                                size: 12
+                            },
+                            formatter: function(value, context) {
+                                if (context.dataIndex > 0) {
+                                    return `+${growthRates[context.dataIndex]}%`;
+                                }
+                                return '';
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#ffffff'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 110000,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#ffffff',
+                                callback: function(value) {
+                                    return (value / 10000).toFixed(0) + '万';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+    
+    function destroyQiitaCharts() {
+        Object.values(qiitaCharts).forEach(chart => {
+            if (chart) {
+                chart.destroy();
+            }
+        });
+        qiitaCharts = {};
     }
 
     modals.forEach(modal => {
@@ -310,50 +529,125 @@ document.addEventListener('DOMContentLoaded', function () {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 
-    // モバイルデバイスの場合、mobile-block.htmlにリダイレクト
-    if (isMobile()) {
-        window.location.href = 'mobile-block.html';
+    // モバイルデバイスのサポート - リダイレクトを削除
+    // if (isMobile()) {
+    //     window.location.href = 'mobile-block.html';
+    // }
+
+    // パーティクルシステムの作成
+    const particlesContainer = document.querySelector('.particles-container');
+    
+    function createParticle() {
+        if (!particlesContainer) return;
+        
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // ランダムなサイズ
+        const size = Math.random() * 4 + 2;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        
+        // ランダムな位置
+        particle.style.left = Math.random() * 100 + '%';
+        
+        // ランダムな遅延
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        
+        // ランダムな持続時間
+        particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
+        
+        particlesContainer.appendChild(particle);
+        
+        // アニメーション終了後に削除
+        setTimeout(() => {
+            particle.remove();
+        }, 8000);
     }
-
-    // スポットライト効果の追加
-    const spotlight = document.querySelector('.spotlight');
-    let time = 0; // グローバルスコープで time を定義
-
-    function animate() {
-        if (!spotlight) return; // spotlightが存在しない場合は関数を終了
-
-        time += 0.003; // アニメーション速度
-        const x1 = (Math.sin(time) + 1) / 2;
-        const y1 = (Math.cos(time * 0.8) + 1) / 2;
-        const x2 = (Math.sin(time * 1.2 + 2) + 1) / 2;
-        const y2 = (Math.cos(time * 0.9 + 1) + 1) / 2;
-
-        const width = spotlight.offsetWidth;
-        const height = spotlight.offsetHeight;
-
-        const spotlight1X = x1 * width;
-        const spotlight1Y = y1 * height;
-        const spotlight2X = x2 * width;
-        const spotlight2Y = y2 * height;
-
-        spotlight.style.background = `
-            radial-gradient(
-                circle 200px at ${spotlight1X}px ${spotlight1Y}px,
-                rgba(255, 255, 255, 0.7),
-                transparent 70%
-            ),
-            radial-gradient(
-                circle 200px at ${spotlight2X}px ${spotlight2Y}px,
-                rgba(3, 218, 198, 0.7),
-                transparent 70%
-            )
-        `;
-
-        requestAnimationFrame(animate);
+    
+    // 定期的にパーティクルを生成
+    if (particlesContainer) {
+        setInterval(createParticle, 300);
     }
-
-    if (spotlight) {
-        animate();
+    
+    // グローオーブの作成
+    const glowOrbs = document.querySelector('.glow-orbs');
+    if (glowOrbs) {
+        for (let i = 0; i < 3; i++) {
+            const orb = document.createElement('div');
+            orb.className = 'orb';
+            glowOrbs.appendChild(orb);
+        }
+    }
+    
+    // ウェーブキャンバスアニメーション
+    const waveCanvas = document.querySelector('.wave-canvas');
+    if (waveCanvas) {
+        const ctx = waveCanvas.getContext('2d');
+        let waveTime = 0;
+        
+        function resizeCanvas() {
+            waveCanvas.width = waveCanvas.offsetWidth;
+            waveCanvas.height = waveCanvas.offsetHeight;
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        function drawWave() {
+            ctx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+            
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(139, 92, 246, 0.3)';
+            ctx.lineWidth = 2;
+            
+            for (let x = 0; x < waveCanvas.width; x++) {
+                const y = waveCanvas.height / 2 + 
+                         Math.sin((x + waveTime) * 0.01) * 30 + 
+                         Math.sin((x + waveTime * 1.5) * 0.005) * 20;
+                
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(59, 130, 246, 0.3)';
+            
+            for (let x = 0; x < waveCanvas.width; x++) {
+                const y = waveCanvas.height / 2 + 
+                         Math.sin((x + waveTime * 0.8) * 0.01) * 25 + 
+                         Math.sin((x + waveTime * 1.2) * 0.007) * 15;
+                
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            
+            ctx.stroke();
+            
+            waveTime += 2;
+            requestAnimationFrame(drawWave);
+        }
+        
+        drawWave();
+    }
+    
+    // グリッチエフェクトのランダム化
+    const glitchElement = document.querySelector('.glitch');
+    if (glitchElement) {
+        setInterval(() => {
+            glitchElement.style.animation = 'none';
+            setTimeout(() => {
+                glitchElement.style.animation = '';
+            }, 100);
+        }, 3000);
     }
 
     // フォントの読み込みを確認

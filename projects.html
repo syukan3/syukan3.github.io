@@ -44,6 +44,20 @@
             <h1>プロジェクト一覧</h1>
             <div class="projects-grid">
                 <!-- 既存のプロジェクト -->
+                <div class="project-card" data-modal="modal-qiita">
+                    <img src="images/blog_openai_filesearch.webp" alt="Qiita Growth Strategy">
+                    <div class="content">
+                        <h3>技術ブログ150万ビュー獲得戦略</h3>
+                        <p>戦略的アプローチで143万ビュー達成。日間PVを7倍に成長させ、270記事を公開。</p>
+                        <div class="technologies">
+                            <span class="qiita">Qiita</span>
+                            <span class="seo">SEO</span>
+                            <span class="analytics">Analytics</span>
+                            <span class="growth">Growth</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="project-card" data-modal="modal4">
                     <img src="images/project_censify.webp" alt="Censify">
                     <div class="content">
@@ -54,19 +68,6 @@
                             <span class="cloudflare">Cloudflare Workers</span>
                             <span class="ai">AI</span>
                             <span class="honejs">HonoJS</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card" data-modal="modal1">
-                    <img src="images/project_mosaicai.webp" alt="MosaicAI">
-                    <div class="content">
-                        <h3>MosaicAI</h3>
-                        <p>複数のAI言語モデルを統一的に利用できるオープンソースPythonライブラリ</p>
-                        <div class="technologies">
-                            <span class="python">Python</span>
-                            <span class="ai">AI</span>
-                            <span class="MIT">MIT</span>
                         </div>
                     </div>
                 </div>
@@ -82,6 +83,19 @@
                             <span class="python">Python</span>
                             <span class="ai">AI</span>
                             <span class="aws">AWS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-modal="modal1">
+                    <img src="images/project_mosaicai.webp" alt="MosaicAI">
+                    <div class="content">
+                        <h3>MosaicAI</h3>
+                        <p>複数のAI言語モデルを統一的に利用できるオープンソースPythonライブラリ</p>
+                        <div class="technologies">
+                            <span class="python">Python</span>
+                            <span class="ai">AI</span>
+                            <span class="MIT">MIT</span>
                         </div>
                     </div>
                 </div>
@@ -116,10 +130,130 @@
     </main>
 
     <footer>
-        <p>&copy; 2024 Software Engineer Portfolio. All rights reserved.</p>
+        <p>&copy; 2025 Software Engineer Portfolio. All rights reserved.</p>
     </footer>
 
     <!-- Modals -->
+    <div id="modal-qiita" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>技術ブログ150万ビュー獲得戦略</h3>
+            <img src="images/blog_openai_filesearch.webp" alt="Tech Blog Growth Strategy">
+            <p>技術ブログにおいて、戦略的なアプローチで累計143万ビューを達成。2024年11月から本格的な成長戦略を開始し、わずか8ヶ月で100万ビュー以上の増加を実現しました。</p>
+            
+            <h4>達成した成果</h4>
+            <div class="qiita-stats-grid">
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">1,434,762</div>
+                    <div class="qiita-stat-label">総ビュー数</div>
+                </div>
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">270</div>
+                    <div class="qiita-stat-label">制作記事数</div>
+                </div>
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">5,000/日</div>
+                    <div class="qiita-stat-label">現在のPV数</div>
+                </div>
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">7倍</div>
+                    <div class="qiita-stat-label">PV成長率</div>
+                </div>
+            </div>
+            
+            <div class="qiita-charts-container">
+                <div class="qiita-chart-box">
+                    <h5>ビュー数推移グラフ</h5>
+                    <div class="chart-wrapper">
+                        <canvas id="qiitaViewProgressChart"></canvas>
+                    </div>
+                </div>
+                <div class="qiita-chart-box">
+                    <h5>月間成長率</h5>
+                    <div class="chart-wrapper">
+                        <canvas id="qiitaGrowthRateChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <h4>最も人気の記事</h4>
+            <div class="popular-article-box">
+                <h5>「ChatGPT 新機能「Deep Research」徹底解説＆使用レビュー」</h5>
+                <div class="article-stats">
+                    <div class="article-stat">
+                        <span class="stat-icon">👀</span>
+                        <span class="stat-number">250,000+</span>
+                        <span class="stat-label">ビュー</span>
+                    </div>
+                    <div class="article-stat">
+                        <span class="stat-icon">❤️</span>
+                        <span class="stat-number">100</span>
+                        <span class="stat-label">いいね</span>
+                    </div>
+                </div>
+                <p>この記事では、OpenAI社が発表したディープリサーチの活用事例と最速レビューを投稿。$200の費用対効果を検証した内容が多くの読者に評価されました。</p>
+                <a href="https://qiita.com/syukan3/items/b2bd98d2f61a75777d38" target="_blank" rel="noopener noreferrer" class="article-link">
+                    記事を読む <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
+            
+            <h4>成長戦略のポイント</h4>
+            <ul>
+                <li><strong>継続的な投稿</strong>：毎日1記事を目標に高品質なコンテンツを作成</li>
+                <li><strong>トレンド分析</strong>：AI・クラウド技術など需要の高いトピックに注力</li>
+                <li><strong>SEO最適化</strong>：タイトル・タグ・構成を最適化し、検索流入を増加</li>
+                <li><strong>読者エンゲージメント</strong>：コメント対応やフィードバック反映で読者との関係構築</li>
+                <li><strong>データ分析</strong>：アナリティクスを活用し、人気記事の傾向を分析・改善</li>
+            </ul>
+            
+            <h4>主要マイルストーン</h4>
+            <div class="qiita-visual-timeline">
+                <div class="timeline-progress-bar">
+                    <div class="timeline-progress-fill"></div>
+                </div>
+                <div class="qiita-timeline">
+                    <div class="qiita-milestone" data-year="2019">
+                        <span class="qiita-date">2019年2月</span>
+                        <span class="qiita-event">Qiita開始</span>
+                        <span class="milestone-marker"></span>
+                    </div>
+                    <div class="qiita-milestone" data-year="2024">
+                        <span class="qiita-date">2024年11月</span>
+                        <span class="qiita-event">40万ビュー - 成長戦略開始</span>
+                        <span class="milestone-marker"></span>
+                    </div>
+                    <div class="qiita-milestone highlight" data-year="2025">
+                        <span class="qiita-date">2025年4月</span>
+                        <span class="qiita-event">143万ビュー達成 🎉</span>
+                        <span class="milestone-marker success"></span>
+                    </div>
+                    <div class="qiita-milestone" data-year="2025">
+                        <span class="qiita-date">2025年</span>
+                        <span class="qiita-event">Qiita Bash登壇</span>
+                        <span class="milestone-marker"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <p>この成功体験を基に、技術情報発信の重要性とその効果的な方法について、様々な場で共有しています。</p>
+            
+            <p><strong>Qiitaプロフィール:</strong>
+                <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="project-link">
+                    https://qiita.com/syukan3
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </p>
+            
+            <div class="technologies">
+                <span class="qiita">Qiita</span>
+                <span class="seo">SEO</span>
+                <span class="analytics">Analytics</span>
+                <span class="growth">Growth Hacking</span>
+                <span class="content">Content Strategy</span>
+            </div>
+        </div>
+    </div>
+
     <div id="modal4" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>

@@ -7,13 +7,16 @@
     <meta name="description"
         content="Full Stack Engineer Portfolio Site. Introducing projects, skills, and career history.">
     <title>Full Stack Engineer Sakae Shunsuke Profile</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style"
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap">
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         media="print" onload="this.media='all'">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/hero-animations.css">
+    <link rel="stylesheet" href="css/styles_responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script type="text/javascript">
         (function (c, l, a, r, i, t, y) {
@@ -61,10 +64,13 @@
     <section id="home" class="hero" aria-label="Home">
         <img src="images/hero.webp" alt="hero" class="hero-image">
         <div class="overlay"></div>
-        <div class="spotlight"></div>
+        <div class="animated-gradient"></div>
+        <div class="particles-container"></div>
+        <div class="glow-orbs"></div>
+        <canvas class="wave-canvas"></canvas>
         <div class="hero-content">
-            <h1>Sakae Shunsuke</h1>
-            <p>Software Engineer / Full Stack Engineer</p>
+            <h1 class="glitch" data-text="Sakae Shunsuke">Sakae Shunsuke</h1>
+            <p class="typewriter">Software Engineer / Full Stack Engineer</p>
         </div>
     </section>
 
@@ -86,7 +92,7 @@
                     </p>
                     <p>
                         Recently, I've been interested in system development using generative AI, and I'm developing
-                        systems using Cursor + v0 + Supabase.<br>
+                        systems using Claude Code for efficient development.<br>
                         I constantly strive to absorb new technologies and knowledge to improve team productivity and
                         provide higher quality services.
                     </p>
@@ -109,7 +115,7 @@
                     <div class="timeline-date">Nov 2022 - Present</div>
                     <div class="timeline-content" data-modal="modal-experience-1">
                         <h3>HiJoJo Partners Inc.</h3>
-                        <h4>System Manager, Solution Architect</h4>
+                        <h4>System Department Director, Solution Architect</h4>
                         <ul>
                             <li>Leading development, maintenance, and operation of online fund sales system HiJoJo.com
                             </li>
@@ -379,6 +385,13 @@
                     <li>Securities Sales Representative (Type 1) (Acquired: Dec 2024)</li>
                 </ul>
             </div>
+            <div class="achievements">
+                <h3>Achievements & Speaking Engagements</h3>
+                <ul>
+                    <li>Qiita Technical Articles - Total impressions reached 1.4 million</li>
+                    <li>Speaker at "Qiita Bash - Expanding Possibilities of Generative AI with MCP" (2025) - <a href="https://increments.connpass.com/event/356654/" target="_blank" rel="noopener noreferrer">Event Details</a></li>
+                </ul>
+            </div>
         </section>
 
         <!-- Blog section -->
@@ -420,6 +433,9 @@
                         DynamoDBv2, explaining the differences from DynamoDB.</p>
                 </a>
             </div>
+            <div class="view-more-container">
+                <a href="blogs_en.html" class="view-more-button">View More <i class="fas fa-arrow-right"></i></a>
+            </div>
         </section>
 
         <!-- Contact section -->
@@ -432,7 +448,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2024 Software Engineer Portfolio. All rights reserved.</p>
+        <p>&copy; 2025 Software Engineer Portfolio. All rights reserved.</p>
     </footer>
 
     <!-- Modals -->
@@ -554,7 +570,7 @@
                     </ul>
                 </li>
                 <li>
-                    <b>May 2024 - Present: System Manager</b><br>
+                    <b>May 2024 - Present: System Department Director</b><br>
                     Overseeing the entire system lifecycle management, ensuring stable service delivery and continuous
                     improvement
                 </li>

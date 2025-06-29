@@ -6,14 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="フルスタックエンジニアの実績紹介サイト。プロジェクト、スキル、経歴などを紹介しています。">
     <title>Full Stack Engineer Sakae Shunsuke Profile</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style"
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap">
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         media="print" onload="this.media='all'">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/hero-animations.css">
+    <link rel="stylesheet" href="css/styles_responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="text/javascript">
         (function (c, l, a, r, i, t, y) {
             c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
@@ -59,10 +63,17 @@
     <section id="home" class="hero" aria-label="ホーム">
         <img src="images/hero.webp" alt="hero" class="hero-image">
         <div class="overlay"></div>
-        <div class="spotlight"></div>
+        <div class="animated-gradient"></div>
+        <div class="particles-container"></div>
+        <div class="glow-orbs"></div>
+        <canvas class="wave-canvas"></canvas>
+        <div class="spotlight-container">
+            <div class="spotlight"></div>
+            <div class="spotlight"></div>
+        </div>
         <div class="hero-content">
-            <h1>Sakae Shunsuke</h1>
-            <p>ソフトウェアエンジニア / フルスタックエンジニア</p>
+            <h1 class="hero-title">Sakae Shunsuke</h1>
+            <p class="typewriter">ソフトウェアエンジニア / フルスタックエンジニア</p>
         </div>
     </section>
 
@@ -77,12 +88,15 @@
                         はじめまして、栄 俊介（Sakae Shunsuke）です。
                     </p>
                     <p>
-                        フルスタックエンジニアとしてシステム開発に携わり、会社のシステム責任者としてサービス開発・運営を主導してきました。<br>
+                        フルスタックエンジニアとしてシステム開発に携わり、会社のシステム部長としてサービス開発・運営を主導してきました。<br>
                         Ruby on Rails、Python、React/Next.js、AWS を駆使し、要件定義から運用まで一貫した開発プロセスを担当しています。
                     </p>
                     <p>
-                        最近は生成AIを活用したシステム開発に興味があり、Cursor + v0 + Supabase を活用したシステム開発を行っています。<br>
-                        常に新しい技術や知識を吸収し、チーム全体の生産性を高めて、より質の高いサービスを提供できるよう努めています。
+                        最近は生成AIを活用したシステム開発に興味があり、Claude Codeを活用したシステム開発を行っています。<br>
+                        常に新しい技術や知識を吸収し、チーム全体の生産性を高めて、より質の高いサービスを提供できるよう努めています。<br>
+                        <br>
+                        技術ブログQiitaでは累計140万インプレッションを達成し、技術知識の共有に積極的に取り組んでいます。<br>
+                        2025年には「<a href="https://increments.connpass.com/event/356654/" target="_blank" rel="noopener noreferrer" class="highlight-link">Qiita Bash - MCPで広がる生成AI活用の可能性</a>」に登壇し、AI開発の最新動向について発表しました。
                     </p>
                     <div class="social-links">
                         <a href="https://github.com/syukan3/MosaicAI" target="_blank" rel="noopener noreferrer"
@@ -112,7 +126,7 @@
                     <div class="timeline-date">2022年11月 - 現在</div>
                     <div class="timeline-content" data-modal="modal-experience-1">
                         <h3>HiJoJo Partners株式会社</h3>
-                        <h4>システム責任者、ソリューションアーキテクト</h4>
+                        <h4>システム部長、ソリューションアーキテクト</h4>
                         <ul>
                             <li>オンラインファンド販売システム HiJoJo.comの開発・保守・運用を主導</li>
                             <li>高可用性とスケーラビリティを確保し、システムの安定稼働を実現</li>
@@ -129,7 +143,7 @@
                             <li>画像分析による属性取得システムの開発</li>
                             <li>コンテンツ配信システム・CMS開発</li>
                             <li>工数管理システムの開発（開発工数実績把握）</li>
-                            <li>保守管理システムの開発（Webアプリケーション）</li>
+                            <li>保守管理システムの開発（OneGATE）</li>
                             <li>受付システム（来客チェックイン）</li>
                         </ul>
                     </div>
@@ -165,6 +179,20 @@
             <h2 style="text-align: center;">プロジェクト</h2>
             <div class="projects">
                 <!-- Project card -->
+                <div class="project-card" data-modal="modal-qiita">
+                    <img src="images/blog_openai_filesearch.webp" alt="Qiita Growth Strategy">
+                    <div class="content">
+                        <h3>技術ブログ150万ビュー獲得戦略</h3>
+                        <p>戦略的アプローチで143万ビュー達成。日間PVを7倍に成長させ、270記事を公開。</p>
+                        <div class="technologies">
+                            <span class="qiita">Qiita</span>
+                            <span class="seo">SEO</span>
+                            <span class="analytics">Analytics</span>
+                            <span class="growth">Growth</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="project-card" data-modal="modal4">
                     <img src="images/project_censify.webp" alt="Censify">
                     <div class="content">
@@ -175,19 +203,6 @@
                             <span class="cloudflare">Cloudflare Workers</span>
                             <span class="ai">AI</span>
                             <span class="honejs">HonoJS</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card" data-modal="modal1">
-                    <img src="images/project_mosaicai.webp" alt="MosaicAI">
-                    <div class="content">
-                        <h3>MosaicAI</h3>
-                        <p>複数のAI言語モデルを統一的に利用できるオープンソースPythonライブラリ</p>
-                        <div class="technologies">
-                            <span class="python">Python</span>
-                            <span class="ai">AI</span>
-                            <span class="MIT">MIT</span>
                         </div>
                     </div>
                 </div>
@@ -434,10 +449,130 @@
     </main>
 
     <footer>
-        <p>&copy; 2024 Software Engineer Portfolio. All rights reserved.</p>
+        <p>&copy; 2025 Software Engineer Portfolio. All rights reserved.</p>
     </footer>
 
     <!-- Modals -->
+    <div id="modal-qiita" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>技術ブログ150万ビュー獲得戦略</h3>
+            <img src="images/blog_openai_filesearch.webp" alt="Tech Blog Growth Strategy">
+            <p>技術ブログにおいて、戦略的なアプローチで累計143万ビューを達成。2024年11月から本格的な成長戦略を開始し、わずか8ヶ月で100万ビュー以上の増加を実現しました。</p>
+            
+            <h4>達成した成果</h4>
+            <div class="qiita-stats-grid">
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">1,434,762</div>
+                    <div class="qiita-stat-label">総ビュー数</div>
+                </div>
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">270</div>
+                    <div class="qiita-stat-label">制作記事数</div>
+                </div>
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">5,000/日</div>
+                    <div class="qiita-stat-label">現在のPV数</div>
+                </div>
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">7倍</div>
+                    <div class="qiita-stat-label">PV成長率</div>
+                </div>
+            </div>
+            
+            <div class="qiita-charts-container">
+                <div class="qiita-chart-box">
+                    <h5>ビュー数推移グラフ</h5>
+                    <div class="chart-wrapper">
+                        <canvas id="qiitaViewProgressChart"></canvas>
+                    </div>
+                </div>
+                <div class="qiita-chart-box">
+                    <h5>月間成長率</h5>
+                    <div class="chart-wrapper">
+                        <canvas id="qiitaGrowthRateChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <h4>最も人気の記事</h4>
+            <div class="popular-article-box">
+                <h5>「ChatGPT 新機能「Deep Research」徹底解説＆使用レビュー」</h5>
+                <div class="article-stats">
+                    <div class="article-stat">
+                        <span class="stat-icon">👀</span>
+                        <span class="stat-number">250,000+</span>
+                        <span class="stat-label">ビュー</span>
+                    </div>
+                    <div class="article-stat">
+                        <span class="stat-icon">❤️</span>
+                        <span class="stat-number">100</span>
+                        <span class="stat-label">いいね</span>
+                    </div>
+                </div>
+                <p>この記事では、OpenAI社が発表したディープリサーチの活用事例と最速レビューを投稿。$200の費用対効果を検証した内容が多くの読者に評価されました。</p>
+                <a href="https://qiita.com/syukan3/items/b2bd98d2f61a75777d38" target="_blank" rel="noopener noreferrer" class="article-link">
+                    記事を読む <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
+            
+            <h4>成長戦略のポイント</h4>
+            <ul>
+                <li><strong>継続的な投稿</strong>：毎日1記事を目標に高品質なコンテンツを作成</li>
+                <li><strong>トレンド分析</strong>：AI・クラウド技術など需要の高いトピックに注力</li>
+                <li><strong>SEO最適化</strong>：タイトル・タグ・構成を最適化し、検索流入を増加</li>
+                <li><strong>読者エンゲージメント</strong>：コメント対応やフィードバック反映で読者との関係構築</li>
+                <li><strong>データ分析</strong>：アナリティクスを活用し、人気記事の傾向を分析・改善</li>
+            </ul>
+            
+            <h4>主要マイルストーン</h4>
+            <div class="qiita-visual-timeline">
+                <div class="timeline-progress-bar">
+                    <div class="timeline-progress-fill"></div>
+                </div>
+                <div class="qiita-timeline">
+                    <div class="qiita-milestone" data-year="2019">
+                        <span class="qiita-date">2019年2月</span>
+                        <span class="qiita-event">Qiita開始</span>
+                        <span class="milestone-marker"></span>
+                    </div>
+                    <div class="qiita-milestone" data-year="2024">
+                        <span class="qiita-date">2024年11月</span>
+                        <span class="qiita-event">40万ビュー - 成長戦略開始</span>
+                        <span class="milestone-marker"></span>
+                    </div>
+                    <div class="qiita-milestone highlight" data-year="2025">
+                        <span class="qiita-date">2025年4月</span>
+                        <span class="qiita-event">143万ビュー達成 🎉</span>
+                        <span class="milestone-marker success"></span>
+                    </div>
+                    <div class="qiita-milestone" data-year="2025">
+                        <span class="qiita-date">2025年</span>
+                        <span class="qiita-event">Qiita Bash登壇</span>
+                        <span class="milestone-marker"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <p>この成功体験を基に、技術情報発信の重要性とその効果的な方法について、様々な場で共有しています。</p>
+            
+            <p><strong>Qiitaプロフィール:</strong>
+                <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="project-link">
+                    https://qiita.com/syukan3
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </p>
+            
+            <div class="technologies">
+                <span class="qiita">Qiita</span>
+                <span class="seo">SEO</span>
+                <span class="analytics">Analytics</span>
+                <span class="growth">Growth Hacking</span>
+                <span class="content">Content Strategy</span>
+            </div>
+        </div>
+    </div>
+
     <div id="modal1" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -609,8 +744,9 @@
                     </ul>
                 </li>
                 <li>
-                    <b>2024年5月～現在：システム責任者</b><br>
-                    システム全体のライフサイクルマネジメントを統括し、安定的なサービス提供と継続的な改善
+                    <b>2024年5月～現在：システム部長</b><br>
+                    システム全体のライフサイクルマネジメントを統括し、安定的なサービス提供と継続的な改善<br>
+                    最近は生成AIを活用したシステム開発に注力し、Claude Codeを活用した効率的な開発手法を推進
                 </li>
             </ul>
             <h5>プロジェクト例:</h5>
@@ -649,7 +785,11 @@
             <h5>担当業務</h5>
             <ul>
                 <li>
-                    <b>2019年9月～2022年11月：保守管理システムの開発 (Webアプリ)</b><br>
+                    <b>2019年9月～2022年11月：保守管理システムの開発 (OneGATE)</b><br>
+                    <a href="https://www.pdc-ds.com/service/onegate" target="_blank" rel="noopener noreferrer" class="project-link">
+                        https://www.pdc-ds.com/service/onegate
+                        <i class="fas fa-external-link-alt"></i>
+                    </a><br>
                     ・インシデント管理機能<br>
                     ・コールセンター機能（Amazon Connect）<br>
                     ・カスタマーポータル機能<br>
@@ -682,7 +822,19 @@
                 </li>
                 <br>
                 <li>
-                    <b>2020年8月～2022年11月：画像分析による属性取得システムの開発</b><br>
+                    <b>2020年8月～2022年11月：画像解析・属性取得・視聴率測定システムの開発</b><br>
+                    <a href="https://www.pdc-ds.com/service/face_authentication" target="_blank" rel="noopener noreferrer" class="project-link">
+                        https://www.pdc-ds.com/service/face_authentication
+                        <i class="fas fa-external-link-alt"></i>
+                    </a><br>
+                    <a href="https://www.pdc-ds.com/news/20220727-3794" target="_blank" rel="noopener noreferrer" class="project-link">
+                        https://www.pdc-ds.com/news/20220727-3794
+                        <i class="fas fa-external-link-alt"></i>
+                    </a><br>
+                    <a href="https://www.pdc-ds.com/news/20220310-3448" target="_blank" rel="noopener noreferrer" class="project-link">
+                        https://www.pdc-ds.com/news/20220310-3448
+                        <i class="fas fa-external-link-alt"></i>
+                    </a><br>
                     ・属性取得、視聴率測定機能の開発<br>
                     ・機種、カメラの選定<br>
                     ・年齢推定モデルの作成<br>
