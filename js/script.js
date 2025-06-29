@@ -4,188 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
     Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
     Chart.defaults.font.family = "'Inter', sans-serif";
 
-    // ビュー数推移グラフ
-    const viewProgressCtx = document.getElementById('viewProgressChart');
-    if (viewProgressCtx) {
-        new Chart(viewProgressCtx, {
-            type: 'line',
-            data: {
-                labels: ['2024/11/3', '2025/2/14', '2025/3/5', '2025/3/24', '2025/4/11', '2025/4/23'],
-                datasets: [{
-                    label: 'ビュー数',
-                    data: [400131, 602734, 708085, 806290, 907474, 1003277],
-                    borderColor: '#8B5CF6',
-                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                    borderWidth: 3,
-                    tension: 0.4,
-                    pointRadius: 6,
-                    pointHoverRadius: 8,
-                    pointBackgroundColor: '#8B5CF6',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        padding: 12,
-                        cornerRadius: 8,
-                        callbacks: {
-                            label: function(context) {
-                                return 'ビュー数: ' + context.parsed.y.toLocaleString();
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.05)'
-                        }
-                    },
-                    y: {
-                        beginAtZero: false,
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.05)'
-                        },
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString();
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
 
-    // 月間成長率グラフ
-    const growthRateCtx = document.getElementById('growthRateChart');
-    if (growthRateCtx) {
-        new Chart(growthRateCtx, {
-            type: 'bar',
-            data: {
-                labels: ['開始前', '12月', '1月', '2月', '3月', '4月'],
-                datasets: [{
-                    label: '月間ビュー数',
-                    data: [30000, 45000, 65000, 85000, 95000, 100000],
-                    backgroundColor: [
-                        'rgba(139, 92, 246, 0.6)',
-                        'rgba(139, 92, 246, 0.7)',
-                        'rgba(139, 92, 246, 0.8)',
-                        'rgba(59, 130, 246, 0.8)',
-                        'rgba(59, 130, 246, 0.9)',
-                        'rgba(16, 185, 129, 0.9)'
-                    ],
-                    borderColor: [
-                        '#8B5CF6',
-                        '#8B5CF6',
-                        '#8B5CF6',
-                        '#3B82F6',
-                        '#3B82F6',
-                        '#10B981'
-                    ],
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        padding: 12,
-                        cornerRadius: 8,
-                        callbacks: {
-                            label: function(context) {
-                                return '月間ビュー: ' + context.parsed.y.toLocaleString();
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.05)'
-                        },
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString();
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
 
-    // インパクトグラフ（ドーナツチャート）
-    const impactCtx = document.getElementById('impactChart');
-    if (impactCtx) {
-        new Chart(impactCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['私のビュー', 'その他のビュー'],
-                datasets: [{
-                    data: [100000, 49900000],
-                    backgroundColor: [
-                        'rgba(139, 92, 246, 0.8)',
-                        'rgba(255, 255, 255, 0.1)'
-                    ],
-                    borderColor: [
-                        '#8B5CF6',
-                        'rgba(255, 255, 255, 0.2)'
-                    ],
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            font: {
-                                size: 14
-                            }
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        padding: 12,
-                        cornerRadius: 8,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.parsed;
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = ((value / total) * 100).toFixed(2);
-                                return label + ': ' + percentage + '%';
-                            }
-                        }
-                    }
-                },
-                cutout: '70%'
-            }
-        });
-    }
     // ナビゲーションのスムーズスクロール
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -245,6 +65,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 modal.classList.add('show');
             }, 10);
             document.body.style.overflow = 'hidden';
+            
+            // Qiitaモーダルの場合、チャートを生成
+            if (modalId === 'modal-qiita') {
+                setTimeout(() => {
+                    initQiitaCharts();
+                }, 100);
+            }
         }
     }
 
@@ -255,8 +82,213 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => {
                 modal.style.display = 'none';
                 document.body.style.overflow = 'auto';
+                
+                // Qiitaモーダルの場合、チャートを破棄
+                if (modalId === 'modal-qiita') {
+                    destroyQiitaCharts();
+                }
             }, 300);
         }
+    }
+    
+    // Qiitaチャートの管理
+    let qiitaCharts = {};
+    
+    function initQiitaCharts() {
+        // 既存のチャートがあれば破棄
+        destroyQiitaCharts();
+        
+        // ビュー数推移グラフ
+        const viewProgressCtx = document.getElementById('qiitaViewProgressChart');
+        if (viewProgressCtx) {
+            const chartData = {
+                labels: ['2024/11/3', '2025/2/14', '2025/3/5', '2025/3/24', '2025/4/11', '2025/4/23', '2025/7/1'],
+                actualData: [400131, 602734, 708085, 806290, 907474, 1003277, 1434762]
+            };
+
+            qiitaCharts.viewProgress = new Chart(viewProgressCtx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: 'ビュー数',
+                        data: chartData.actualData,
+                        borderColor: '#8B5CF6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: '#8B5CF6',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeInOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: '#ffffff',
+                                usePointStyle: true,
+                                padding: 10
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed.y;
+                                    return 'ビュー数: ' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#ffffff'
+                            }
+                        },
+                        y: {
+                            min: 350000,
+                            max: 1500000,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#ffffff',
+                                callback: function(value) {
+                                    return (value / 10000).toFixed(0) + '万';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 月間成長率グラフ
+        const growthRateCtx = document.getElementById('qiitaGrowthRateChart');
+        if (growthRateCtx) {
+            const monthlyData = [30000, 45000, 65000, 85000, 95000, 100000];
+            const growthRates = monthlyData.map((value, index) => {
+                if (index === 0) return 0;
+                return ((value - monthlyData[index - 1]) / monthlyData[index - 1] * 100).toFixed(1);
+            });
+
+            qiitaCharts.growthRate = new Chart(growthRateCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['開始前', '12月', '1月', '2月', '3月', '4月'],
+                    datasets: [{
+                        label: '月間ビュー数',
+                        data: monthlyData,
+                        backgroundColor: function(context) {
+                            const value = context.parsed.y;
+                            if (value >= 100000) return 'rgba(16, 185, 129, 0.8)';
+                            if (value >= 80000) return 'rgba(59, 130, 246, 0.8)';
+                            return 'rgba(139, 92, 246, 0.8)';
+                        },
+                        borderColor: function(context) {
+                            const value = context.parsed.y;
+                            if (value >= 100000) return '#10B981';
+                            if (value >= 80000) return '#3B82F6';
+                            return '#8B5CF6';
+                        },
+                        borderWidth: 2,
+                        barPercentage: 0.7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1500,
+                        delay: function(context) {
+                            return context.dataIndex * 200;
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = '月間ビュー: ' + context.parsed.y.toLocaleString();
+                                    if (context.dataIndex > 0) {
+                                        return [label, `成長率: +${growthRates[context.dataIndex]}%`];
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            color: '#10B981',
+                            font: {
+                                weight: 'bold',
+                                size: 12
+                            },
+                            formatter: function(value, context) {
+                                if (context.dataIndex > 0) {
+                                    return `+${growthRates[context.dataIndex]}%`;
+                                }
+                                return '';
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#ffffff'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 110000,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#ffffff',
+                                callback: function(value) {
+                                    return (value / 10000).toFixed(0) + '万';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+    
+    function destroyQiitaCharts() {
+        Object.values(qiitaCharts).forEach(chart => {
+            if (chart) {
+                chart.destroy();
+            }
+        });
+        qiitaCharts = {};
     }
 
     modals.forEach(modal => {
