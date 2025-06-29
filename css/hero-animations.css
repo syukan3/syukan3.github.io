@@ -1,0 +1,309 @@
+/* Modern Hero Section Animations */
+
+/* Animated Gradient Background */
+.animated-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, 
+        rgba(139, 92, 246, 0.1) 0%, 
+        rgba(59, 130, 246, 0.1) 25%, 
+        rgba(139, 92, 246, 0.05) 50%, 
+        rgba(59, 130, 246, 0.1) 75%, 
+        rgba(139, 92, 246, 0.1) 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Floating Particles */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.particle {
+    position: absolute;
+    background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    animation: floatUp 8s linear infinite;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 0;
+        transform: translateY(100%) scale(0);
+    }
+    10% {
+        opacity: 0.8;
+        transform: translateY(90%) scale(1);
+    }
+    90% {
+        opacity: 0.8;
+        transform: translateY(10%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(0%) scale(0);
+    }
+}
+
+/* Glowing Orbs */
+.glow-orbs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.orb {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.3;
+    animation: orbFloat 20s ease-in-out infinite;
+}
+
+.orb:nth-child(1) {
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.8), transparent);
+    top: -150px;
+    left: -150px;
+    animation-delay: 0s;
+}
+
+.orb:nth-child(2) {
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.8), transparent);
+    bottom: -150px;
+    right: -150px;
+    animation-delay: 5s;
+}
+
+.orb:nth-child(3) {
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.6), transparent);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: 10s;
+}
+
+@keyframes orbFloat {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    33% {
+        transform: translate(50px, -50px) scale(1.1);
+    }
+    66% {
+        transform: translate(-50px, 50px) scale(0.9);
+    }
+}
+
+/* Wave Canvas */
+.wave-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0.3;
+}
+
+/* Spotlight Effect */
+.spotlight-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.spotlight {
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, 
+        rgba(255, 255, 255, 0.8) 0%, 
+        rgba(255, 255, 255, 0.4) 20%, 
+        rgba(255, 255, 255, 0.2) 40%, 
+        rgba(255, 255, 255, 0.1) 60%, 
+        transparent 100%);
+    border-radius: 50%;
+    filter: blur(30px);
+    mix-blend-mode: screen;
+}
+
+.spotlight:nth-child(1) {
+    animation: spotlightMove1 15s ease-in-out infinite;
+    width: 500px;
+    height: 500px;
+}
+
+.spotlight:nth-child(2) {
+    animation: spotlightMove2 20s ease-in-out infinite;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, 
+        rgba(147, 51, 234, 1) 0%, 
+        rgba(147, 51, 234, 0.7) 15%, 
+        rgba(168, 85, 247, 0.5) 30%, 
+        rgba(196, 130, 255, 0.3) 50%, 
+        rgba(196, 130, 255, 0.1) 70%, 
+        transparent 100%);
+    filter: blur(40px);
+    box-shadow: 0 0 100px rgba(147, 51, 234, 0.6);
+}
+
+@keyframes spotlightMove1 {
+    0% {
+        transform: translate(-50%, -50%);
+        opacity: 0;
+    }
+    10% {
+        transform: translate(100px, 100px);
+        opacity: 1;
+    }
+    25% {
+        transform: translate(calc(100vw - 200px), 200px);
+        opacity: 0.8;
+    }
+    40% {
+        transform: translate(calc(100vw - 300px), calc(100vh - 300px));
+        opacity: 1;
+    }
+    55% {
+        transform: translate(200px, calc(100vh - 200px));
+        opacity: 0.9;
+    }
+    70% {
+        transform: translate(50vw, 50vh);
+        opacity: 1;
+    }
+    85% {
+        transform: translate(100px, 300px);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(-50%, -50%);
+        opacity: 0;
+    }
+}
+
+@keyframes spotlightMove2 {
+    0% {
+        transform: translate(100vw, 100vh);
+        opacity: 0;
+    }
+    15% {
+        transform: translate(calc(100vw - 400px), calc(100vh - 400px));
+        opacity: 0.8;
+    }
+    30% {
+        transform: translate(50vw, calc(100vh - 300px));
+        opacity: 1;
+    }
+    45% {
+        transform: translate(100px, 50vh);
+        opacity: 0.9;
+    }
+    60% {
+        transform: translate(300px, 100px);
+        opacity: 1;
+    }
+    75% {
+        transform: translate(calc(100vw - 300px), 200px);
+        opacity: 0.8;
+    }
+    90% {
+        transform: translate(50vw, 50vh);
+        opacity: 0.6;
+    }
+    100% {
+        transform: translate(100vw, 100vh);
+        opacity: 0;
+    }
+}
+
+/* Hero Title Style */
+.hero-title {
+    position: relative;
+    color: white;
+    font-size: 4rem;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+    animation: subtle-glow 3s ease-in-out infinite;
+}
+
+@keyframes subtle-glow {
+    0%, 100% {
+        text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+    }
+    50% {
+        text-shadow: 0 0 30px rgba(139, 92, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.5);
+    }
+}
+
+/* Typewriter Effect */
+.typewriter {
+    overflow: hidden;
+    border-right: 0.15em solid var(--primary-light);
+    white-space: nowrap;
+    margin: 0 auto;
+    letter-spacing: 0.1em;
+    animation: 
+        typing 3.5s steps(40, end),
+        blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: var(--primary-light); }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .typewriter {
+        font-size: 1.1em;
+    }
+    
+    .orb {
+        width: 200px;
+        height: 200px;
+    }
+}
