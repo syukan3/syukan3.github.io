@@ -15,6 +15,7 @@
         media="print" onload="this.media='all'">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Open Graph Protocol tags -->
     <meta property="og:title" content="Projects - Full Stack Engineer Sakae Shunsuke">
@@ -46,6 +47,20 @@
             <h1>Projects</h1>
             <div class="projects-grid">
                 <!-- Existing Projects -->
+                <div class="project-card" data-modal="modal-qiita">
+                    <img src="images/blog_openai_filesearch.webp" alt="Tech Blog Growth Strategy">
+                    <div class="content">
+                        <h3>Tech Blog 1.5M Views Strategy</h3>
+                        <p>Achieved 1.43M views through strategic approach. Grew daily PV by 7x and published 270 articles.</p>
+                        <div class="technologies">
+                            <span class="qiita">Qiita</span>
+                            <span class="seo">SEO</span>
+                            <span class="analytics">Analytics</span>
+                            <span class="growth">Growth</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="project-card" data-modal="modal4">
                     <img src="images/project_censify.webp" alt="Censify">
                     <div class="content">
@@ -125,6 +140,126 @@
     </footer>
 
     <!-- Modals -->
+    <div id="modal-qiita" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Tech Blog 1.5M Views Strategy</h3>
+            <img src="images/blog_openai_filesearch.webp" alt="Tech Blog Growth Strategy">
+            <p>Through a strategic approach to technical blogging, I achieved a cumulative 1.43 million views. Starting a full-scale growth strategy in November 2024, I realized over 1 million view increase in just 8 months.</p>
+            
+            <h4>Achievements</h4>
+            <div class="qiita-stats-grid">
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">1,434,762</div>
+                    <div class="qiita-stat-label">Total Views</div>
+                </div>
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">270</div>
+                    <div class="qiita-stat-label">Articles Published</div>
+                </div>
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">5,000/day</div>
+                    <div class="qiita-stat-label">Current PV</div>
+                </div>
+                <div class="qiita-stat">
+                    <div class="qiita-stat-value">7x</div>
+                    <div class="qiita-stat-label">PV Growth Rate</div>
+                </div>
+            </div>
+            
+            <div class="qiita-charts-container">
+                <div class="qiita-chart-box">
+                    <h5>View Progress Chart</h5>
+                    <div class="chart-wrapper">
+                        <canvas id="qiitaViewProgressChart"></canvas>
+                    </div>
+                </div>
+                <div class="qiita-chart-box">
+                    <h5>Monthly Growth Rate</h5>
+                    <div class="chart-wrapper">
+                        <canvas id="qiitaGrowthRateChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <h4>Most Popular Article</h4>
+            <div class="popular-article-box">
+                <h5>"ChatGPT Deep Research Feature: Complete Guide & Review"</h5>
+                <div class="article-stats">
+                    <div class="article-stat">
+                        <span class="stat-icon">👀</span>
+                        <span class="stat-number">250,000+</span>
+                        <span class="stat-label">Views</span>
+                    </div>
+                    <div class="article-stat">
+                        <span class="stat-icon">❤️</span>
+                        <span class="stat-number">100</span>
+                        <span class="stat-label">Likes</span>
+                    </div>
+                </div>
+                <p>This article provides a comprehensive review and use cases of OpenAI's Deep Research feature. The analysis of the $200 cost-effectiveness was highly valued by many readers.</p>
+                <a href="https://qiita.com/syukan3/items/b2bd98d2f61a75777d38" target="_blank" rel="noopener noreferrer" class="article-link">
+                    Read Article <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
+            
+            <h4>Growth Strategy Points</h4>
+            <ul>
+                <li><strong>Consistent Publishing</strong>: Creating high-quality content with a goal of 1 article per day</li>
+                <li><strong>Trend Analysis</strong>: Focusing on high-demand topics like AI and cloud technologies</li>
+                <li><strong>SEO Optimization</strong>: Optimizing titles, tags, and structure to increase search traffic</li>
+                <li><strong>Reader Engagement</strong>: Building relationships with readers through comment responses and feedback</li>
+                <li><strong>Data Analysis</strong>: Using analytics to analyze trends and improve popular article patterns</li>
+            </ul>
+            
+            <h4>Key Milestones</h4>
+            <div class="qiita-visual-timeline">
+                <div class="timeline-progress-bar">
+                    <div class="timeline-progress-fill"></div>
+                </div>
+                <div class="qiita-timeline">
+                    <div class="qiita-milestone" data-year="2019">
+                        <span class="qiita-date">Feb 2019</span>
+                        <span class="qiita-event">Started Qiita</span>
+                        <span class="milestone-marker"></span>
+                    </div>
+                    <div class="qiita-milestone" data-year="2024">
+                        <span class="qiita-date">Nov 2024</span>
+                        <span class="qiita-event">400K views - Growth strategy begins</span>
+                        <span class="milestone-marker"></span>
+                    </div>
+                    <div class="qiita-milestone highlight" data-year="2025">
+                        <span class="qiita-date">Apr 2025</span>
+                        <span class="qiita-event">1.43M views achieved 🎉</span>
+                        <span class="milestone-marker success"></span>
+                    </div>
+                    <div class="qiita-milestone" data-year="2025">
+                        <span class="qiita-date">2025</span>
+                        <span class="qiita-event">Qiita Bash Speaker</span>
+                        <span class="milestone-marker"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <p>Based on this success experience, I share the importance of technical information dissemination and effective methods at various venues.</p>
+            
+            <p><strong>Qiita Profile:</strong>
+                <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="project-link">
+                    https://qiita.com/syukan3
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </p>
+            
+            <div class="technologies">
+                <span class="qiita">Qiita</span>
+                <span class="seo">SEO</span>
+                <span class="analytics">Analytics</span>
+                <span class="growth">Growth Hacking</span>
+                <span class="content">Content Strategy</span>
+            </div>
+        </div>
+    </div>
+
     <div id="modal4" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
