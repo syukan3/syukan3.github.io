@@ -1,0 +1,67 @@
+{
+  "writing": [
+    {
+      "id": "article-1",
+      "title": "記事タイトル",
+      "pinned": true,
+      "date": "2024-12-01",
+      "summary": "なぜこの記事を読むべきか（1行）",
+      "url": "https://example.com/article-1",
+      "type": "article"
+    },
+    {
+      "id": "talk-1",
+      "title": "登壇タイトル",
+      "pinned": true,
+      "date": "2024-11-15",
+      "summary": "なぜこの登壇内容が価値があるか（1行）",
+      "url": "https://example.com/talk-1",
+      "type": "talk"
+    },
+    {
+      "id": "article-2",
+      "title": "記事タイトル2",
+      "pinned": true,
+      "date": "2024-10-20",
+      "summary": "なぜこの記事を読むべきか（1行）",
+      "url": "https://example.com/article-2",
+      "type": "article"
+    },
+    {
+      "id": "article-3",
+      "title": "記事タイトル3",
+      "pinned": false,
+      "date": "2024-09-10",
+      "summary": "記事の簡単な説明",
+      "url": "https://example.com/article-3",
+      "type": "article"
+    },
+    {
+      "id": "talk-2",
+      "title": "登壇タイトル2",
+      "pinned": false,
+      "date": "2024-08-05",
+      "summary": "登壇内容の説明",
+      "url": "https://example.com/talk-2",
+      "type": "talk"
+    },
+    {
+      "id": "article-4",
+      "title": "記事タイトル4",
+      "pinned": false,
+      "date": "2024-07-12",
+      "summary": "記事の簡単な説明",
+      "url": "https://example.com/article-4",
+      "type": "article"
+    },
+    {
+      "id": "article-5",
+      "title": "記事タイトル5",
+      "pinned": false,
+      "date": "2024-06-18",
+      "summary": "記事の簡単な説明",
+      "url": "https://example.com/article-5",
+      "type": "article"
+    }
+  ]
+}

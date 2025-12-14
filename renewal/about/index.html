@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About - 価値観・略歴・得意領域">
+  <meta name="keywords" content="プロフィール, 経歴, スキル">
+
+  <meta property="og:title" content="About - Portfolio">
+  <meta property="og:description" content="価値観・略歴・得意領域">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://syukan3.github.io/renewal/about/">
+
+  <title>About - Portfolio</title>
+
+  <link rel="icon" type="image/svg+xml" href="/renewal/favicon.svg">
+
+  <link rel="stylesheet" href="/renewal/css/reset.css">
+  <link rel="stylesheet" href="/renewal/css/variables.css">
+  <link rel="stylesheet" href="/renewal/css/base.css">
+  <link rel="stylesheet" href="/renewal/css/components.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-container">
+      <a href="/renewal/" class="logo">Portfolio</a>
+
+      <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
+        ☰
+      </button>
+
+      <nav>
+        <ul class="nav-list">
+          <li><a href="/renewal/" class="nav-link">Home</a></li>
+          <li><a href="/renewal/work/" class="nav-link">Work</a></li>
+          <li><a href="/renewal/projects/" class="nav-link">Projects</a></li>
+          <li><a href="/renewal/writing/" class="nav-link">Writing</a></li>
+          <li><a href="/renewal/about/" class="nav-link">About</a></li>
+          <li><a href="/renewal/photo/" class="nav-link">Photo</a></li>
+          <li><a href="/renewal/contact/" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container container-lg">
+        <div class="section-header section-title-center">
+          <h1 class="section-title">About</h1>
+          <p id="profile-tagline" class="section-subtitle" style="max-width: 700px;">
+            <!-- Loaded by JavaScript -->
+          </p>
+        </div>
+
+        <!-- Values -->
+        <div style="margin-bottom: var(--space-20);">
+          <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-8); text-align: center;">価値観</h2>
+          <div id="values" class="grid grid-3">
+            <!-- Loaded by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Expertise -->
+        <div class="film-border" style="margin-bottom: var(--space-20);">
+          <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-8); text-align: center;">得意領域</h2>
+          <div id="expertise" class="grid grid-3">
+            <!-- Loaded by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="film-border">
+          <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-8); text-align: center;">略歴</h2>
+          <div style="max-width: 800px; margin: 0 auto;">
+            <div id="timeline">
+              <!-- Loaded by JavaScript -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact CTA -->
+    <section class="section film-border">
+      <div class="container">
+        <div class="viewfinder" style="max-width: 700px; margin: 0 auto; text-align: center;">
+          <h2 class="section-title">Let's Work Together</h2>
+          <p style="font-size: var(--text-lg); color: var(--color-text-secondary); margin-bottom: var(--space-8);">
+            お気軽にお問い合わせください
+          </p>
+          <a href="/renewal/contact/" class="btn btn-primary">お問い合わせ</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3 class="footer-title">Navigate</h3>
+          <div class="footer-links">
+            <a href="/renewal/" class="footer-link">Home</a>
+            <a href="/renewal/work/" class="footer-link">Work</a>
+            <a href="/renewal/projects/" class="footer-link">Projects</a>
+            <a href="/renewal/writing/" class="footer-link">Writing</a>
+            <a href="/renewal/about/" class="footer-link">About</a>
+            <a href="/renewal/contact/" class="footer-link">Contact</a>
+          </div>
+        </div>
+
+        <div class="footer-section">
+          <h3 class="footer-title">Connect</h3>
+          <div class="footer-links">
+            <a href="https://github.com/username" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+            <a href="https://twitter.com/username" target="_blank" rel="noopener noreferrer" class="footer-link">Twitter</a>
+            <a href="https://linkedin.com/in/username" target="_blank" rel="noopener noreferrer" class="footer-link">LinkedIn</a>
+          </div>
+        </div>
+
+        <div class="footer-section">
+          <h3 class="footer-title">Info</h3>
+          <p class="text-muted" style="font-size: var(--text-sm);">
+            Toy Camera Noir<br>
+            Portfolio 2024
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2024 Your Name. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/renewal/js/main.js"></script>
+  <script src="/renewal/js/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const profileData = await DataLoader.getProfile();
+
+      // Set tagline
+      const taglineEl = document.getElementById('profile-tagline');
+      if (taglineEl && profileData.tagline) {
+        taglineEl.textContent = profileData.tagline;
+      }
+
+      // Render values
+      const valuesData = await DataLoader.load('profile.json');
+      const values = valuesData?.values || [];
+      Components.renderItems('values', values, Components.createValueCard);
+
+      // Render expertise
+      const expertise = valuesData?.expertise || [];
+      Components.renderItems('expertise', expertise, Components.createValueCard);
+
+      // Render timeline
+      const timeline = valuesData?.timeline || [];
+      Components.renderItems('timeline', timeline, Components.createTimelineItem);
+    });
+  </script>
+</body>
+</html>

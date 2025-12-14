@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ポートフォリオサイト - 技術力と成果で価値を届けるエンジニア">
+  <meta name="keywords" content="エンジニア, ポートフォリオ, 開発, 技術">
+
+  <!-- OGP -->
+  <meta property="og:title" content="Portfolio - Your Name">
+  <meta property="og:description" content="技術力と成果で価値を届けるエンジニア">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://syukan3.github.io/renewal/">
+  <meta property="og:image" content="https://syukan3.github.io/renewal/images/og-image.jpg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Portfolio - Your Name">
+  <meta name="twitter:description" content="技術力と成果で価値を届けるエンジニア">
+  <meta name="twitter:image" content="https://syukan3.github.io/renewal/images/og-image.jpg">
+
+  <title>Portfolio - Your Name</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/renewal/favicon.svg">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/renewal/css/reset.css">
+  <link rel="stylesheet" href="/renewal/css/variables.css">
+  <link rel="stylesheet" href="/renewal/css/base.css">
+  <link rel="stylesheet" href="/renewal/css/components.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-container">
+      <a href="/renewal/" class="logo">Portfolio</a>
+
+      <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
+        ☰
+      </button>
+
+      <nav>
+        <ul class="nav-list">
+          <li><a href="/renewal/" class="nav-link">Home</a></li>
+          <li><a href="/renewal/work/" class="nav-link">Work</a></li>
+          <li><a href="/renewal/projects/" class="nav-link">Projects</a></li>
+          <li><a href="/renewal/writing/" class="nav-link">Writing</a></li>
+          <li><a href="/renewal/about/" class="nav-link">About</a></li>
+          <li><a href="/renewal/photo/" class="nav-link">Photo</a></li>
+          <li><a href="/renewal/contact/" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="section">
+      <div class="container">
+        <div class="viewfinder" style="max-width: 900px; margin: 0 auto;">
+          <h1 style="font-size: var(--text-6xl); margin-bottom: var(--space-6); line-height: var(--leading-tight);">
+            技術力と成果で<br>価値を届ける
+          </h1>
+          <p style="font-size: var(--text-xl); color: var(--color-text-secondary); margin-bottom: var(--space-8); line-height: var(--leading-relaxed);">
+            課題を正確に捉え、技術選定から実装・運用まで一貫して推進。<br>
+            再現性のある成果を生み出すエンジニア。
+          </p>
+          <div style="display: flex; gap: var(--space-4); flex-wrap: wrap;">
+            <a href="/renewal/work/" class="btn btn-primary">Work を見る</a>
+            <a href="/renewal/contact/" class="btn btn-secondary">相談する</a>
+            <a href="/renewal/writing/" class="btn btn-ghost">記事・登壇を見る</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What I Do -->
+    <section class="section film-border">
+      <div class="container">
+        <div class="section-header section-title-center">
+          <h2 class="section-title">提供できること</h2>
+          <p class="section-subtitle">技術と事業の両面から価値を創出します</p>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="card">
+            <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">🎯 課題解決設計</h3>
+            <p class="text-secondary">
+              事業課題を技術課題に落とし込み、制約条件の中で最適な解決策を設計。
+              過度な複雑化を避け、保守可能で拡張性の高いアーキテクチャを提案します。
+            </p>
+          </div>
+
+          <div class="card">
+            <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">⚙️ 実装・運用推進</h3>
+            <p class="text-secondary">
+              設計だけでなく、実装から運用まで一貫して推進。
+              パフォーマンス、セキュリティ、可用性を考慮した堅牢なシステムを構築します。
+            </p>
+          </div>
+
+          <div class="card">
+            <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">📊 成果の可視化</h3>
+            <p class="text-secondary">
+              技術的な取り組みを事業成果に繋げ、定量的に測定。
+              改善サイクルを回し続け、継続的な価値向上を実現します。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Work -->
+    <section class="section film-border">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Featured Work</h2>
+          <p class="section-subtitle">主要なケーススタディ</p>
+        </div>
+
+        <div id="featured-works" class="grid grid-3">
+          <!-- Loaded by JavaScript -->
+        </div>
+
+        <div style="text-align: center; margin-top: var(--space-12);">
+          <a href="/renewal/work/" class="btn btn-secondary">すべての Work を見る →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Projects -->
+    <section class="section film-border">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Featured Projects</h2>
+          <p class="section-subtitle">主要プロジェクト</p>
+        </div>
+
+        <div id="featured-projects" class="grid grid-3">
+          <!-- Loaded by JavaScript -->
+        </div>
+
+        <div style="text-align: center; margin-top: var(--space-12);">
+          <a href="/renewal/projects/" class="btn btn-secondary">すべての Projects を見る →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Writing & Talks -->
+    <section class="section film-border">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Writing & Talks</h2>
+          <p class="section-subtitle">技術発信・登壇</p>
+        </div>
+
+        <div id="pinned-writing" class="grid grid-3">
+          <!-- Loaded by JavaScript -->
+        </div>
+
+        <div style="text-align: center; margin-top: var(--space-12);">
+          <a href="/renewal/writing/" class="btn btn-secondary">すべての記事・登壇を見る →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Preview -->
+    <section class="section film-border">
+      <div class="container">
+        <div class="viewfinder" style="max-width: 800px; margin: 0 auto; text-align: center;">
+          <h2 class="section-title">About</h2>
+          <p style="font-size: var(--text-lg); color: var(--color-text-secondary); margin-bottom: var(--space-8); line-height: var(--leading-relaxed);">
+            技術を通じて価値を生み出し、チームと事業を前に進めることに情熱を注いでいます。
+            課題に対して本質的なアプローチを取り、長期的な視点で持続可能なシステムを構築することを大切にしています。
+          </p>
+          <a href="/renewal/about/" class="btn btn-secondary">詳しく見る →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact CTA -->
+    <section class="section film-border">
+      <div class="container">
+        <div class="viewfinder" style="max-width: 700px; margin: 0 auto; text-align: center;">
+          <h2 class="section-title">Let's Work Together</h2>
+          <p style="font-size: var(--text-lg); color: var(--color-text-secondary); margin-bottom: var(--space-8);">
+            プロジェクトのご相談、業務委託、技術顧問など<br>
+            お気軽にお問い合わせください
+          </p>
+          <a href="/renewal/contact/" class="btn btn-primary">お問い合わせ</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3 class="footer-title">Navigate</h3>
+          <div class="footer-links">
+            <a href="/renewal/" class="footer-link">Home</a>
+            <a href="/renewal/work/" class="footer-link">Work</a>
+            <a href="/renewal/projects/" class="footer-link">Projects</a>
+            <a href="/renewal/writing/" class="footer-link">Writing</a>
+            <a href="/renewal/about/" class="footer-link">About</a>
+            <a href="/renewal/contact/" class="footer-link">Contact</a>
+          </div>
+        </div>
+
+        <div class="footer-section">
+          <h3 class="footer-title">Connect</h3>
+          <div class="footer-links">
+            <a href="https://github.com/username" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+            <a href="https://twitter.com/username" target="_blank" rel="noopener noreferrer" class="footer-link">Twitter</a>
+            <a href="https://linkedin.com/in/username" target="_blank" rel="noopener noreferrer" class="footer-link">LinkedIn</a>
+          </div>
+        </div>
+
+        <div class="footer-section">
+          <h3 class="footer-title">Info</h3>
+          <p class="text-muted" style="font-size: var(--text-sm);">
+            Toy Camera Noir<br>
+            Portfolio 2024
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2024 Your Name. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/renewal/js/main.js"></script>
+  <script src="/renewal/js/components.js"></script>
+  <script>
+    // Load and render content
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Show skeletons while loading
+      Components.showSkeleton('featured-works', 3);
+      Components.showSkeleton('featured-projects', 6);
+      Components.showSkeleton('pinned-writing', 3);
+
+      // Load data
+      const works = await DataLoader.getWorks();
+      const projects = await DataLoader.getProjects();
+      const writing = await DataLoader.getWriting();
+
+      // Filter featured items
+      const featuredWorks = works.filter(w => w.featured).slice(0, 3);
+      const featuredProjects = projects.filter(p => p.featured).slice(0, 6);
+      const pinnedWriting = writing.filter(w => w.pinned).slice(0, 3);
+
+      // Render content
+      Components.renderItems('featured-works', featuredWorks, Components.createWorkCard);
+      Components.renderItems('featured-projects', featuredProjects, Components.createProjectCard);
+      Components.renderItems('pinned-writing', pinnedWriting, Components.createWritingItem);
+    });
+  </script>
+</body>
+</html>

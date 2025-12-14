@@ -1,0 +1,116 @@
+{
+  "projects": [
+    {
+      "id": "proj-1",
+      "title": "プロジェクト名",
+      "featured": true,
+      "summary": "プロジェクトの1行説明",
+      "role": "設計/実装/運用",
+      "tags": ["React", "TypeScript", "Node.js"],
+      "links": {
+        "github": "https://github.com/username/repo",
+        "demo": "https://example.com",
+        "article": ""
+      },
+      "year": "2024"
+    },
+    {
+      "id": "proj-2",
+      "title": "プロジェクト名2",
+      "featured": true,
+      "summary": "プロジェクトの1行説明",
+      "role": "設計/実装",
+      "tags": ["Python", "Django", "PostgreSQL"],
+      "links": {
+        "github": "https://github.com/username/repo2",
+        "demo": "",
+        "article": "https://example.com/article"
+      },
+      "year": "2024"
+    },
+    {
+      "id": "proj-3",
+      "title": "プロジェクト名3",
+      "featured": true,
+      "summary": "プロジェクトの1行説明",
+      "role": "実装/運用",
+      "tags": ["Go", "Docker", "Kubernetes"],
+      "links": {
+        "github": "https://github.com/username/repo3",
+        "demo": "",
+        "article": ""
+      },
+      "year": "2023"
+    },
+    {
+      "id": "proj-4",
+      "title": "プロジェクト名4",
+      "featured": true,
+      "summary": "プロジェクトの1行説明",
+      "role": "設計/実装",
+      "tags": ["Vue.js", "Nuxt", "Firebase"],
+      "links": {
+        "github": "",
+        "demo": "https://example.com/demo",
+        "article": ""
+      },
+      "year": "2023"
+    },
+    {
+      "id": "proj-5",
+      "title": "プロジェクト名5",
+      "featured": true,
+      "summary": "プロジェクトの1行説明",
+      "role": "設計",
+      "tags": ["AWS", "Terraform", "CloudFormation"],
+      "links": {
+        "github": "https://github.com/username/repo5",
+        "demo": "",
+        "article": ""
+      },
+      "year": "2023"
+    },
+    {
+      "id": "proj-6",
+      "title": "プロジェクト名6",
+      "featured": true,
+      "summary": "プロジェクトの1行説明",
+      "role": "実装",
+      "tags": ["Rust", "WebAssembly", "GraphQL"],
+      "links": {
+        "github": "https://github.com/username/repo6",
+        "demo": "",
+        "article": ""
+      },
+      "year": "2022"
+    },
+    {
+      "id": "proj-7",
+      "title": "プロジェクト名7",
+      "featured": false,
+      "summary": "プロジェクトの1行説明",
+      "role": "実装",
+      "tags": ["Ruby", "Rails", "Redis"],
+      "links": {
+        "github": "",
+        "demo": "",
+        "article": ""
+      },
+      "year": "2022"
+    },
+    {
+      "id": "proj-8",
+      "title": "プロジェクト名8",
+      "featured": false,
+      "summary": "プロジェクトの1行説明",
+      "role": "設計/実装",
+      "tags": ["Swift", "iOS", "CoreData"],
+      "links": {
+        "github": "",
+        "demo": "",
+        "article": ""
+      },
+      "year": "2022"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "profile": {
+    "name": "Your Name",
+    "title": "職種・肩書き",
+    "tagline": "提供価値を一言で表現",
+    "description": "より詳しい説明（2-3行）",
+    "email": "your.email@example.com",
+    "social": {
+      "github": "https://github.com/username",
+      "twitter": "https://twitter.com/username",
+      "linkedin": "https://linkedin.com/in/username"
+    }
+  },
+  "values": [
+    {
+      "title": "価値観1",
+      "description": "価値観の説明（短文）"
+    },
+    {
+      "title": "価値観2",
+      "description": "価値観の説明（短文）"
+    },
+    {
+      "title": "価値観3",
+      "description": "価値観の説明（短文）"
+    }
+  ],
+  "expertise": [
+    {
+      "area": "得意領域1",
+      "description": "具体的な強みと裏付け"
+    },
+    {
+      "area": "得意領域2",
+      "description": "具体的な強みと裏付け"
+    },
+    {
+      "area": "得意領域3",
+      "description": "具体的な強みと裏付け"
+    }
+  ],
+  "timeline": [
+    {
+      "year": "2024",
+      "title": "現職",
+      "description": "役割と成果"
+    },
+    {
+      "year": "2022-2024",
+      "title": "前職",
+      "description": "役割と成果"
+    },
+    {
+      "year": "2020-2022",
+      "title": "前々職",
+      "description": "役割と成果"
+    }
+  ]
+}

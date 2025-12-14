@@ -1,0 +1,140 @@
+:root {
+  /* Color System - Toy Camera Noir Palette */
+
+  /* Base Colors - Darkroom inspired */
+  --color-noir-black: #0a0a0a;
+  --color-charcoal: #1a1a1a;
+  --color-smoke: #2a2a2a;
+  --color-slate: #3a3a3a;
+  --color-ash: #4a4a4a;
+
+  /* Light Colors - Film/Paper tones */
+  --color-silver: #b8b8b8;
+  --color-platinum: #d4d4d4;
+  --color-paper: #e8e8e8;
+  --color-white: #f5f5f5;
+
+  /* Accent Colors - Light leak inspired (subtle) */
+  --color-amber-leak: rgba(255, 191, 105, 0.15);
+  --color-cyan-leak: rgba(105, 191, 255, 0.12);
+  --color-magenta-leak: rgba(255, 105, 191, 0.10);
+
+  /* Semantic Colors */
+  --color-bg-primary: var(--color-noir-black);
+  --color-bg-secondary: var(--color-charcoal);
+  --color-bg-tertiary: var(--color-smoke);
+
+  --color-text-primary: var(--color-white);
+  --color-text-secondary: var(--color-platinum);
+  --color-text-muted: var(--color-silver);
+
+  --color-border: var(--color-slate);
+  --color-border-light: var(--color-ash);
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', monospace;
+
+  /* Font Sizes */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+  --text-5xl: 3rem;      /* 48px */
+  --text-6xl: 3.75rem;   /* 60px */
+
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* Line Heights */
+  --leading-tight: 1.2;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.8;
+
+  /* Spacing */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+  --space-32: 8rem;     /* 128px */
+
+  /* Layout */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1536px;
+
+  --container-padding: var(--space-6);
+
+  /* Border Radius */
+  --radius-sm: 0.125rem;  /* 2px */
+  --radius-md: 0.25rem;   /* 4px */
+  --radius-lg: 0.5rem;    /* 8px */
+  --radius-xl: 1rem;      /* 16px */
+
+  /* Shadows - Subtle, film-inspired */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+
+  /* Film Grain Effect */
+  --grain-opacity: 0.03;
+
+  /* Viewfinder Frame (for special sections) */
+  --viewfinder-border: 3px solid var(--color-slate);
+  --viewfinder-corner-size: 20px;
+
+  /* Film Perforation (for backgrounds) */
+  --perforation-size: 8px;
+  --perforation-spacing: 16px;
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  :root {
+    --text-3xl: 1.5rem;   /* 24px */
+    --text-4xl: 1.875rem; /* 30px */
+    --text-5xl: 2.25rem;  /* 36px */
+    --text-6xl: 3rem;     /* 48px */
+
+    --container-padding: var(--space-4);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0ms;
+    --transition-base: 0ms;
+    --transition-slow: 0ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

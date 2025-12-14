@@ -1,0 +1,68 @@
+{
+  "works": [
+    {
+      "id": "work-1",
+      "title": "プロジェクト名",
+      "slug": "project-name",
+      "featured": true,
+      "summary": "1行での概要説明",
+      "thumbnail": "/renewal/images/work-1-thumb.jpg",
+      "background": "誰の、何の課題だったのか",
+      "constraints": [
+        "期限の制約",
+        "体制の制約",
+        "技術的制約"
+      ],
+      "approach": "設計・技術選定の理由と方針",
+      "implementation": "アーキテクチャ概要と工夫点",
+      "results": [
+        "成果指標1",
+        "成果指標2"
+      ],
+      "learnings": "再現性のある学び",
+      "tags": ["TypeScript", "React", "Node.js"],
+      "year": "2024"
+    },
+    {
+      "id": "work-2",
+      "title": "プロジェクト名2",
+      "slug": "project-name-2",
+      "featured": true,
+      "summary": "1行での概要説明",
+      "thumbnail": "/renewal/images/work-2-thumb.jpg",
+      "background": "誰の、何の課題だったのか",
+      "constraints": [
+        "期限の制約",
+        "体制の制約"
+      ],
+      "approach": "設計・技術選定の理由と方針",
+      "implementation": "アーキテクチャ概要と工夫点",
+      "results": [
+        "成果指標1"
+      ],
+      "learnings": "再現性のある学び",
+      "tags": ["Python", "FastAPI", "PostgreSQL"],
+      "year": "2024"
+    },
+    {
+      "id": "work-3",
+      "title": "プロジェクト名3",
+      "slug": "project-name-3",
+      "featured": true,
+      "summary": "1行での概要説明",
+      "thumbnail": "/renewal/images/work-3-thumb.jpg",
+      "background": "誰の、何の課題だったのか",
+      "constraints": [
+        "制約1"
+      ],
+      "approach": "設計・技術選定の理由と方針",
+      "implementation": "アーキテクチャ概要と工夫点",
+      "results": [
+        "成果指標1"
+      ],
+      "learnings": "再現性のある学び",
+      "tags": ["Kubernetes", "Docker", "AWS"],
+      "year": "2023"
+    }
+  ]
+}
