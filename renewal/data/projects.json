@@ -1,116 +1,136 @@
 {
   "projects": [
     {
-      "id": "proj-1",
-      "title": "プロジェクト名",
+      "id": "qiita-growth",
+      "title": "技術ブログ150万ビュー獲得戦略",
       "featured": true,
-      "summary": "プロジェクトの1行説明",
+      "summary": "戦略的アプローチで143万ビュー達成。日間PVを7倍に成長させ、270記事を公開",
+      "role": "執筆/戦略設計",
+      "tags": ["Qiita", "SEO", "Analytics", "Growth"],
+      "links": {
+        "github": "",
+        "demo": "https://qiita.com/syukan3",
+        "article": ""
+      },
+      "year": "2019-2025",
+      "metrics": {
+        "totalViews": "1,434,762",
+        "articles": "270",
+        "dailyPV": "5,000",
+        "growthRate": "7倍"
+      }
+    },
+    {
+      "id": "censify",
+      "title": "Censify",
+      "featured": true,
+      "summary": "不適切な表現を検出するAPIサービス。LLMを活用した高精度な判定を実現",
+      "role": "設計/実装",
+      "tags": ["TypeScript", "Cloudflare Workers", "AI", "HonoJS"],
+      "links": {
+        "github": "",
+        "demo": "https://censify-lp.pages.dev",
+        "article": ""
+      },
+      "year": "2024"
+    },
+    {
+      "id": "gaugenix",
+      "title": "Gaugenix",
+      "featured": true,
+      "summary": "IoTデバイスで計器の画像を撮影し、AI解析で値を取得するシステム",
       "role": "設計/実装/運用",
-      "tags": ["React", "TypeScript", "Node.js"],
+      "tags": ["Next.js", "Supabase", "Python", "AI", "AWS"],
       "links": {
-        "github": "https://github.com/username/repo",
-        "demo": "https://example.com",
+        "github": "",
+        "demo": "",
+        "article": ""
+      },
+      "year": "2023-2024"
+    },
+    {
+      "id": "mosaicai",
+      "title": "MosaicAI",
+      "featured": true,
+      "summary": "複数のAI言語モデルを統一的に利用できるオープンソースPythonライブラリ",
+      "role": "設計/実装",
+      "tags": ["Python", "AI", "OpenSource"],
+      "links": {
+        "github": "https://github.com/syukan3/MosaicAI",
+        "demo": "",
+        "article": "https://qiita.com/syukan3/items/d810f727ad223e2d60d5"
+      },
+      "year": "2024"
+    },
+    {
+      "id": "omniocr",
+      "title": "OmniOCR",
+      "featured": true,
+      "summary": "画像やPDFからテキストを抽出し、構造化データに変換するAI OCRサービス",
+      "role": "設計/実装",
+      "tags": ["TypeScript", "Next.js", "AI", "Cloudflare"],
+      "links": {
+        "github": "",
+        "demo": "https://omni-ocr-lp.pages.dev/",
         "article": ""
       },
       "year": "2024"
     },
     {
-      "id": "proj-2",
-      "title": "プロジェクト名2",
+      "id": "wolverine-ruby",
+      "title": "Wolverine Ruby",
       "featured": true,
-      "summary": "プロジェクトの1行説明",
-      "role": "設計/実装",
-      "tags": ["Python", "Django", "PostgreSQL"],
-      "links": {
-        "github": "https://github.com/username/repo2",
-        "demo": "",
-        "article": "https://example.com/article"
-      },
-      "year": "2024"
-    },
-    {
-      "id": "proj-3",
-      "title": "プロジェクト名3",
-      "featured": true,
-      "summary": "プロジェクトの1行説明",
-      "role": "実装/運用",
-      "tags": ["Go", "Docker", "Kubernetes"],
-      "links": {
-        "github": "https://github.com/username/repo3",
-        "demo": "",
-        "article": ""
-      },
-      "year": "2023"
-    },
-    {
-      "id": "proj-4",
-      "title": "プロジェクト名4",
-      "featured": true,
-      "summary": "プロジェクトの1行説明",
-      "role": "設計/実装",
-      "tags": ["Vue.js", "Nuxt", "Firebase"],
-      "links": {
-        "github": "",
-        "demo": "https://example.com/demo",
-        "article": ""
-      },
-      "year": "2023"
-    },
-    {
-      "id": "proj-5",
-      "title": "プロジェクト名5",
-      "featured": true,
-      "summary": "プロジェクトの1行説明",
-      "role": "設計",
-      "tags": ["AWS", "Terraform", "CloudFormation"],
-      "links": {
-        "github": "https://github.com/username/repo5",
-        "demo": "",
-        "article": ""
-      },
-      "year": "2023"
-    },
-    {
-      "id": "proj-6",
-      "title": "プロジェクト名6",
-      "featured": true,
-      "summary": "プロジェクトの1行説明",
+      "summary": "自律型プログラムバグ修復ツール。ChatGPT APIリリース直後に開発",
       "role": "実装",
-      "tags": ["Rust", "WebAssembly", "GraphQL"],
-      "links": {
-        "github": "https://github.com/username/repo6",
-        "demo": "",
-        "article": ""
-      },
-      "year": "2022"
-    },
-    {
-      "id": "proj-7",
-      "title": "プロジェクト名7",
-      "featured": false,
-      "summary": "プロジェクトの1行説明",
-      "role": "実装",
-      "tags": ["Ruby", "Rails", "Redis"],
+      "tags": ["Ruby", "OpenAI GPT-3.5 API"],
       "links": {
         "github": "",
         "demo": "",
         "article": ""
       },
-      "year": "2022"
+      "year": "2023"
     },
     {
-      "id": "proj-8",
-      "title": "プロジェクト名8",
+      "id": "hijojo",
+      "title": "HiJoJo.com",
       "featured": false,
-      "summary": "プロジェクトの1行説明",
+      "summary": "オンラインファンド販売システム。Ruby 2.7→3.3、Rails 5.2→7.1 のバージョンアップを主導",
+      "role": "設計/実装/運用",
+      "tags": ["Ruby on Rails", "MySQL", "AWS", "JavaScript"],
+      "links": {
+        "github": "",
+        "demo": "",
+        "article": ""
+      },
+      "year": "2022-現在"
+    },
+    {
+      "id": "onegate",
+      "title": "OneGATE 保守管理システム",
+      "featured": false,
+      "summary": "インシデント管理、コールセンター（Amazon Connect）、カスタマーポータル機能を実装",
       "role": "設計/実装",
-      "tags": ["Swift", "iOS", "CoreData"],
+      "tags": ["Ruby on Rails", "AWS", "Amazon Connect", "JavaScript"],
       "links": {
         "github": "",
-        "demo": "",
+        "demo": "https://www.pdc-ds.com/service/onegate",
         "article": ""
       },
-      "year": "2022"
+      "year": "2019-2022"
+    },
+    {
+      "id": "face-authentication",
+      "title": "画像解析・属性取得システム",
+      "featured": false,
+      "summary": "画像分析による属性取得・視聴率測定システム。年齢推定モデルの作成を担当",
+      "role": "設計/実装",
+      "tags": ["Python", "PyTorch", "OpenVINO", "AWS IoT", "SageMaker"],
+      "links": {
+        "github": "",
+        "demo": "https://www.pdc-ds.com/service/face_authentication",
+        "article": ""
+      },
+      "year": "2020-2022"
     }
   ]
 }

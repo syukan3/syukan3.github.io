@@ -1,68 +1,79 @@
 {
   "works": [
     {
-      "id": "work-1",
-      "title": "プロジェクト名",
-      "slug": "project-name",
+      "id": "work-hijojo",
+      "title": "オンラインファンド販売システム HiJoJo.com",
+      "slug": "hijojo-system",
       "featured": true,
-      "summary": "1行での概要説明",
-      "thumbnail": "/renewal/images/work-1-thumb.jpg",
-      "background": "誰の、何の課題だったのか",
+      "summary": "金融規制に準拠したオンラインファンド販売システムの開発・運用を主導",
+      "thumbnail": "/renewal/images/work-hijojo-thumb.jpg",
+      "background": "オンラインでファンドを販売するシステムの開発・保守・運用が必要。金融商品を扱うため、高いセキュリティとコンプライアンスが求められる環境。",
       "constraints": [
-        "期限の制約",
-        "体制の制約",
-        "技術的制約"
+        "金融規制（第二種金融商品取引業）への準拠必須",
+        "高可用性・セキュリティの確保",
+        "既存システムのバージョンアップ（Ruby 2.7→3.3、Rails 5.2→7.1）",
+        "少人数体制での運用"
       ],
-      "approach": "設計・技術選定の理由と方針",
-      "implementation": "アーキテクチャ概要と工夫点",
+      "approach": "Ruby on Rails をベースに AWS クラウドを活用したアーキテクチャを採用。セキュリティとコンプライアンスを最優先に設計しながら、段階的なバージョンアップを計画的に実施。",
+      "implementation": "EC2、RDS、CloudFront、WAF 等を組み合わせた堅牢なインフラを構築。Ruby/Rails のメジャーバージョンアップを複数回成功させ、最新の機能とセキュリティパッチを適用。",
       "results": [
-        "成果指標1",
-        "成果指標2"
+        "Ruby 2.7.6 → 3.2.1 → 3.3.0 のバージョンアップ完了",
+        "Rails 5.2.8.1 → 6.1 → 7.1.3.2 のバージョンアップ完了",
+        "システムの安定稼働を継続",
+        "ファンド譲渡機能、金額時間優先機能、パートナーウェブサイト等の新機能を実装"
       ],
-      "learnings": "再現性のある学び",
-      "tags": ["TypeScript", "React", "Node.js"],
-      "year": "2024"
+      "learnings": "金融システムでは「動いているものを変えない」という圧力が強いが、計画的なバージョンアップによりセキュリティリスクを低減し、開発効率も向上させることができる。",
+      "tags": ["Ruby on Rails", "AWS", "MySQL", "JavaScript", "金融システム"],
+      "year": "2022-現在"
     },
     {
-      "id": "work-2",
-      "title": "プロジェクト名2",
-      "slug": "project-name-2",
+      "id": "work-qiita",
+      "title": "技術ブログ150万ビュー達成",
+      "slug": "qiita-growth",
       "featured": true,
-      "summary": "1行での概要説明",
-      "thumbnail": "/renewal/images/work-2-thumb.jpg",
-      "background": "誰の、何の課題だったのか",
+      "summary": "戦略的アプローチで Qiita 累計143万ビューを達成。日間PVを7倍に成長",
+      "thumbnail": "/renewal/images/work-qiita-thumb.jpg",
+      "background": "技術知識の共有と自身のブランディングを目的に技術ブログを運営。2024年11月時点で40万ビューだったものを、戦略的に成長させる必要があった。",
       "constraints": [
-        "期限の制約",
-        "体制の制約"
+        "本業との両立（限られた執筆時間）",
+        "競合が多い技術ブログ市場",
+        "継続的な投稿の維持"
       ],
-      "approach": "設計・技術選定の理由と方針",
-      "implementation": "アーキテクチャ概要と工夫点",
+      "approach": "トレンド分析によりAI・クラウド技術など需要の高いトピックに注力。SEO最適化（タイトル・タグ・構成）を徹底し、毎日1記事を目標に高品質なコンテンツを作成。",
+      "implementation": "アナリティクスを活用して人気記事の傾向を分析・改善。コメント対応やフィードバック反映で読者との関係構築を重視。",
       "results": [
-        "成果指標1"
+        "累計143万ビュー達成（8ヶ月で100万ビュー増加）",
+        "日間PV 5,000達成（7倍成長）",
+        "270記事を公開",
+        "人気記事「Deep Research」は25万ビュー超"
       ],
-      "learnings": "再現性のある学び",
-      "tags": ["Python", "FastAPI", "PostgreSQL"],
-      "year": "2024"
+      "learnings": "技術発信は継続が最も重要。トレンドを捉えた速報性と、深い解説を両立させることで読者の信頼を獲得できる。",
+      "tags": ["Qiita", "SEO", "Analytics", "技術発信"],
+      "year": "2019-2025"
     },
     {
-      "id": "work-3",
-      "title": "プロジェクト名3",
-      "slug": "project-name-3",
+      "id": "work-iot-vision",
+      "title": "画像解析・属性取得システム",
+      "slug": "iot-vision-system",
       "featured": true,
-      "summary": "1行での概要説明",
-      "thumbnail": "/renewal/images/work-3-thumb.jpg",
-      "background": "誰の、何の課題だったのか",
+      "summary": "IoTデバイスとAIを組み合わせた画像分析による属性取得・視聴率測定システムの開発",
+      "thumbnail": "/renewal/images/work-iot-thumb.jpg",
+      "background": "デジタルサイネージの効果測定のため、視聴者の属性（年齢・性別）を取得し視聴率を測定するシステムが必要だった。",
       "constraints": [
-        "制約1"
+        "エッジデバイスでのリアルタイム処理",
+        "プライバシーへの配慮（顔認識ではなく属性推定）",
+        "様々な環境（照明条件、カメラ角度）への対応"
       ],
-      "approach": "設計・技術選定の理由と方針",
-      "implementation": "アーキテクチャ概要と工夫点",
+      "approach": "AWS IoT Core/Greengrass を活用したエッジコンピューティングアーキテクチャを採用。PyTorch/OpenVINO で年齢推定モデルを作成し、エッジで推論を実行。",
+      "implementation": "機種・カメラの選定から年齢推定モデルの作成まで担当。Lambda、SageMaker と連携したデータ収集・分析パイプラインを構築。",
       "results": [
-        "成果指標1"
+        "複数の商業施設での実証実験に成功",
+        "リアルタイムでの属性取得を実現",
+        "視聴率データの可視化ダッシュボードを提供"
       ],
-      "learnings": "再現性のある学び",
-      "tags": ["Kubernetes", "Docker", "AWS"],
-      "year": "2023"
+      "learnings": "エッジとクラウドの適切な役割分担が重要。プライバシーに配慮しながらデータを収集する設計は、今後のIoTシステムで必須のスキルとなる。",
+      "tags": ["Python", "PyTorch", "OpenVINO", "AWS IoT", "SageMaker"],
+      "year": "2020-2022"
     }
   ]
 }

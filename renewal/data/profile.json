@@ -1,59 +1,110 @@
 {
   "profile": {
-    "name": "Your Name",
-    "title": "職種・肩書き",
-    "tagline": "提供価値を一言で表現",
-    "description": "より詳しい説明（2-3行）",
-    "email": "your.email@example.com",
+    "name": "栄 俊介",
+    "nameEn": "Sakae Shunsuke",
+    "title": "フルスタックエンジニア / システム部長",
+    "tagline": "技術で事業を前に進める",
+    "description": "Ruby on Rails、Python、React/Next.js、AWS を駆使し、要件定義から運用まで一貫した開発プロセスを担当。生成AIを活用したシステム開発に注力し、Claude Codeを活用した効率的な開発手法を推進。",
+    "email": "",
     "social": {
-      "github": "https://github.com/username",
-      "twitter": "https://twitter.com/username",
-      "linkedin": "https://linkedin.com/in/username"
+      "github": "https://github.com/syukan3",
+      "qiita": "https://qiita.com/syukan3"
     }
   },
   "values": [
     {
-      "title": "価値観1",
-      "description": "価値観の説明（短文）"
+      "title": "一貫した開発",
+      "description": "要件定義から設計・実装・運用まで、システム開発のライフサイクル全体を主導"
     },
     {
-      "title": "価値観2",
-      "description": "価値観の説明（短文）"
+      "title": "技術発信",
+      "description": "Qiita累計150万インプレッション達成。技術知識の共有に積極的に取り組む"
     },
     {
-      "title": "価値観3",
-      "description": "価値観の説明（短文）"
+      "title": "AI活用",
+      "description": "生成AIを活用したシステム開発に注力し、効率的な開発手法を推進"
     }
   ],
   "expertise": [
     {
-      "area": "得意領域1",
-      "description": "具体的な強みと裏付け"
+      "area": "バックエンド開発",
+      "description": "Ruby on Rails（5年以上）、Python での API 設計・実装。金融規制に準拠したシステム構築"
     },
     {
-      "area": "得意領域2",
-      "description": "具体的な強みと裏付け"
+      "area": "フロントエンド開発",
+      "description": "React/Next.js、JavaScript での UI 実装。レスポンシブ対応、アクセシビリティ考慮"
     },
     {
-      "area": "得意領域3",
-      "description": "具体的な強みと裏付け"
+      "area": "クラウドインフラ",
+      "description": "AWS（5年以上）。EC2、RDS、Lambda、IoT Core など多数のサービスを活用した堅牢なインフラ構築"
+    },
+    {
+      "area": "AI/ML",
+      "description": "OpenAI API、Claude、Amazon Bedrock/SageMaker を活用した AI システム開発"
     }
   ],
   "timeline": [
     {
-      "year": "2024",
-      "title": "現職",
-      "description": "役割と成果"
+      "year": "2024年5月 - 現在",
+      "title": "HiJoJo Partners株式会社 - システム部長",
+      "description": "システム全体のライフサイクルマネジメントを統括。生成AIを活用したシステム開発に注力"
     },
     {
-      "year": "2022-2024",
-      "title": "前職",
-      "description": "役割と成果"
+      "year": "2022年11月 - 2024年4月",
+      "title": "HiJoJo Partners株式会社 - ソリューションアーキテクト",
+      "description": "オンラインファンド販売システム HiJoJo.com の開発・保守・運用を主導"
     },
     {
-      "year": "2020-2022",
-      "title": "前々職",
-      "description": "役割と成果"
+      "year": "2019年8月 - 2022年11月",
+      "title": "ピーディーシー株式会社 - フルスタックエンジニア",
+      "description": "画像分析システム、コンテンツ配信システム、保守管理システム等の開発"
+    },
+    {
+      "year": "2015年4月 - 2019年7月",
+      "title": "いすゞ自動車株式会社 - 生産部門",
+      "description": "新車プロジェクト生産管理、RPA による業務改善（年間775時間削減）"
+    },
+    {
+      "year": "2013年4月 - 2015年3月",
+      "title": "岡山大学 大学院自然科学研究科",
+      "description": "IEEE国際学会での論文発表。太陽光発電・燃料電池車のエネルギー管理システム研究"
     }
-  ]
+  ],
+  "certifications": [
+    "AWS Certified Solutions Architect – Associate",
+    "AWS Certified Developer - Associate",
+    "AWS Certified SysOps Administrator - Associate",
+    "AWS Certified Machine Learning – Specialty",
+    "AWS Certified Cloud Practitioner",
+    "Ruby技術者認定試験 Gold",
+    "第三種電気主任技術者試験",
+    "証券外務員一種",
+    "TOEIC 730点"
+  ],
+  "skills": {
+    "languages": [
+      {"name": "Ruby", "years": "5年以上"},
+      {"name": "JavaScript", "years": "5年以上"},
+      {"name": "Python", "years": "5年以上"},
+      {"name": "TypeScript", "years": "1-3年"},
+      {"name": "Dart", "years": "1年未満"},
+      {"name": "Go", "years": "1年未満"}
+    ],
+    "frameworks": [
+      {"name": "Ruby on Rails", "years": "5年以上"},
+      {"name": "React", "years": "3-5年"},
+      {"name": "Next.js", "years": "1年未満"},
+      {"name": "Flutter", "years": "1年未満"},
+      {"name": "OpenCV", "years": "1-3年"}
+    ],
+    "infrastructure": [
+      {"name": "MySQL", "years": "5年以上"},
+      {"name": "AWS", "years": "5年以上"}
+    ],
+    "awsServices": {
+      "core": ["EC2", "RDS", "CloudFront", "S3", "IAM", "Route 53", "ElastiCache", "CloudFormation", "ECR", "ECS", "WAF"],
+      "integration": ["IoT Core", "IoT Greengrass", "IoT Events", "EventBridge", "Step Functions", "Cognito", "SES", "Amplify", "CodePipeline", "Cloud9"],
+      "aiml": ["Bedrock", "SageMaker", "Transcribe", "Connect", "Kinesis Firehose", "Athena", "QuickSight", "Redshift"]
+    }
+  }
 }
