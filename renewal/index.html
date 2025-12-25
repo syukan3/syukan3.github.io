@@ -37,7 +37,7 @@
       <a href="/renewal/" class="logo">Portfolio</a>
 
       <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
-        ☰
+        <span class="menu-icon" aria-hidden="true"></span>
       </button>
 
       <nav>
@@ -54,20 +54,21 @@
     </div>
   </header>
 
-  <main>
+  <div class="noir-frame">
+    <main>
     <!-- Hero Section -->
-    <section class="section">
+    <section class="section hero">
       <div class="container">
-        <div class="viewfinder" style="max-width: 900px; margin: 0 auto;">
-          <p style="font-size: var(--text-lg); color: var(--color-text-muted); margin-bottom: var(--space-4);">栄 俊介 / Sakae Shunsuke</p>
-          <h1 style="font-size: var(--text-6xl); margin-bottom: var(--space-6); line-height: var(--leading-tight);">
-            技術で事業を<br>前に進める
+        <div class="viewfinder">
+          <p class="hero-kicker">栄 俊介 / Sakae Shunsuke</p>
+          <h1 class="hero-title">
+            技術で事業を<br class="hero-br">前に進める
           </h1>
-          <p style="font-size: var(--text-xl); color: var(--color-text-secondary); margin-bottom: var(--space-8); line-height: var(--leading-relaxed);">
-            Ruby on Rails、Python、React/Next.js、AWS を駆使し、<br>
+          <p class="hero-lead">
+            Ruby on Rails、Python、React/Next.js、AWS を駆使し、<br class="hero-br">
             要件定義から運用まで一貫した開発プロセスを推進。
           </p>
-          <div style="display: flex; gap: var(--space-4); flex-wrap: wrap;">
+          <div class="hero-actions">
             <a href="/renewal/work/" class="btn btn-primary">Work を見る</a>
             <a href="/renewal/contact/" class="btn btn-secondary">相談する</a>
             <a href="/renewal/writing/" class="btn btn-ghost">記事・登壇を見る</a>
@@ -86,7 +87,7 @@
 
         <div class="grid grid-3">
           <div class="card">
-            <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">🎯 課題解決設計</h3>
+            <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">課題解決設計</h3>
             <p class="text-secondary">
               事業課題を技術課題に落とし込み、制約条件の中で最適な解決策を設計。
               過度な複雑化を避け、保守可能で拡張性の高いアーキテクチャを提案します。
@@ -94,7 +95,7 @@
           </div>
 
           <div class="card">
-            <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">⚙️ 実装・運用推進</h3>
+            <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">実装・運用推進</h3>
             <p class="text-secondary">
               設計だけでなく、実装から運用まで一貫して推進。
               パフォーマンス、セキュリティ、可用性を考慮した堅牢なシステムを構築します。
@@ -102,7 +103,7 @@
           </div>
 
           <div class="card">
-            <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">📊 成果の可視化</h3>
+            <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">成果の可視化</h3>
             <p class="text-secondary">
               技術的な取り組みを事業成果に繋げ、定量的に測定。
               改善サイクルを回し続け、継続的な価値向上を実現します。
@@ -193,46 +194,47 @@
         </div>
       </div>
     </section>
-  </main>
+    </main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h3 class="footer-title">Navigate</h3>
-          <div class="footer-links">
-            <a href="/renewal/" class="footer-link">Home</a>
-            <a href="/renewal/work/" class="footer-link">Work</a>
-            <a href="/renewal/projects/" class="footer-link">Projects</a>
-            <a href="/renewal/writing/" class="footer-link">Writing</a>
-            <a href="/renewal/about/" class="footer-link">About</a>
-            <a href="/renewal/contact/" class="footer-link">Contact</a>
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3 class="footer-title">Navigate</h3>
+            <div class="footer-links">
+              <a href="/renewal/" class="footer-link">Home</a>
+              <a href="/renewal/work/" class="footer-link">Work</a>
+              <a href="/renewal/projects/" class="footer-link">Projects</a>
+              <a href="/renewal/writing/" class="footer-link">Writing</a>
+              <a href="/renewal/about/" class="footer-link">About</a>
+              <a href="/renewal/contact/" class="footer-link">Contact</a>
+            </div>
+          </div>
+
+          <div class="footer-section">
+            <h3 class="footer-title">Connect</h3>
+            <div class="footer-links">
+              <a href="https://github.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+              <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">Qiita</a>
+            </div>
+          </div>
+
+          <div class="footer-section">
+            <h3 class="footer-title">Info</h3>
+            <p class="text-muted" style="font-size: var(--text-sm);">
+              Toy Camera Noir<br>
+              Portfolio 2025
+            </p>
           </div>
         </div>
 
-        <div class="footer-section">
-          <h3 class="footer-title">Connect</h3>
-          <div class="footer-links">
-            <a href="https://github.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
-            <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">Qiita</a>
-          </div>
-        </div>
-
-        <div class="footer-section">
-          <h3 class="footer-title">Info</h3>
-          <p class="text-muted" style="font-size: var(--text-sm);">
-            Toy Camera Noir<br>
-            Portfolio 2025
-          </p>
+        <div class="footer-bottom">
+          <p>&copy; 2025 Sakae Shunsuke. All rights reserved.</p>
         </div>
       </div>
-
-      <div class="footer-bottom">
-        <p>&copy; 2025 Sakae Shunsuke. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
+    </footer>
+  </div>
 
   <!-- Scripts -->
   <script src="/renewal/js/main.js"></script>

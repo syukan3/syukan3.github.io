@@ -15,14 +15,19 @@
   --color-white: #f5f5f5;
 
   /* Accent Colors - Light leak inspired (subtle) */
-  --color-amber-leak: rgba(255, 191, 105, 0.15);
+  --color-amber-leak: rgba(255, 191, 105, 0.18);
   --color-cyan-leak: rgba(105, 191, 255, 0.12);
   --color-magenta-leak: rgba(255, 105, 191, 0.10);
+  --color-ember: #d19a4a;
+  --color-ember-bright: #f1c275;
+  --color-ember-dark: #a7742e;
 
   /* Semantic Colors */
   --color-bg-primary: var(--color-noir-black);
   --color-bg-secondary: var(--color-charcoal);
   --color-bg-tertiary: var(--color-smoke);
+  --color-bg-frame: rgba(16, 16, 16, 0.92);
+  --color-bg-frame-highlight: rgba(28, 28, 28, 0.92);
 
   --color-text-primary: var(--color-white);
   --color-text-secondary: var(--color-platinum);
@@ -32,7 +37,8 @@
   --color-border-light: var(--color-ash);
 
   /* Typography */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  --font-sans: 'Avenir Next', 'Avenir', 'Gill Sans', 'Trebuchet MS', sans-serif;
+  --font-display: 'Cormorant Garamond', 'Garamond', 'Palatino', serif;
   --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', monospace;
 
   /* Font Sizes */
@@ -80,18 +86,23 @@
   --container-xl: 1280px;
   --container-2xl: 1536px;
 
-  --container-padding: var(--space-6);
+  --container-padding: var(--space-5);
+  --page-padding-y: var(--space-8);
+  --page-padding-x: var(--space-6);
+  --header-height: 72px;
 
   /* Border Radius */
   --radius-sm: 0.125rem;  /* 2px */
   --radius-md: 0.25rem;   /* 4px */
   --radius-lg: 0.5rem;    /* 8px */
   --radius-xl: 1rem;      /* 16px */
+  --radius-2xl: 1.75rem;  /* 28px */
 
   /* Shadows - Subtle, film-inspired */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-frame: 0 24px 60px rgba(0, 0, 0, 0.6);
 
   /* Transitions */
   --transition-fast: 150ms ease-in-out;
@@ -99,15 +110,20 @@
   --transition-slow: 350ms ease-in-out;
 
   /* Film Grain Effect */
-  --grain-opacity: 0.03;
+  --grain-opacity: 0.04;
 
   /* Viewfinder Frame (for special sections) */
-  --viewfinder-border: 3px solid var(--color-slate);
-  --viewfinder-corner-size: 20px;
+  --viewfinder-border: 2px solid var(--color-slate);
+  --viewfinder-corner-size: 22px;
 
   /* Film Perforation (for backgrounds) */
   --perforation-size: 8px;
   --perforation-spacing: 16px;
+
+  /* Frame Layout */
+  --frame-max-width: 1200px;
+  --frame-padding: var(--space-6);
+  --frame-radius: var(--radius-2xl);
 }
 
 /* Responsive Typography */
@@ -119,6 +135,26 @@
     --text-6xl: 3rem;     /* 48px */
 
     --container-padding: var(--space-4);
+    --page-padding-y: var(--space-4);
+    --page-padding-x: var(--space-3);
+    --frame-padding: var(--space-4);
+    --frame-radius: var(--radius-xl);
+    --header-height: 60px;
+  }
+}
+
+@media (max-width: 540px) {
+  :root {
+    --text-4xl: 1.75rem; /* 28px */
+    --text-5xl: 2rem;    /* 32px */
+    --text-6xl: 2.5rem;  /* 40px */
+
+    --container-padding: var(--space-2);
+    --page-padding-y: var(--space-2);
+    --page-padding-x: var(--space-1);
+    --frame-padding: var(--space-2);
+    --frame-radius: var(--radius-lg);
+    --header-height: 54px;
   }
 }
 

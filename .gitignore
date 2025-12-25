@@ -79,6 +79,8 @@ jspm_packages/
 # Temporary folders
 tmp/
 temp/
+.playwright-mcp/
+renewal_img/
 
 # Python
 __pycache__/

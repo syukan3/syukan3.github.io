@@ -32,8 +32,9 @@
       aspect-ratio: 1;
       overflow: hidden;
       border-radius: var(--radius-lg);
-      border: 1px solid var(--color-border);
-      background-color: var(--color-bg-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(180deg, rgba(32, 32, 32, 0.92), rgba(18, 18, 18, 0.96));
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
     }
 
     .photo-item img {
@@ -67,6 +68,7 @@
     @media (max-width: 768px) {
       .photo-grid {
         grid-template-columns: 1fr;
+        gap: var(--space-4);
       }
     }
   </style>
@@ -77,7 +79,7 @@
       <a href="/renewal/" class="logo">Portfolio</a>
 
       <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
-        ☰
+        <span class="menu-icon" aria-hidden="true"></span>
       </button>
 
       <nav>
@@ -94,7 +96,8 @@
     </div>
   </header>
 
-  <main>
+  <div class="noir-frame">
+    <main>
     <section class="section">
       <div class="container">
         <div class="section-header section-title-center">
@@ -154,45 +157,46 @@
         </div>
       </div>
     </section>
-  </main>
+    </main>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h3 class="footer-title">Navigate</h3>
-          <div class="footer-links">
-            <a href="/renewal/" class="footer-link">Home</a>
-            <a href="/renewal/work/" class="footer-link">Work</a>
-            <a href="/renewal/projects/" class="footer-link">Projects</a>
-            <a href="/renewal/writing/" class="footer-link">Writing</a>
-            <a href="/renewal/about/" class="footer-link">About</a>
-            <a href="/renewal/contact/" class="footer-link">Contact</a>
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3 class="footer-title">Navigate</h3>
+            <div class="footer-links">
+              <a href="/renewal/" class="footer-link">Home</a>
+              <a href="/renewal/work/" class="footer-link">Work</a>
+              <a href="/renewal/projects/" class="footer-link">Projects</a>
+              <a href="/renewal/writing/" class="footer-link">Writing</a>
+              <a href="/renewal/about/" class="footer-link">About</a>
+              <a href="/renewal/contact/" class="footer-link">Contact</a>
+            </div>
+          </div>
+
+          <div class="footer-section">
+            <h3 class="footer-title">Connect</h3>
+            <div class="footer-links">
+              <a href="https://github.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+              <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">Qiita</a>
+            </div>
+          </div>
+
+          <div class="footer-section">
+            <h3 class="footer-title">Info</h3>
+            <p class="text-muted" style="font-size: var(--text-sm);">
+              Toy Camera Noir<br>
+              Portfolio 2025
+            </p>
           </div>
         </div>
 
-        <div class="footer-section">
-          <h3 class="footer-title">Connect</h3>
-          <div class="footer-links">
-            <a href="https://github.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
-            <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">Qiita</a>
-          </div>
-        </div>
-
-        <div class="footer-section">
-          <h3 class="footer-title">Info</h3>
-          <p class="text-muted" style="font-size: var(--text-sm);">
-            Toy Camera Noir<br>
-            Portfolio 2025
-          </p>
+        <div class="footer-bottom">
+          <p>&copy; 2025 Sakae Shunsuke. All rights reserved.</p>
         </div>
       </div>
-
-      <div class="footer-bottom">
-        <p>&copy; 2025 Sakae Shunsuke. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
+    </footer>
+  </div>
 
   <script src="/renewal/js/main.js"></script>
 </body>

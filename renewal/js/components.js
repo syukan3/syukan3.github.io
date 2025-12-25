@@ -49,12 +49,10 @@ const Components = {
   // Create Writing/Talk Item
   createWritingItem(item) {
     const typeLabel = item.type === 'talk' ? '登壇' : '記事';
-    const icon = item.type === 'talk' ? '🎤' : '📝';
 
     return `
       <article class="card">
         <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3);">
-          <span style="font-size: var(--text-2xl);">${icon}</span>
           <span class="tag">${typeLabel}</span>
           ${item.date ? `<span class="text-muted" style="font-size: var(--text-sm);">${Utils.formatDate(item.date)}</span>` : ''}
         </div>

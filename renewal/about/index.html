@@ -19,6 +19,100 @@
   <link rel="stylesheet" href="/renewal/css/variables.css">
   <link rel="stylesheet" href="/renewal/css/base.css">
   <link rel="stylesheet" href="/renewal/css/components.css">
+
+  <style>
+    .bio-section {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-10);
+      align-items: start;
+      margin-bottom: var(--space-20);
+    }
+
+    .bio-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(60, 60, 60, 0.9), rgba(30, 30, 30, 0.9));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .bio-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .bio-photo-placeholder {
+      font-size: var(--text-4xl);
+      color: rgba(255, 255, 255, 0.3);
+      font-weight: var(--font-bold);
+      letter-spacing: -0.02em;
+    }
+
+    .bio-content h2 {
+      font-size: var(--text-2xl);
+      margin-bottom: var(--space-4);
+    }
+
+    .bio-text {
+      color: var(--color-text-secondary);
+      line-height: var(--leading-relaxed);
+    }
+
+    .skills-section {
+      margin-top: var(--space-12);
+    }
+
+    .skills-section h3 {
+      font-size: var(--text-lg);
+      margin-bottom: var(--space-4);
+      color: var(--color-text-secondary);
+    }
+
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .skill-badge {
+      display: inline-block;
+      padding: var(--space-2) var(--space-4);
+      background-color: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .skill-badge:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 768px) {
+      .bio-section {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .bio-photo {
+        margin: 0 auto;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="header">
@@ -26,7 +120,7 @@
       <a href="/renewal/" class="logo">Portfolio</a>
 
       <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
-        ☰
+        <span class="menu-icon" aria-hidden="true"></span>
       </button>
 
       <nav>
@@ -43,19 +137,39 @@
     </div>
   </header>
 
-  <main>
+  <div class="noir-frame">
+    <main>
     <section class="section">
       <div class="container container-lg">
         <div class="section-header section-title-center">
-          <h1 class="section-title">About</h1>
-          <p id="profile-tagline" class="section-subtitle" style="max-width: 700px;">
-            <!-- Loaded by JavaScript -->
-          </p>
+          <h1 class="section-title">About Me</h1>
+        </div>
+
+        <!-- Bio Section -->
+        <div class="bio-section">
+          <div class="bio-photo">
+            <span class="bio-photo-placeholder">SS</span>
+            <img src="/renewal/images/profile.jpg" alt="栄 俊介" loading="lazy" onerror="this.style.display='none'">
+          </div>
+          <div class="bio-content">
+            <h2>Bio</h2>
+            <p id="profile-bio" class="bio-text">
+              <!-- Loaded by JavaScript -->
+            </p>
+
+            <!-- Skills -->
+            <div class="skills-section">
+              <h3>Skills</h3>
+              <div id="skills" class="skills-grid">
+                <!-- Loaded by JavaScript -->
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Values -->
         <div style="margin-bottom: var(--space-20);">
-          <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-8); text-align: center;">価値観</h2>
+          <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-8); text-align: center;">Values</h2>
           <div id="values" class="grid grid-3">
             <!-- Loaded by JavaScript -->
           </div>
@@ -93,69 +207,98 @@
         </div>
       </div>
     </section>
-  </main>
+    </main>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h3 class="footer-title">Navigate</h3>
-          <div class="footer-links">
-            <a href="/renewal/" class="footer-link">Home</a>
-            <a href="/renewal/work/" class="footer-link">Work</a>
-            <a href="/renewal/projects/" class="footer-link">Projects</a>
-            <a href="/renewal/writing/" class="footer-link">Writing</a>
-            <a href="/renewal/about/" class="footer-link">About</a>
-            <a href="/renewal/contact/" class="footer-link">Contact</a>
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3 class="footer-title">Navigate</h3>
+            <div class="footer-links">
+              <a href="/renewal/" class="footer-link">Home</a>
+              <a href="/renewal/work/" class="footer-link">Work</a>
+              <a href="/renewal/projects/" class="footer-link">Projects</a>
+              <a href="/renewal/writing/" class="footer-link">Writing</a>
+              <a href="/renewal/about/" class="footer-link">About</a>
+              <a href="/renewal/contact/" class="footer-link">Contact</a>
+            </div>
+          </div>
+
+          <div class="footer-section">
+            <h3 class="footer-title">Connect</h3>
+            <div class="footer-links">
+              <a href="https://github.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+              <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">Qiita</a>
+            </div>
+          </div>
+
+          <div class="footer-section">
+            <h3 class="footer-title">Info</h3>
+            <p class="text-muted" style="font-size: var(--text-sm);">
+              Toy Camera Noir<br>
+              Portfolio 2025
+            </p>
           </div>
         </div>
 
-        <div class="footer-section">
-          <h3 class="footer-title">Connect</h3>
-          <div class="footer-links">
-            <a href="https://github.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
-            <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">Qiita</a>
-          </div>
-        </div>
-
-        <div class="footer-section">
-          <h3 class="footer-title">Info</h3>
-          <p class="text-muted" style="font-size: var(--text-sm);">
-            Toy Camera Noir<br>
-            Portfolio 2025
-          </p>
+        <div class="footer-bottom">
+          <p>&copy; 2025 Sakae Shunsuke. All rights reserved.</p>
         </div>
       </div>
-
-      <div class="footer-bottom">
-        <p>&copy; 2025 Sakae Shunsuke. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
+    </footer>
+  </div>
 
   <script src="/renewal/js/main.js"></script>
   <script src="/renewal/js/components.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      const profileData = await DataLoader.getProfile();
+      const profileData = await DataLoader.load('profile.json');
 
-      // Set tagline
-      const taglineEl = document.getElementById('profile-tagline');
-      if (taglineEl && profileData.tagline) {
-        taglineEl.textContent = profileData.tagline;
+      // Set bio
+      const bioEl = document.getElementById('profile-bio');
+      if (bioEl && profileData?.bio) {
+        bioEl.textContent = profileData.bio;
+      }
+
+      // Render skills as badges
+      const skillsContainer = document.getElementById('skills');
+      const skillsData = profileData?.skills || {};
+      if (skillsContainer) {
+        // Extract skill names from various categories
+        const allSkills = [];
+
+        // Languages
+        if (skillsData.languages) {
+          skillsData.languages.forEach(s => allSkills.push(s.name));
+        }
+
+        // Frameworks
+        if (skillsData.frameworks) {
+          skillsData.frameworks.forEach(s => allSkills.push(s.name));
+        }
+
+        // Infrastructure
+        if (skillsData.infrastructure) {
+          skillsData.infrastructure.forEach(s => allSkills.push(s.name));
+        }
+
+        if (allSkills.length > 0) {
+          skillsContainer.innerHTML = allSkills.map(skill =>
+            `<span class="skill-badge">${skill}</span>`
+          ).join('');
+        }
       }
 
       // Render values
-      const valuesData = await DataLoader.load('profile.json');
-      const values = valuesData?.values || [];
+      const values = profileData?.values || [];
       Components.renderItems('values', values, Components.createValueCard);
 
       // Render expertise
-      const expertise = valuesData?.expertise || [];
+      const expertise = profileData?.expertise || [];
       Components.renderItems('expertise', expertise, Components.createValueCard);
 
       // Render timeline
-      const timeline = valuesData?.timeline || [];
+      const timeline = profileData?.timeline || [];
       Components.renderItems('timeline', timeline, Components.createTimelineItem);
     });
   </script>
