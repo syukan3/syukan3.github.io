@@ -1,0 +1,13 @@
+{
+  "photos": [
+    { "title": "街角のひかり", "location": "Tokyo", "date": "2025", "src": "", "placeholder": true },
+    { "title": "夕暮れの輪郭", "location": "Tokyo", "date": "2025", "src": "", "placeholder": true },
+    { "title": "静寂のフレーム", "location": "Okayama", "date": "2024", "src": "", "placeholder": true },
+    { "title": "都市の記憶", "location": "Tokyo", "date": "2024", "src": "", "placeholder": true },
+    { "title": "雨上がりの路地", "location": "Tokyo", "date": "2024", "src": "", "placeholder": true },
+    { "title": "光と影", "location": "Kyoto", "date": "2023", "src": "", "placeholder": true },
+    { "title": "午後の窓辺", "location": "Tokyo", "date": "2023", "src": "", "placeholder": true },
+    { "title": "時の流れ", "location": "Okayama", "date": "2023", "src": "", "placeholder": true },
+    { "title": "日常の詩", "location": "Tokyo", "date": "2023", "src": "", "placeholder": true }
+  ]
+}

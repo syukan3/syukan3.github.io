@@ -14,13 +14,29 @@
   --color-paper: #e8e8e8;
   --color-white: #f5f5f5;
 
-  /* Accent Colors - Light leak inspired (subtle) */
-  --color-amber-leak: rgba(255, 191, 105, 0.18);
+  /* Accent Colors - Light leak inspired */
+  --color-amber-leak: rgba(255, 191, 105, 0.20);
   --color-cyan-leak: rgba(105, 191, 255, 0.12);
   --color-magenta-leak: rgba(255, 105, 191, 0.10);
-  --color-ember: #d19a4a;
-  --color-ember-bright: #f1c275;
+  --color-ember: #e0a45a;
+  --color-ember-bright: #f6cf86;
   --color-ember-dark: #a7742e;
+  --color-accent: var(--color-ember);
+  --color-accent-bright: var(--color-ember-bright);
+
+  /* Cream / paper display tones (for headings) */
+  --color-cream: #f3ecdc;
+  --color-cream-dim: #d8cdb6;
+  --color-heading: var(--color-cream);
+  --color-black: #100b05;
+
+  /* Feedback Colors */
+  --color-success: #2ecc71;
+  --color-success-bg: rgba(46, 204, 113, 0.15);
+  --color-success-border: rgba(46, 204, 113, 0.3);
+  --color-error: #e74c3c;
+  --color-error-bg: rgba(231, 76, 60, 0.15);
+  --color-error-border: rgba(231, 76, 60, 0.3);
 
   /* Semantic Colors */
   --color-bg-primary: var(--color-noir-black);
@@ -37,8 +53,8 @@
   --color-border-light: var(--color-ash);
 
   /* Typography */
-  --font-sans: 'Avenir Next', 'Avenir', 'Gill Sans', 'Trebuchet MS', sans-serif;
-  --font-display: 'Cormorant Garamond', 'Garamond', 'Palatino', serif;
+  --font-sans: 'Inter', 'Noto Sans JP', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif;
+  --font-display: 'Fraunces', 'Shippori Mincho', 'Noto Serif JP', 'Hiragino Mincho ProN', 'YuMincho', serif;
   --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', monospace;
 
   /* Font Sizes */
@@ -127,6 +143,19 @@
 }
 
 /* Responsive Typography */
+@media (max-width: 1024px) {
+  :root {
+    --text-5xl: 2.5rem;   /* 40px */
+    --text-6xl: 3.25rem;  /* 52px */
+
+    --container-padding: var(--space-4);
+    --page-padding-y: var(--space-6);
+    --page-padding-x: var(--space-4);
+    --frame-padding: var(--space-5);
+    --header-height: 66px;
+  }
+}
+
 @media (max-width: 768px) {
   :root {
     --text-3xl: 1.5rem;   /* 24px */

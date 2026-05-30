@@ -7,10 +7,11 @@ body {
   color: var(--color-text-primary);
   background-color: var(--color-bg-primary);
   background-image:
-    radial-gradient(circle at 12% 18%, rgba(255, 191, 105, 0.12), transparent 40%),
-    radial-gradient(circle at 85% 30%, rgba(255, 140, 80, 0.2), transparent 45%),
-    radial-gradient(circle at 80% 85%, rgba(255, 166, 80, 0.16), transparent 55%),
-    linear-gradient(180deg, #0a0a0a 0%, #060606 100%);
+    radial-gradient(ellipse 60% 50% at 100% 35%, rgba(255, 138, 66, 0.30), transparent 60%),
+    radial-gradient(circle at 8% 12%, rgba(255, 191, 105, 0.12), transparent 42%),
+    radial-gradient(circle at 96% 88%, rgba(255, 120, 60, 0.18), transparent 50%),
+    linear-gradient(180deg, #090806 0%, #050403 100%);
+  background-attachment: fixed;
   min-height: 100vh;
   padding-top: var(--header-height);
   position: relative;
@@ -40,19 +41,21 @@ body::before {
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  font-weight: var(--font-semibold);
+  font-weight: var(--font-bold);
   line-height: var(--leading-tight);
   margin-bottom: var(--space-4);
+  color: var(--color-heading);
 }
 
 h1 {
   font-size: var(--text-5xl);
-  letter-spacing: -0.02em;
+  letter-spacing: 0.01em;
+  font-weight: 700;
 }
 
 h2 {
   font-size: var(--text-4xl);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.005em;
 }
 
 h3 {
@@ -83,13 +86,33 @@ a {
 }
 
 a:hover {
-  color: var(--color-text-secondary);
+  color: var(--color-ember-bright);
 }
 
 a:focus-visible {
-  outline: 2px solid var(--color-border-light);
+  outline: 2px solid var(--color-ember);
   outline-offset: 4px;
   border-radius: var(--radius-sm);
+}
+
+/* Content links (links within text) */
+main p a,
+main li a,
+.bio-text a,
+.card-description a {
+  color: var(--color-ember);
+  text-decoration: underline;
+  text-decoration-color: rgba(209, 154, 74, 0.4);
+  text-underline-offset: 3px;
+  transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
+}
+
+main p a:hover,
+main li a:hover,
+.bio-text a:hover,
+.card-description a:hover {
+  color: var(--color-ember-bright);
+  text-decoration-color: var(--color-ember-bright);
 }
 
 /* Code */
@@ -194,12 +217,13 @@ pre {
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(circle at 82% 55%, rgba(255, 140, 80, 0.35), transparent 45%),
-    radial-gradient(circle at 18% 18%, rgba(255, 191, 105, 0.18), transparent 40%);
+    radial-gradient(circle at 88% 42%, rgba(255, 138, 66, 0.42), transparent 42%),
+    radial-gradient(circle at 96% 88%, rgba(255, 110, 60, 0.30), transparent 45%),
+    radial-gradient(circle at 14% 16%, rgba(255, 191, 105, 0.16), transparent 38%);
   background-repeat: no-repeat;
-  background-position: right -120px center, left 40px top 40px;
-  background-size: 520px 520px, 260px 260px;
-  opacity: 0.85;
+  background-position: right -100px center, right -60px bottom -60px, left 40px top 40px;
+  background-size: 560px 560px, 420px 420px, 260px 260px;
+  opacity: 0.9;
   border-radius: inherit;
   mix-blend-mode: screen;
   pointer-events: none;
@@ -208,6 +232,29 @@ pre {
 .noir-frame > * {
   position: relative;
   z-index: 1;
+}
+
+/* Skip Link */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: var(--space-3) var(--space-6);
+  background: linear-gradient(180deg, var(--color-ember-bright) 0%, var(--color-ember) 100%);
+  color: #1b130a;
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: top var(--transition-fast);
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+  outline: none;
 }
 
 /* Utility Classes */
@@ -241,12 +288,74 @@ pre {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-border-light);
+  outline: 2px solid var(--color-ember);
   outline-offset: 4px;
+  box-shadow: 0 0 0 6px rgba(209, 154, 74, 0.25);
+  border-radius: var(--radius-sm);
+}
+
+/* Interactive elements focus */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-ember);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(209, 154, 74, 0.2);
 }
 
 /* Selection */
 ::selection {
   background-color: var(--color-slate);
   color: var(--color-white);
+}
+
+/* Page Transition Animation */
+.noir-frame {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scroll Animation */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered animation for grid items */
+.grid .animate-on-scroll:nth-child(1) { transition-delay: 0ms; }
+.grid .animate-on-scroll:nth-child(2) { transition-delay: 100ms; }
+.grid .animate-on-scroll:nth-child(3) { transition-delay: 200ms; }
+.grid .animate-on-scroll:nth-child(4) { transition-delay: 300ms; }
+.grid .animate-on-scroll:nth-child(5) { transition-delay: 400ms; }
+.grid .animate-on-scroll:nth-child(6) { transition-delay: 500ms; }
+
+/* Reduced motion support for animations */
+@media (prefers-reduced-motion: reduce) {
+  .noir-frame {
+    animation: none;
+  }
+
+  .animate-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

@@ -122,3 +122,6 @@ __pycache__/
 
 # Ignore public uploads
 /public/uploads
+
+# Playwright CLI artifacts
+.playwright-cli/

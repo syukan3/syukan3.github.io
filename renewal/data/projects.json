@@ -2,9 +2,10 @@
   "projects": [
     {
       "id": "qiita-growth",
-      "title": "技術ブログ150万ビュー獲得戦略",
+      "title": "技術ブログ143万PV獲得戦略",
       "featured": true,
-      "summary": "戦略的アプローチで143万ビュー達成。日間PVを7倍に成長させ、270記事を公開",
+      "thumbnail": "/renewal/images/blog_mosaicai.webp",
+      "summary": "戦略的アプローチで143万PV達成。日間PVを7倍に成長させ、270記事超を公開",
       "role": "執筆/戦略設計",
       "tags": ["Qiita", "SEO", "Analytics", "Growth"],
       "links": {
@@ -12,7 +13,7 @@
         "demo": "https://qiita.com/syukan3",
         "article": ""
       },
-      "year": "2019-2025",
+      "year": "2019-現在",
       "metrics": {
         "totalViews": "1,434,762",
         "articles": "270",
@@ -24,6 +25,7 @@
       "id": "censify",
       "title": "Censify",
       "featured": true,
+      "thumbnail": "/renewal/images/project_censify.webp",
       "summary": "不適切な表現を検出するAPIサービス。LLMを活用した高精度な判定を実現",
       "role": "設計/実装",
       "tags": ["TypeScript", "Cloudflare Workers", "AI", "HonoJS"],
@@ -38,6 +40,7 @@
       "id": "gaugenix",
       "title": "Gaugenix",
       "featured": true,
+      "thumbnail": "/renewal/images/project_gaugenix.webp",
       "summary": "IoTデバイスで計器の画像を撮影し、AI解析で値を取得するシステム",
       "role": "設計/実装/運用",
       "tags": ["Next.js", "Supabase", "Python", "AI", "AWS"],
@@ -52,6 +55,7 @@
       "id": "mosaicai",
       "title": "MosaicAI",
       "featured": true,
+      "thumbnail": "/renewal/images/project_mosaicai.webp",
       "summary": "複数のAI言語モデルを統一的に利用できるオープンソースPythonライブラリ",
       "role": "設計/実装",
       "tags": ["Python", "AI", "OpenSource"],
@@ -66,6 +70,7 @@
       "id": "omniocr",
       "title": "OmniOCR",
       "featured": true,
+      "thumbnail": "/renewal/images/project_omniocr.webp",
       "summary": "画像やPDFからテキストを抽出し、構造化データに変換するAI OCRサービス",
       "role": "設計/実装",
       "tags": ["TypeScript", "Next.js", "AI", "Cloudflare"],
@@ -80,6 +85,7 @@
       "id": "wolverine-ruby",
       "title": "Wolverine Ruby",
       "featured": true,
+      "thumbnail": "/renewal/images/project_wolverine_ruby.webp",
       "summary": "自律型プログラムバグ修復ツール。ChatGPT APIリリース直後に開発",
       "role": "実装",
       "tags": ["Ruby", "OpenAI GPT-3.5 API"],
@@ -94,6 +100,7 @@
       "id": "hijojo",
       "title": "HiJoJo.com",
       "featured": false,
+      "thumbnail": "/renewal/images/hero.webp",
       "summary": "オンラインファンド販売システム。Ruby 2.7→3.3、Rails 5.2→7.1 のバージョンアップを主導",
       "role": "設計/実装/運用",
       "tags": ["Ruby on Rails", "MySQL", "AWS", "JavaScript"],
@@ -108,13 +115,14 @@
       "id": "onegate",
       "title": "OneGATE 保守管理システム",
       "featured": false,
-      "summary": "インシデント管理、コールセンター（Amazon Connect）、カスタマーポータル機能を実装",
+      "thumbnail": "/renewal/images/blog_openai_filesearch.webp",
+      "summary": "インシデント管理、コールセンター（Amazon Connect）、カスタマーポータル機能を実装。Ruby Association の活用事例にも掲載",
       "role": "設計/実装",
       "tags": ["Ruby on Rails", "AWS", "Amazon Connect", "JavaScript"],
       "links": {
         "github": "",
         "demo": "https://www.pdc-ds.com/service/onegate",
-        "article": ""
+        "article": "https://www.ruby.or.jp/ja/showcase/case77"
       },
       "year": "2019-2022"
     },
@@ -122,6 +130,7 @@
       "id": "face-authentication",
       "title": "画像解析・属性取得システム",
       "featured": false,
+      "thumbnail": "/renewal/images/blog_iot.webp",
       "summary": "画像分析による属性取得・視聴率測定システム。年齢推定モデルの作成を担当",
       "role": "設計/実装",
       "tags": ["Python", "PyTorch", "OpenVINO", "AWS IoT", "SageMaker"],

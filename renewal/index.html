@@ -11,256 +11,132 @@
   <meta property="og:description" content="技術で事業を前に進める - フルスタックエンジニア / システム部長">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://syukan3.github.io/renewal/">
-  <meta property="og:image" content="https://syukan3.github.io/renewal/images/og-image.jpg">
+  <meta property="og:image" content="https://syukan3.github.io/renewal/images/og-image.png">
 
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="栄 俊介 | Sakae Shunsuke - Portfolio">
   <meta name="twitter:description" content="技術で事業を前に進める - フルスタックエンジニア / システム部長">
-  <meta name="twitter:image" content="https://syukan3.github.io/renewal/images/og-image.jpg">
+  <meta name="twitter:image" content="https://syukan3.github.io/renewal/images/og-image.png">
 
+  <meta name="theme-color" content="#0a0a0a">
   <title>栄 俊介 | Sakae Shunsuke - Portfolio</title>
 
-  <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/renewal/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <!-- Styles -->
   <link rel="stylesheet" href="/renewal/css/reset.css">
   <link rel="stylesheet" href="/renewal/css/variables.css">
   <link rel="stylesheet" href="/renewal/css/base.css">
   <link rel="stylesheet" href="/renewal/css/components.css">
 </head>
-<body>
-  <!-- Header -->
-  <header class="header">
-    <div class="container header-container">
-      <a href="/renewal/" class="logo">Portfolio</a>
-
-      <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
-        <span class="menu-icon" aria-hidden="true"></span>
-      </button>
-
-      <nav>
-        <ul class="nav-list">
-          <li><a href="/renewal/" class="nav-link">Home</a></li>
-          <li><a href="/renewal/work/" class="nav-link">Work</a></li>
-          <li><a href="/renewal/projects/" class="nav-link">Projects</a></li>
-          <li><a href="/renewal/writing/" class="nav-link">Writing</a></li>
-          <li><a href="/renewal/about/" class="nav-link">About</a></li>
-          <li><a href="/renewal/photo/" class="nav-link">Photo</a></li>
-          <li><a href="/renewal/contact/" class="nav-link">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+<body data-page="home">
+  <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+  <div id="site-header"></div>
 
   <div class="noir-frame">
-    <main>
-    <!-- Hero Section -->
-    <section class="section hero">
-      <div class="container">
-        <div class="viewfinder">
-          <p class="hero-kicker">栄 俊介 / Sakae Shunsuke</p>
-          <h1 class="hero-title">
-            技術で事業を<br class="hero-br">前に進める
-          </h1>
-          <p class="hero-lead">
-            Ruby on Rails、Python、React/Next.js、AWS を駆使し、<br class="hero-br">
-            要件定義から運用まで一貫した開発プロセスを推進。
-          </p>
-          <div class="hero-actions">
-            <a href="/renewal/work/" class="btn btn-primary">Work を見る</a>
-            <a href="/renewal/contact/" class="btn btn-secondary">相談する</a>
-            <a href="/renewal/writing/" class="btn btn-ghost">記事・登壇を見る</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- What I Do -->
-    <section class="section film-border">
-      <div class="container">
-        <div class="section-header section-title-center">
-          <h2 class="section-title">提供できること</h2>
-          <p class="section-subtitle">技術と事業の両面から価値を創出します</p>
-        </div>
-
-        <div class="grid grid-3">
-          <div class="card">
-            <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">課題解決設計</h3>
-            <p class="text-secondary">
-              事業課題を技術課題に落とし込み、制約条件の中で最適な解決策を設計。
-              過度な複雑化を避け、保守可能で拡張性の高いアーキテクチャを提案します。
+    <main id="main-content">
+      <!-- Hero -->
+      <section class="section hero">
+        <div class="container">
+          <div class="viewfinder">
+            <p class="hero-kicker">栄 俊介 / Sakae Shunsuke</p>
+            <h1 class="hero-title">技術で事業を<br class="hero-br"><span class="accent">前に進める</span>。</h1>
+            <p class="hero-lead">
+              Ruby on Rails、Python、React/Next.js、AWS を駆使し、要件定義から運用まで一貫した開発プロセスを推進するフルスタックエンジニア / システム部長。
             </p>
+            <div class="hero-actions">
+              <a href="/renewal/work/" class="btn btn-primary">ケーススタディを見る</a>
+              <a href="/renewal/contact/" class="btn btn-secondary">相談する</a>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div class="card">
-            <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">実装・運用推進</h3>
-            <p class="text-secondary">
-              設計だけでなく、実装から運用まで一貫して推進。
-              パフォーマンス、セキュリティ、可用性を考慮した堅牢なシステムを構築します。
+      <div class="filmstrip" aria-hidden="true"></div>
+
+      <!-- Featured Work -->
+      <section class="section">
+        <div class="container">
+          <div class="section-header" data-reveal>
+            <span class="section-eyebrow">Featured Case Studies</span>
+            <h2 class="section-title">主要なケーススタディ</h2>
+            <p class="section-subtitle">課題解決から実装・成果までを通してまとめた実績。</p>
+          </div>
+          <div id="featured-works" class="grid grid-3"></div>
+          <div style="text-align:center; margin-top: var(--space-10);">
+            <a href="/renewal/work/" class="btn btn-secondary">すべての Work を見る →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Projects -->
+      <section class="section">
+        <div class="container">
+          <div class="section-header" data-reveal>
+            <span class="section-eyebrow">Projects</span>
+            <h2 class="section-title">主要プロジェクト</h2>
+            <p class="section-subtitle">プロダクト・OSS・実験的な取り組み。</p>
+          </div>
+          <div id="featured-projects" class="grid grid-3"></div>
+          <div style="text-align:center; margin-top: var(--space-10);">
+            <a href="/renewal/projects/" class="btn btn-secondary">すべての Projects を見る →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Writing & Talks -->
+      <section class="section">
+        <div class="container">
+          <div class="section-header" data-reveal>
+            <span class="section-eyebrow">Writing &amp; Talks</span>
+            <h2 class="section-title">技術発信・登壇</h2>
+            <p class="section-subtitle">Qiita 累計143万PV・270記事超。トレンドと深い解説の両立。</p>
+          </div>
+          <div id="pinned-writing" class="writing-list"></div>
+          <div style="text-align:center; margin-top: var(--space-10);">
+            <a href="/renewal/writing/" class="btn btn-secondary">すべての記事・登壇を見る →</a>
+          </div>
+        </div>
+      </section>
+
+      <div class="filmstrip" aria-hidden="true"></div>
+
+      <!-- Contact CTA -->
+      <section class="section">
+        <div class="container">
+          <div class="viewfinder" style="max-width: 760px; margin: 0 auto; text-align: center;" data-reveal>
+            <span class="section-eyebrow">Let's Work Together</span>
+            <h2 class="section-title">技術で、事業を前に。</h2>
+            <p class="section-subtitle" style="margin: 0 auto var(--space-8);">
+              プロジェクトのご相談、業務委託、技術顧問など、お気軽にお問い合わせください。
             </p>
-          </div>
-
-          <div class="card">
-            <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">成果の可視化</h3>
-            <p class="text-secondary">
-              技術的な取り組みを事業成果に繋げ、定量的に測定。
-              改善サイクルを回し続け、継続的な価値向上を実現します。
-            </p>
+            <a href="/renewal/contact/" class="btn btn-primary">お問い合わせ</a>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- Featured Work -->
-    <section class="section film-border">
-      <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Featured Work</h2>
-          <p class="section-subtitle">主要なケーススタディ</p>
-        </div>
-
-        <div id="featured-works" class="grid grid-3">
-          <!-- Loaded by JavaScript -->
-        </div>
-
-        <div style="text-align: center; margin-top: var(--space-12);">
-          <a href="/renewal/work/" class="btn btn-secondary">すべての Work を見る →</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Featured Projects -->
-    <section class="section film-border">
-      <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Featured Projects</h2>
-          <p class="section-subtitle">主要プロジェクト</p>
-        </div>
-
-        <div id="featured-projects" class="grid grid-3">
-          <!-- Loaded by JavaScript -->
-        </div>
-
-        <div style="text-align: center; margin-top: var(--space-12);">
-          <a href="/renewal/projects/" class="btn btn-secondary">すべての Projects を見る →</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Writing & Talks -->
-    <section class="section film-border">
-      <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Writing & Talks</h2>
-          <p class="section-subtitle">技術発信・登壇</p>
-        </div>
-
-        <div id="pinned-writing" class="grid grid-3">
-          <!-- Loaded by JavaScript -->
-        </div>
-
-        <div style="text-align: center; margin-top: var(--space-12);">
-          <a href="/renewal/writing/" class="btn btn-secondary">すべての記事・登壇を見る →</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- About Preview -->
-    <section class="section film-border">
-      <div class="container">
-        <div class="viewfinder" style="max-width: 800px; margin: 0 auto; text-align: center;">
-          <h2 class="section-title">About</h2>
-          <p style="font-size: var(--text-lg); color: var(--color-text-secondary); margin-bottom: var(--space-8); line-height: var(--leading-relaxed);">
-            技術を通じて価値を生み出し、チームと事業を前に進めることに情熱を注いでいます。
-            課題に対して本質的なアプローチを取り、長期的な視点で持続可能なシステムを構築することを大切にしています。
-          </p>
-          <a href="/renewal/about/" class="btn btn-secondary">詳しく見る →</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact CTA -->
-    <section class="section film-border">
-      <div class="container">
-        <div class="viewfinder" style="max-width: 700px; margin: 0 auto; text-align: center;">
-          <h2 class="section-title">Let's Work Together</h2>
-          <p style="font-size: var(--text-lg); color: var(--color-text-secondary); margin-bottom: var(--space-8);">
-            プロジェクトのご相談、業務委託、技術顧問など<br>
-            お気軽にお問い合わせください
-          </p>
-          <a href="/renewal/contact/" class="btn btn-primary">お問い合わせ</a>
-        </div>
-      </div>
-    </section>
+      </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3 class="footer-title">Navigate</h3>
-            <div class="footer-links">
-              <a href="/renewal/" class="footer-link">Home</a>
-              <a href="/renewal/work/" class="footer-link">Work</a>
-              <a href="/renewal/projects/" class="footer-link">Projects</a>
-              <a href="/renewal/writing/" class="footer-link">Writing</a>
-              <a href="/renewal/about/" class="footer-link">About</a>
-              <a href="/renewal/contact/" class="footer-link">Contact</a>
-            </div>
-          </div>
-
-          <div class="footer-section">
-            <h3 class="footer-title">Connect</h3>
-            <div class="footer-links">
-              <a href="https://github.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
-              <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">Qiita</a>
-            </div>
-          </div>
-
-          <div class="footer-section">
-            <h3 class="footer-title">Info</h3>
-            <p class="text-muted" style="font-size: var(--text-sm);">
-              Toy Camera Noir<br>
-              Portfolio 2025
-            </p>
-          </div>
-        </div>
-
-        <div class="footer-bottom">
-          <p>&copy; 2025 Sakae Shunsuke. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
+    <div id="site-footer"></div>
   </div>
 
-  <!-- Scripts -->
   <script src="/renewal/js/main.js"></script>
   <script src="/renewal/js/components.js"></script>
   <script>
-    // Load and render content
     document.addEventListener('DOMContentLoaded', async () => {
-      // Show skeletons while loading
       Components.showSkeleton('featured-works', 3);
-      Components.showSkeleton('featured-projects', 6);
-      Components.showSkeleton('pinned-writing', 3);
+      Components.showSkeleton('featured-projects', 3);
 
-      // Load data
-      const works = await DataLoader.getWorks();
-      const projects = await DataLoader.getProjects();
-      const writing = await DataLoader.getWriting();
+      const [works, projects, writing] = await Promise.all([
+        DataLoader.getWorks(),
+        DataLoader.getProjects(),
+        DataLoader.getWriting()
+      ]);
 
-      // Filter featured items
-      const featuredWorks = works.filter(w => w.featured).slice(0, 3);
-      const featuredProjects = projects.filter(p => p.featured).slice(0, 6);
-      const pinnedWriting = writing.filter(w => w.pinned).slice(0, 3);
-
-      // Render content
-      Components.renderItems('featured-works', featuredWorks, Components.createWorkCard);
-      Components.renderItems('featured-projects', featuredProjects, Components.createProjectCard);
-      Components.renderItems('pinned-writing', pinnedWriting, Components.createWritingItem);
+      Components.renderItems('featured-works', works.filter(w => w.featured).slice(0, 3), Components.createWorkCard);
+      Components.renderItems('featured-projects', projects.filter(p => p.featured).slice(0, 3), Components.createProjectCard);
+      Components.renderItems('pinned-writing', writing.filter(w => w.pinned).slice(0, 3), Components.createWritingItem);
     });
   </script>
 </body>

@@ -10,249 +10,59 @@
   <meta property="og:description" content="課題解決から実装・成果までのケーススタディ">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://syukan3.github.io/renewal/work/">
+  <meta property="og:image" content="https://syukan3.github.io/renewal/images/og-image.png">
 
+  <meta name="theme-color" content="#0a0a0a">
   <title>Work - 栄 俊介 | Sakae Shunsuke</title>
 
   <link rel="icon" type="image/svg+xml" href="/renewal/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/renewal/css/reset.css">
   <link rel="stylesheet" href="/renewal/css/variables.css">
   <link rel="stylesheet" href="/renewal/css/base.css">
   <link rel="stylesheet" href="/renewal/css/components.css">
-
-  <style>
-    .case-study {
-      background: linear-gradient(180deg, rgba(32, 32, 32, 0.92), rgba(18, 18, 18, 0.96));
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius-lg);
-      padding: var(--space-8);
-      margin-bottom: var(--space-12);
-      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .case-study-header {
-      margin-bottom: var(--space-8);
-      padding-bottom: var(--space-6);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .case-study-title {
-      font-size: var(--text-4xl);
-      margin-bottom: var(--space-4);
-    }
-
-    .case-study-section {
-      margin-bottom: var(--space-8);
-    }
-
-    .case-study-section h3 {
-      font-size: var(--text-xl);
-      color: var(--color-text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-size: var(--text-sm);
-      margin-bottom: var(--space-4);
-    }
-
-    .case-study-section-content {
-      font-size: var(--text-base);
-      line-height: var(--leading-relaxed);
-      color: var(--color-text-primary);
-    }
-
-    .case-study-section-content ul {
-      list-style: disc;
-      margin-left: var(--space-6);
-      margin-top: var(--space-3);
-    }
-
-    .case-study-section-content li {
-      margin-bottom: var(--space-2);
-    }
-
-    @media (max-width: 768px) {
-      .case-study {
-        padding: var(--space-6);
-      }
-
-      .case-study-title {
-        font-size: var(--text-3xl);
-      }
-
-      .case-study-section {
-        margin-bottom: var(--space-6);
-      }
-    }
-  </style>
 </head>
-<body>
-  <header class="header">
-    <div class="container header-container">
-      <a href="/renewal/" class="logo">Portfolio</a>
-
-      <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
-        <span class="menu-icon" aria-hidden="true"></span>
-      </button>
-
-      <nav>
-        <ul class="nav-list">
-          <li><a href="/renewal/" class="nav-link">Home</a></li>
-          <li><a href="/renewal/work/" class="nav-link">Work</a></li>
-          <li><a href="/renewal/projects/" class="nav-link">Projects</a></li>
-          <li><a href="/renewal/writing/" class="nav-link">Writing</a></li>
-          <li><a href="/renewal/about/" class="nav-link">About</a></li>
-          <li><a href="/renewal/photo/" class="nav-link">Photo</a></li>
-          <li><a href="/renewal/contact/" class="nav-link">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+<body data-page="work">
+  <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+  <div id="site-header"></div>
 
   <div class="noir-frame">
-    <main>
-    <section class="section">
-      <div class="container container-lg">
-        <div class="section-header">
-          <h1 class="section-title">Work</h1>
-          <p class="section-subtitle">課題解決から実装・成果までのケーススタディ</p>
+    <main id="main-content">
+      <section class="section">
+        <div class="container container-lg">
+          <div class="section-header" data-reveal>
+            <span class="section-eyebrow">Case Studies</span>
+            <h1 class="section-title">Work</h1>
+            <p class="section-subtitle">課題解決から実装・成果までのケーススタディ。背景・制約・打ち手・成果・学びの順でまとめています。</p>
+          </div>
+          <div id="case-studies"></div>
         </div>
-
-        <div id="case-studies">
-          <!-- Loaded by JavaScript -->
-        </div>
-      </div>
-    </section>
+      </section>
     </main>
-
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3 class="footer-title">Navigate</h3>
-            <div class="footer-links">
-              <a href="/renewal/" class="footer-link">Home</a>
-              <a href="/renewal/work/" class="footer-link">Work</a>
-              <a href="/renewal/projects/" class="footer-link">Projects</a>
-              <a href="/renewal/writing/" class="footer-link">Writing</a>
-              <a href="/renewal/about/" class="footer-link">About</a>
-              <a href="/renewal/contact/" class="footer-link">Contact</a>
-            </div>
-          </div>
-
-          <div class="footer-section">
-            <h3 class="footer-title">Connect</h3>
-            <div class="footer-links">
-              <a href="https://github.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
-              <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">Qiita</a>
-            </div>
-          </div>
-
-          <div class="footer-section">
-            <h3 class="footer-title">Info</h3>
-            <p class="text-muted" style="font-size: var(--text-sm);">
-              Toy Camera Noir<br>
-              Portfolio 2025
-            </p>
-          </div>
-        </div>
-
-        <div class="footer-bottom">
-          <p>&copy; 2025 Sakae Shunsuke. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
+    <div id="site-footer"></div>
   </div>
 
   <script src="/renewal/js/main.js"></script>
   <script src="/renewal/js/components.js"></script>
   <script>
-    function createCaseStudy(work) {
-      return `
-        <article class="case-study" id="${work.slug}">
-          <div class="case-study-header">
-            <h2 class="case-study-title">${work.title}</h2>
-            <p style="font-size: var(--text-lg); color: var(--color-text-secondary); margin-bottom: var(--space-4);">
-              ${work.summary}
-            </p>
-            ${work.tags && work.tags.length > 0 ? `
-              <div class="tag-list">
-                ${work.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-              </div>
-            ` : ''}
-          </div>
-
-          <div class="case-study-section">
-            <h3>背景 / Background</h3>
-            <div class="case-study-section-content">
-              <p>${work.background}</p>
-            </div>
-          </div>
-
-          <div class="case-study-section">
-            <h3>制約 / Constraints</h3>
-            <div class="case-study-section-content">
-              <ul>
-                ${work.constraints.map(c => `<li>${c}</li>`).join('')}
-              </ul>
-            </div>
-          </div>
-
-          <div class="case-study-section">
-            <h3>打ち手 / Approach</h3>
-            <div class="case-study-section-content">
-              <p>${work.approach}</p>
-            </div>
-          </div>
-
-          <div class="case-study-section">
-            <h3>実装 / Implementation</h3>
-            <div class="case-study-section-content">
-              <p>${work.implementation}</p>
-            </div>
-          </div>
-
-          <div class="case-study-section">
-            <h3>成果 / Results</h3>
-            <div class="case-study-section-content">
-              <ul>
-                ${work.results.map(r => `<li>${r}</li>`).join('')}
-              </ul>
-            </div>
-          </div>
-
-          <div class="case-study-section">
-            <h3>学び / Learnings</h3>
-            <div class="case-study-section-content">
-              <p>${work.learnings}</p>
-            </div>
-          </div>
-        </article>
-      `;
-    }
-
     document.addEventListener('DOMContentLoaded', async () => {
       const container = document.getElementById('case-studies');
-      container.innerHTML = '<div class="skeleton" style="height: 400px; border-radius: var(--radius-lg);"></div>';
+      container.innerHTML = '<div class="case-study"><div class="case-media skeleton" style="height:280px;"></div></div>';
 
       const works = await DataLoader.getWorks();
-
-      if (works.length === 0) {
+      if (!works.length) {
         container.innerHTML = '<p class="text-muted">ケーススタディがありません</p>';
         return;
       }
+      container.innerHTML = works.map(w => Components.createCaseStudy(w)).join('');
+      if (window.ScrollAnimation) ScrollAnimation.refresh();
 
-      container.innerHTML = works.map(createCaseStudy).join('');
-
-      // Handle hash navigation
       if (window.location.hash) {
         const target = document.querySelector(window.location.hash);
-        if (target) {
-          setTimeout(() => {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 100);
-        }
+        if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
       }
     });
   </script>

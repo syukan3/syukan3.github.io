@@ -6,7 +6,7 @@
       "slug": "hijojo-system",
       "featured": true,
       "summary": "金融規制に準拠したオンラインファンド販売システムの開発・運用を主導",
-      "thumbnail": "/renewal/images/work-hijojo-thumb.jpg",
+      "thumbnail": "/renewal/images/hero.webp",
       "background": "オンラインでファンドを販売するシステムの開発・保守・運用が必要。金融商品を扱うため、高いセキュリティとコンプライアンスが求められる環境。",
       "constraints": [
         "金融規制（第二種金融商品取引業）への準拠必須",
@@ -28,11 +28,11 @@
     },
     {
       "id": "work-qiita",
-      "title": "技術ブログ150万ビュー達成",
+      "title": "技術ブログ143万PV達成",
       "slug": "qiita-growth",
       "featured": true,
-      "summary": "戦略的アプローチで Qiita 累計143万ビューを達成。日間PVを7倍に成長",
-      "thumbnail": "/renewal/images/work-qiita-thumb.jpg",
+      "summary": "戦略的アプローチで Qiita 累計143万PVを達成。日間PVを7倍に成長",
+      "thumbnail": "/renewal/images/blog_mosaicai.webp",
       "background": "技術知識の共有と自身のブランディングを目的に技術ブログを運営。2024年11月時点で40万ビューだったものを、戦略的に成長させる必要があった。",
       "constraints": [
         "本業との両立（限られた執筆時間）",
@@ -42,14 +42,14 @@
       "approach": "トレンド分析によりAI・クラウド技術など需要の高いトピックに注力。SEO最適化（タイトル・タグ・構成）を徹底し、毎日1記事を目標に高品質なコンテンツを作成。",
       "implementation": "アナリティクスを活用して人気記事の傾向を分析・改善。コメント対応やフィードバック反映で読者との関係構築を重視。",
       "results": [
-        "累計143万ビュー達成（8ヶ月で100万ビュー増加）",
-        "日間PV 5,000達成（7倍成長）",
-        "270記事を公開",
-        "人気記事「Deep Research」は25万ビュー超"
+        "累計143万PV達成（8ヶ月で100万PV増加）",
+        "日間PV 約5,000達成（7倍成長）",
+        "270記事超を公開",
+        "人気記事「Deep Research」は25万PV超・100いいね超"
       ],
       "learnings": "技術発信は継続が最も重要。トレンドを捉えた速報性と、深い解説を両立させることで読者の信頼を獲得できる。",
       "tags": ["Qiita", "SEO", "Analytics", "技術発信"],
-      "year": "2019-2025"
+      "year": "2019-現在"
     },
     {
       "id": "work-iot-vision",
@@ -57,7 +57,7 @@
       "slug": "iot-vision-system",
       "featured": true,
       "summary": "IoTデバイスとAIを組み合わせた画像分析による属性取得・視聴率測定システムの開発",
-      "thumbnail": "/renewal/images/work-iot-thumb.jpg",
+      "thumbnail": "/renewal/images/blog_iot.webp",
       "background": "デジタルサイネージの効果測定のため、視聴者の属性（年齢・性別）を取得し視聴率を測定するシステムが必要だった。",
       "constraints": [
         "エッジデバイスでのリアルタイム処理",

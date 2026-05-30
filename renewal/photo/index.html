@@ -3,201 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Toy Camera 写真集 - 栄 俊介">
+  <meta name="description" content="Toy Camera Gallery - 栄 俊介">
   <meta name="keywords" content="栄俊介, 写真, トイカメラ">
 
   <meta property="og:title" content="Photo - 栄 俊介 | Sakae Shunsuke">
-  <meta property="og:description" content="Toy Camera 写真集">
+  <meta property="og:description" content="Toy Camera Gallery">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://syukan3.github.io/renewal/photo/">
+  <meta property="og:image" content="https://syukan3.github.io/renewal/images/og-image.png">
 
+  <meta name="theme-color" content="#0a0a0a">
   <title>Photo - 栄 俊介 | Sakae Shunsuke</title>
 
   <link rel="icon" type="image/svg+xml" href="/renewal/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/renewal/css/reset.css">
   <link rel="stylesheet" href="/renewal/css/variables.css">
   <link rel="stylesheet" href="/renewal/css/base.css">
   <link rel="stylesheet" href="/renewal/css/components.css">
-
-  <style>
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: var(--space-6);
-    }
-
-    .photo-item {
-      position: relative;
-      aspect-ratio: 1;
-      overflow: hidden;
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: linear-gradient(180deg, rgba(32, 32, 32, 0.92), rgba(18, 18, 18, 0.96));
-      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
-    }
-
-    .photo-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform var(--transition-base);
-    }
-
-    .photo-item:hover img {
-      transform: scale(1.05);
-    }
-
-    .photo-caption {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: var(--space-4);
-      background: linear-gradient(to top, rgba(10, 10, 10, 0.9), transparent);
-      color: var(--color-white);
-      font-size: var(--text-sm);
-      opacity: 0;
-      transition: opacity var(--transition-base);
-    }
-
-    .photo-item:hover .photo-caption {
-      opacity: 1;
-    }
-
-    @media (max-width: 768px) {
-      .photo-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-4);
-      }
-    }
-  </style>
 </head>
-<body>
-  <header class="header">
-    <div class="container header-container">
-      <a href="/renewal/" class="logo">Portfolio</a>
-
-      <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
-        <span class="menu-icon" aria-hidden="true"></span>
-      </button>
-
-      <nav>
-        <ul class="nav-list">
-          <li><a href="/renewal/" class="nav-link">Home</a></li>
-          <li><a href="/renewal/work/" class="nav-link">Work</a></li>
-          <li><a href="/renewal/projects/" class="nav-link">Projects</a></li>
-          <li><a href="/renewal/writing/" class="nav-link">Writing</a></li>
-          <li><a href="/renewal/about/" class="nav-link">About</a></li>
-          <li><a href="/renewal/photo/" class="nav-link">Photo</a></li>
-          <li><a href="/renewal/contact/" class="nav-link">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+<body data-page="photo">
+  <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+  <div id="site-header"></div>
 
   <div class="noir-frame">
-    <main>
-    <section class="section">
-      <div class="container">
-        <div class="section-header section-title-center">
-          <h1 class="section-title">Toy Camera</h1>
-          <p class="section-subtitle" style="max-width: 600px;">
-            トイカメラで切り取る日常の断片。<br>
-            不完全さの中に美しさを見つける。
-          </p>
+    <main id="main-content">
+      <section class="section">
+        <div class="container">
+          <div class="section-header section-title-center" data-reveal>
+            <span class="section-eyebrow">Toy Camera</span>
+            <h1 class="section-title">Toy Camera Gallery</h1>
+            <p class="section-subtitle">トイカメラで切り取る日常の断片。不完全さの中に美しさを見つける。</p>
+          </div>
+          <div id="photo-grid" class="photo-grid"></div>
         </div>
-
-        <div class="photo-grid">
-          <!-- Sample photos - Replace with actual images -->
-          <div class="photo-item">
-            <img src="/renewal/images/photo-placeholder.jpg" alt="Photo 1" loading="lazy">
-            <div class="photo-caption">街角の光</div>
-          </div>
-
-          <div class="photo-item">
-            <img src="/renewal/images/photo-placeholder.jpg" alt="Photo 2" loading="lazy">
-            <div class="photo-caption">夕暮れ時</div>
-          </div>
-
-          <div class="photo-item">
-            <img src="/renewal/images/photo-placeholder.jpg" alt="Photo 3" loading="lazy">
-            <div class="photo-caption">静寂</div>
-          </div>
-
-          <div class="photo-item">
-            <img src="/renewal/images/photo-placeholder.jpg" alt="Photo 4" loading="lazy">
-            <div class="photo-caption">都市の記憶</div>
-          </div>
-
-          <div class="photo-item">
-            <img src="/renewal/images/photo-placeholder.jpg" alt="Photo 5" loading="lazy">
-            <div class="photo-caption">雨上がり</div>
-          </div>
-
-          <div class="photo-item">
-            <img src="/renewal/images/photo-placeholder.jpg" alt="Photo 6" loading="lazy">
-            <div class="photo-caption">光と影</div>
-          </div>
-
-          <div class="photo-item">
-            <img src="/renewal/images/photo-placeholder.jpg" alt="Photo 7" loading="lazy">
-            <div class="photo-caption">午後の風景</div>
-          </div>
-
-          <div class="photo-item">
-            <img src="/renewal/images/photo-placeholder.jpg" alt="Photo 8" loading="lazy">
-            <div class="photo-caption">時の流れ</div>
-          </div>
-
-          <div class="photo-item">
-            <img src="/renewal/images/photo-placeholder.jpg" alt="Photo 9" loading="lazy">
-            <div class="photo-caption">日常の詩</div>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
     </main>
-
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3 class="footer-title">Navigate</h3>
-            <div class="footer-links">
-              <a href="/renewal/" class="footer-link">Home</a>
-              <a href="/renewal/work/" class="footer-link">Work</a>
-              <a href="/renewal/projects/" class="footer-link">Projects</a>
-              <a href="/renewal/writing/" class="footer-link">Writing</a>
-              <a href="/renewal/about/" class="footer-link">About</a>
-              <a href="/renewal/contact/" class="footer-link">Contact</a>
-            </div>
-          </div>
-
-          <div class="footer-section">
-            <h3 class="footer-title">Connect</h3>
-            <div class="footer-links">
-              <a href="https://github.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
-              <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">Qiita</a>
-            </div>
-          </div>
-
-          <div class="footer-section">
-            <h3 class="footer-title">Info</h3>
-            <p class="text-muted" style="font-size: var(--text-sm);">
-              Toy Camera Noir<br>
-              Portfolio 2025
-            </p>
-          </div>
-        </div>
-
-        <div class="footer-bottom">
-          <p>&copy; 2025 Sakae Shunsuke. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
+    <div id="site-footer"></div>
   </div>
 
   <script src="/renewal/js/main.js"></script>
+  <script src="/renewal/js/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const photos = await DataLoader.getPhotos();
+      Components.renderItems('photo-grid', photos, Components.createPhotoItem);
+    });
+  </script>
 </body>
 </html>

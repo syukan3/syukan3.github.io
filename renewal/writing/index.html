@@ -3,127 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="栄 俊介の技術記事・登壇一覧 - Qiita 150万ビュー達成">
+  <meta name="description" content="栄 俊介の技術記事・登壇一覧 - Qiita 143万PV達成">
   <meta name="keywords" content="栄俊介, 記事, 登壇, 技術発信, Qiita">
 
   <meta property="og:title" content="Writing & Talks - 栄 俊介 | Sakae Shunsuke">
-  <meta property="og:description" content="技術記事・登壇一覧 - Qiita 150万ビュー達成">
+  <meta property="og:description" content="技術記事・登壇一覧 - Qiita 143万PV達成">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://syukan3.github.io/renewal/writing/">
+  <meta property="og:image" content="https://syukan3.github.io/renewal/images/og-image.png">
 
+  <meta name="theme-color" content="#0a0a0a">
   <title>Writing & Talks - 栄 俊介 | Sakae Shunsuke</title>
 
   <link rel="icon" type="image/svg+xml" href="/renewal/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/renewal/css/reset.css">
   <link rel="stylesheet" href="/renewal/css/variables.css">
   <link rel="stylesheet" href="/renewal/css/base.css">
   <link rel="stylesheet" href="/renewal/css/components.css">
 </head>
-<body>
-  <header class="header">
-    <div class="container header-container">
-      <a href="/renewal/" class="logo">Portfolio</a>
-
-      <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
-        <span class="menu-icon" aria-hidden="true"></span>
-      </button>
-
-      <nav>
-        <ul class="nav-list">
-          <li><a href="/renewal/" class="nav-link">Home</a></li>
-          <li><a href="/renewal/work/" class="nav-link">Work</a></li>
-          <li><a href="/renewal/projects/" class="nav-link">Projects</a></li>
-          <li><a href="/renewal/writing/" class="nav-link">Writing</a></li>
-          <li><a href="/renewal/about/" class="nav-link">About</a></li>
-          <li><a href="/renewal/photo/" class="nav-link">Photo</a></li>
-          <li><a href="/renewal/contact/" class="nav-link">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+<body data-page="writing">
+  <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+  <div id="site-header"></div>
 
   <div class="noir-frame">
-    <main>
-    <section class="section">
-      <div class="container">
-        <div class="section-header">
-          <h1 class="section-title">Writing & Talks</h1>
-          <p class="section-subtitle">技術記事・登壇一覧</p>
-        </div>
+    <main id="main-content">
+      <section class="section">
+        <div class="container container-lg">
+          <div class="section-header" data-reveal>
+            <span class="section-eyebrow">Writing &amp; Talks</span>
+            <h1 class="section-title">Writing &amp; Talks</h1>
+            <p class="section-subtitle">技術記事・登壇一覧。Qiita 累計143万PV・270記事超を公開。</p>
+          </div>
 
-        <!-- Pinned -->
-        <div style="margin-bottom: var(--space-16);">
-          <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-8);">Pinned</h2>
-          <div id="pinned-writing" class="grid grid-3">
-            <!-- Loaded by JavaScript -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Pinned</h2>
+            <div id="pinned-writing" class="writing-list"></div>
+          </div>
+
+          <div class="filmstrip" aria-hidden="true"></div>
+
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Recent</h2>
+            <div id="recent-writing" class="writing-list"></div>
           </div>
         </div>
-
-        <!-- Recent -->
-        <div class="film-border">
-          <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-8);">Recent</h2>
-          <div id="recent-writing" class="grid grid-3">
-            <!-- Loaded by JavaScript -->
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
     </main>
-
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3 class="footer-title">Navigate</h3>
-            <div class="footer-links">
-              <a href="/renewal/" class="footer-link">Home</a>
-              <a href="/renewal/work/" class="footer-link">Work</a>
-              <a href="/renewal/projects/" class="footer-link">Projects</a>
-              <a href="/renewal/writing/" class="footer-link">Writing</a>
-              <a href="/renewal/about/" class="footer-link">About</a>
-              <a href="/renewal/contact/" class="footer-link">Contact</a>
-            </div>
-          </div>
-
-          <div class="footer-section">
-            <h3 class="footer-title">Connect</h3>
-            <div class="footer-links">
-              <a href="https://github.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
-              <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">Qiita</a>
-            </div>
-          </div>
-
-          <div class="footer-section">
-            <h3 class="footer-title">Info</h3>
-            <p class="text-muted" style="font-size: var(--text-sm);">
-              Toy Camera Noir<br>
-              Portfolio 2025
-            </p>
-          </div>
-        </div>
-
-        <div class="footer-bottom">
-          <p>&copy; 2025 Sakae Shunsuke. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
+    <div id="site-footer"></div>
   </div>
 
   <script src="/renewal/js/main.js"></script>
   <script src="/renewal/js/components.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      Components.showSkeleton('pinned-writing', 3);
-      Components.showSkeleton('recent-writing', 6);
-
       const writing = await DataLoader.getWriting();
-
-      const pinned = writing.filter(w => w.pinned);
-      const recent = writing.filter(w => !w.pinned);
-
-      Components.renderItems('pinned-writing', pinned, Components.createWritingItem);
-      Components.renderItems('recent-writing', recent, Components.createWritingItem);
+      const sortByDate = (a, b) => new Date(b.date) - new Date(a.date);
+      Components.renderItems('pinned-writing', writing.filter(w => w.pinned).sort(sortByDate), Components.createWritingItem);
+      Components.renderItems('recent-writing', writing.filter(w => !w.pinned).sort(sortByDate), Components.createWritingItem);
     });
   </script>
 </body>

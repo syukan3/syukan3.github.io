@@ -1,215 +1,127 @@
-# Portfolio Site - Renewal
+# Portfolio Site — Renewal (Toy Camera Noir)
 
-トイカメラ Noir をテーマにした個人ポートフォリオサイトのリニューアル版です。
-
-## 🎯 コンセプト
-
-**Toy Camera × Darkroom × Noir**
-
-黒基調の上質なデザインに、トイカメラの要素を控えめに取り入れた、採用・案件獲得・技術発信を目的としたポートフォリオサイトです。
+栄 俊介 / Sakae Shunsuke の個人ポートフォリオ（リニューアル版）。
+**Toy Camera × Darkroom × Noir** をテーマにした、ダーク基調・アンバーの光漏れ・フィルム/ファインダー演出の静的サイトです。
 
 ## 🛠️ 技術スタック
 
-- **Pure HTML/CSS/JavaScript** - ビルドツール不使用の完全静的サイト
-- **CSS Variables** - デザイントークンによる一貫したスタイル管理
-- **JSON-based Content Management** - 手動更新しやすいコンテンツ管理
-- **GitHub Pages** - ホスティング
+- **Pure HTML/CSS/JavaScript**（ビルドツール不使用の完全静的サイト）
+- **CSS Variables** によるデザイントークン管理
+- **JSON ベースのコンテンツ管理**（`data/*.json` を編集するだけ）
+- **GitHub Pages** ホスティング
 
 ## 📁 ディレクトリ構成
 
 ```
 renewal/
-├── index.html              # Homeページ
-├── work/                   # Workページ（ケーススタディ）
-├── projects/               # Projectsページ
-├── writing/                # Writing & Talksページ
-├── about/                  # Aboutページ
-├── photo/                  # Photoページ
-├── contact/                # Contactページ
-├── css/                    # スタイルシート
+├── index.html              # Home
+├── work/                   # Work（ケーススタディ）
+├── projects/               # Projects
+├── writing/                # Writing & Talks
+├── about/                  # About
+├── photo/                  # Photo（Toy Camera Gallery）
+├── contact/                # Contact（問い合わせフォーム）
+├── 404.html                # 404
+├── css/
 │   ├── reset.css
-│   ├── variables.css
-│   ├── base.css
-│   └── components.css
-├── js/                     # JavaScript
-│   ├── main.js
-│   └── components.js
-├── data/                   # コンテンツデータ（JSON）
-│   ├── works.json
-│   ├── projects.json
-│   ├── writing.json
-│   └── profile.json
-├── images/                 # 画像ファイル
-└── favicon.svg             # ファビコン
+│   ├── variables.css       # デザイントークン（色・フォント・余白）
+│   ├── base.css            # 背景の光漏れ・タイポ・noir-frame
+│   └── components.css      # 各UIコンポーネント
+├── js/
+│   ├── main.js             # Site（共通ヘッダ/フッタ注入）・DataLoader・ScrollAnimation
+│   └── components.js       # カード/ケーススタディ/写真フレームのレンダラ（純関数）
+├── data/
+│   ├── profile.json        # プロフィール・スキル・略歴・資格・価値観
+│   ├── works.json          # ケーススタディ
+│   ├── projects.json       # プロジェクト
+│   ├── writing.json        # 記事・登壇
+│   └── photos.json         # Photo ギャラリー（実写真は後日差し替え）
+├── images/                 # 画像（webp）/ og-image.png
+└── favicon.svg
 ```
+
+## 🧱 アーキテクチャ要点
+
+- **共通ヘッダ/フッタは JS で一元注入**：各ページは `<div id="site-header"></div>` / `<div id="site-footer"></div>` のプレースホルダと `<body data-page="...">` だけを持ち、`main.js` の `Site.renderChrome()` がナビ・フッタを生成（active 判定は `data-page`）。ナビ項目の変更は `main.js` の `Site.nav` 一箇所のみ。
+- **コンポーネントは純関数**：`components.js` の各 `createXxxCard()` は `this` に依存せず `Array.map` に直接渡せる。
+- **スクロール表示**：`[data-reveal]` 要素をフェードイン。ファーストビュー内の要素は即時表示（暗転防止）。`prefers-reduced-motion` 対応。
 
 ## 🚀 ローカル開発
 
-### 1. リポジトリをクローン
-
 ```bash
-git clone https://github.com/syukan3/syukan3.github.io.git
-cd syukan3.github.io/renewal
-```
-
-### 2. ローカルサーバーを起動
-
-```bash
-# Python 3
+# リポジトリのルートで（/renewal を含むパスで配信する必要があるため）
+cd syukan3.github.io
 python3 -m http.server 8000
-
-# または Node.js
-npx http-server -p 8000
+# → http://localhost:8000/renewal/
 ```
 
-### 3. ブラウザで開く
-
-```
-http://localhost:8000
-```
+> 注意: 絶対パス `/renewal/...` を使用しているため、`renewal/` ではなく**リポジトリのルート**で配信してください。
 
 ## 📝 コンテンツの更新方法
 
-コンテンツは `data/` ディレクトリ内のJSONファイルを編集することで更新できます。
+`data/` 内の JSON を編集するだけで反映されます。
 
-詳しくは [CONTENT_MANAGEMENT_GUIDE.md](../CONTENT_MANAGEMENT_GUIDE.md) を参照してください。
-
-### クイックガイド
-
-#### Work（ケーススタディ）を追加
-
-`data/works.json` を編集：
-
+### Work（ケーススタディ）— `data/works.json`
 ```json
 {
-  "works": [
-    {
-      "id": "work-new",
-      "title": "プロジェクト名",
-      "slug": "project-slug",
-      "featured": true,
-      "summary": "1行での概要",
-      "thumbnail": "/renewal/images/work-thumb.jpg",
-      "background": "課題背景",
-      "constraints": ["制約1", "制約2"],
-      "approach": "アプローチ",
-      "implementation": "実装詳細",
-      "results": ["成果1", "成果2"],
-      "learnings": "学び",
-      "tags": ["React", "TypeScript"],
-      "year": "2024"
-    }
-  ]
+  "id": "work-new", "title": "プロジェクト名", "slug": "project-slug",
+  "featured": true, "summary": "1行概要",
+  "thumbnail": "/renewal/images/xxx.webp",
+  "background": "背景", "constraints": ["制約1"], "approach": "打ち手",
+  "implementation": "実装", "results": ["成果1"], "learnings": "学び",
+  "tags": ["Ruby on Rails", "AWS"], "year": "2024"
 }
 ```
 
-#### 記事・登壇を追加
+### Projects — `data/projects.json`
+`thumbnail`・`links.{github,demo,article}`・`tags`・`role`・`featured` を設定。
 
-`data/writing.json` を編集：
+### 記事・登壇 — `data/writing.json`
+`type` は `"article"` か `"talk"`、`pinned: true` で上部固定。
 
-```json
-{
-  "writing": [
-    {
-      "id": "article-new",
-      "title": "記事タイトル",
-      "pinned": true,
-      "date": "2024-12-14",
-      "summary": "読むべき理由",
-      "url": "https://example.com/article",
-      "type": "article"
-    }
-  ]
-}
-```
+### Photo — `data/photos.json`
+実写真を `renewal/images/` に置き、各エントリの `src` を設定して `placeholder` を `false`（または削除）にすると差し替わります。未設定の間はフィルム額のプレースホルダ表示。
 
 ## 🎨 デザインシステム
 
-### カラーパレット
-
+### カラー（`variables.css`）
 ```css
-/* Base Colors */
---color-noir-black: #0a0a0a;
---color-charcoal: #1a1a1a;
---color-smoke: #2a2a2a;
---color-white: #f5f5f5;
-
-/* Accent Colors (Light Leak) */
---color-amber-leak: rgba(255, 191, 105, 0.15);
---color-cyan-leak: rgba(105, 191, 255, 0.12);
+--color-noir-black:#0a0a0a;        /* 背景 */
+--color-cream:#f3ecdc;             /* 見出し */
+--color-ember:#e0a45a;             /* アクセント（アンバー） */
+--color-ember-bright:#f6cf86;
 ```
 
 ### タイポグラフィ
+- **見出し（display）**: `Fraunces`（欧文）+ `Shippori Mincho`（和文・明朝）→ シネマティックな印象
+- **本文**: `Inter` + `Noto Sans JP`
+- 明朝見出しは字間ほぼ0・ウェイト 600–700 で調整
 
-- **Font Family**: システムフォント（-apple-system, BlinkMacSystemFont, 等）
-- **Font Sizes**: 12px 〜 60px（レスポンシブ対応）
-- **Line Heights**: 1.2（タイトル）、1.6（本文）、1.8（リラックス）
+### Toy Camera 演出
+- Viewfinder（四隅ブラケット＋クロスヘア）／Film grain（薄く）／Light leak（アンバーのグロー）／Filmstrip（パーフォレーション区切り）
 
-### トイカメラ要素
+## ✉️ Contact フォーム
 
-- **Viewfinder Frame**: Hero セクションなど要所のみ
-- **Film Grain**: 全体に薄く（opacity: 0.03）
-- **Light Leak**: ホバー時の控えめなエフェクト
-- **Film Perforation**: セクション区切り
+メールアドレスは公開しません。フォーム送信は既存の本番と同じ仕組みを使用：
 
-## 📱 レスポンシブ対応
+- **reCAPTCHA Enterprise v3** でトークン取得
+- **AWS Lambda Function URL** へ `FormData`（+`recaptcha_response`）を POST
 
-- **Desktop**: 1920px, 1440px, 1280px
-- **Tablet**: 1024px, 768px
-- **Mobile**: 414px, 390px, 375px
+サイトキー・エンドポイントは `contact/index.html` 内に定義（旧ルートサイト `js/script.js` と同一）。
 
-## ♿ アクセシビリティ
+## ♿ / 🔍 アクセシビリティ・SEO
 
-- キーボードナビゲーション対応
-- フォーカス可視化
-- コントラスト比確保（WCAG AA準拠）
-- `prefers-reduced-motion` 対応
+- キーボード操作・フォーカス可視化・`prefers-reduced-motion` 対応
+- ページごとの title/description、OGP / Twitter Card（`images/og-image.png`）、セマンティック HTML
 
-## 🔍 SEO
+## 📦 本番デプロイ（未実施）
 
-- ページごとの title/description
-- OGP タグ設定
-- Twitter Card 対応
-- セマンティックHTML
-
-## 📦 本番デプロイ
-
-デプロイ方法は [DEPLOYMENT_GUIDE.md](../DEPLOYMENT_GUIDE.md) を参照してください。
-
-### 概要
-
-1. 検収完了後、現行サイトを `/legacy/` に移動
-2. `/renewal/` の内容をルートに移動
-3. パスを `/renewal/` から `/` に変更
-4. `main` ブランチにマージしてデプロイ
-
-## 🐛 トラブルシューティング
-
-### JSONが読み込めない
-
-- ブラウザのコンソールでエラーを確認
-- JSON Validator（https://jsonlint.com/）で検証
-
-### CSSが適用されない
-
-- パスが `/renewal/` になっているか確認
-- ブラウザのキャッシュをクリア
-
-### 画像が表示されない
-
-- 画像ファイルが正しい場所にあるか確認
-- ファイル名の大文字小文字を確認
-
-## 📄 ライセンス
-
-このプロジェクトは個人利用を目的としています。
-
-## 🙏 クレジット
-
-- Design: Toy Camera Noir コンセプト
-- Development: Pure HTML/CSS/JavaScript
-- Hosting: GitHub Pages
+現状は `/renewal/` 配下で運用。ルート（本番URL）への昇格は別タスク：
+1. 現行ルートサイトを退避
+2. `/renewal/` の内容をルートへ移動し、絶対パスを `/renewal/` → `/` に置換
+3. `sitemap.xml` / `robots.txt` を新構成に更新（現状の sitemap は旧サイト用・`example.com` のまま）
+4. `main` にマージしてデプロイ
 
 ---
 
-**Last Updated**: 2024-12-14
+**Last Updated**: 2026-05-30

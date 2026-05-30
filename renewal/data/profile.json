@@ -11,7 +11,7 @@
       "qiita": "https://qiita.com/syukan3"
     }
   },
-  "bio": "Ruby on Rails、Python、React/Next.js、AWS を駆使し、要件定義から運用まで一貫した開発プロセスを担当しています。現在はシステム部長として、システム全体のライフサイクルマネジメントを統括し、生成AIを活用したシステム開発に注力しています。技術発信にも積極的で、Qiita で累計150万インプレッションを達成しました。",
+  "bio": "Ruby on Rails、Python、React/Next.js、AWS を駆使し、要件定義から運用まで一貫した開発プロセスを担当しています。現在はシステム部長として、システム全体のライフサイクルマネジメントを統括し、生成AIを活用したシステム開発に注力しています。技術発信にも積極的で、Qiita で累計143万PV・270記事超を達成しました（2026年時点）。",
   "values": [
     {
       "title": "一貫した開発",
@@ -19,7 +19,7 @@
     },
     {
       "title": "技術発信",
-      "description": "Qiita累計150万インプレッション達成。技術知識の共有に積極的に取り組む"
+      "description": "Qiita累計143万PV・270記事達成。技術知識の共有に積極的に取り組む"
     },
     {
       "title": "AI活用",
@@ -72,15 +72,15 @@
     }
   ],
   "certifications": [
-    "AWS Certified Solutions Architect – Associate",
-    "AWS Certified Developer - Associate",
-    "AWS Certified SysOps Administrator - Associate",
-    "AWS Certified Machine Learning – Specialty",
-    "AWS Certified Cloud Practitioner",
-    "Ruby技術者認定試験 Gold",
-    "第三種電気主任技術者試験",
-    "証券外務員一種",
-    "TOEIC 730点"
+    {"name": "AWS Certified Solutions Architect – Associate", "date": "2021年4月"},
+    {"name": "AWS Certified Developer - Associate", "date": "2021年5月"},
+    {"name": "AWS Certified SysOps Administrator - Associate", "date": "2021年6月"},
+    {"name": "AWS Certified Machine Learning – Specialty", "date": "2022年2月"},
+    {"name": "AWS Certified Cloud Practitioner", "date": "2021年3月"},
+    {"name": "Ruby技術者認定試験 Gold", "date": "2019年12月"},
+    {"name": "第三種電気主任技術者試験", "date": "2019年10月"},
+    {"name": "証券外務員一種", "date": "2024年12月"},
+    {"name": "TOEIC 730点", "date": "2015年9月"}
   ],
   "skills": {
     "languages": [

@@ -10,296 +10,151 @@
   <meta property="og:description" content="価値観・略歴・得意領域 | フルスタックエンジニア / システム部長">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://syukan3.github.io/renewal/about/">
+  <meta property="og:image" content="https://syukan3.github.io/renewal/images/og-image.png">
 
+  <meta name="theme-color" content="#0a0a0a">
   <title>About - 栄 俊介 | Sakae Shunsuke</title>
 
   <link rel="icon" type="image/svg+xml" href="/renewal/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/renewal/css/reset.css">
   <link rel="stylesheet" href="/renewal/css/variables.css">
   <link rel="stylesheet" href="/renewal/css/base.css">
   <link rel="stylesheet" href="/renewal/css/components.css">
-
-  <style>
-    .bio-section {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: var(--space-10);
-      align-items: start;
-      margin-bottom: var(--space-20);
-    }
-
-    .bio-photo {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 2px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-      flex-shrink: 0;
-      background: linear-gradient(135deg, rgba(60, 60, 60, 0.9), rgba(30, 30, 30, 0.9));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .bio-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    .bio-photo-placeholder {
-      font-size: var(--text-4xl);
-      color: rgba(255, 255, 255, 0.3);
-      font-weight: var(--font-bold);
-      letter-spacing: -0.02em;
-    }
-
-    .bio-content h2 {
-      font-size: var(--text-2xl);
-      margin-bottom: var(--space-4);
-    }
-
-    .bio-text {
-      color: var(--color-text-secondary);
-      line-height: var(--leading-relaxed);
-    }
-
-    .skills-section {
-      margin-top: var(--space-12);
-    }
-
-    .skills-section h3 {
-      font-size: var(--text-lg);
-      margin-bottom: var(--space-4);
-      color: var(--color-text-secondary);
-    }
-
-    .skills-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-2);
-    }
-
-    .skill-badge {
-      display: inline-block;
-      padding: var(--space-2) var(--space-4);
-      background-color: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: var(--radius-md);
-      font-size: var(--text-sm);
-      color: var(--color-text-secondary);
-      transition: background-color var(--transition-fast), border-color var(--transition-fast);
-    }
-
-    .skill-badge:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    @media (max-width: 768px) {
-      .bio-section {
-        grid-template-columns: 1fr;
-        text-align: center;
-      }
-
-      .bio-photo {
-        margin: 0 auto;
-      }
-    }
-  </style>
 </head>
-<body>
-  <header class="header">
-    <div class="container header-container">
-      <a href="/renewal/" class="logo">Portfolio</a>
-
-      <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
-        <span class="menu-icon" aria-hidden="true"></span>
-      </button>
-
-      <nav>
-        <ul class="nav-list">
-          <li><a href="/renewal/" class="nav-link">Home</a></li>
-          <li><a href="/renewal/work/" class="nav-link">Work</a></li>
-          <li><a href="/renewal/projects/" class="nav-link">Projects</a></li>
-          <li><a href="/renewal/writing/" class="nav-link">Writing</a></li>
-          <li><a href="/renewal/about/" class="nav-link">About</a></li>
-          <li><a href="/renewal/photo/" class="nav-link">Photo</a></li>
-          <li><a href="/renewal/contact/" class="nav-link">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+<body data-page="about">
+  <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+  <div id="site-header"></div>
 
   <div class="noir-frame">
-    <main>
-    <section class="section">
-      <div class="container container-lg">
-        <div class="section-header section-title-center">
-          <h1 class="section-title">About Me</h1>
-        </div>
-
-        <!-- Bio Section -->
-        <div class="bio-section">
-          <div class="bio-photo">
-            <span class="bio-photo-placeholder">SS</span>
-            <img src="/renewal/images/profile.jpg" alt="栄 俊介" loading="lazy" onerror="this.style.display='none'">
+    <main id="main-content">
+      <section class="section">
+        <div class="container container-lg">
+          <div class="section-header" data-reveal>
+            <span class="section-eyebrow">About</span>
+            <h1 class="section-title">About Me</h1>
           </div>
-          <div class="bio-content">
-            <h2>Bio</h2>
-            <p id="profile-bio" class="bio-text">
-              <!-- Loaded by JavaScript -->
-            </p>
 
-            <!-- Skills -->
-            <div class="skills-section">
-              <h3>Skills</h3>
-              <div id="skills" class="skills-grid">
-                <!-- Loaded by JavaScript -->
-              </div>
+          <!-- Bio -->
+          <div class="bio-section" data-reveal>
+            <div class="bio-photo">
+              <img src="/renewal/images/profile.webp" alt="栄 俊介" loading="lazy">
+            </div>
+            <div class="bio-content">
+              <h2>Bio</h2>
+              <p id="profile-bio" class="bio-text"></p>
+              <div class="skills-block" id="skills-block"></div>
             </div>
           </div>
-        </div>
 
-        <!-- Values -->
-        <div style="margin-bottom: var(--space-20);">
-          <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-8); text-align: center;">Values</h2>
-          <div id="values" class="grid grid-3">
-            <!-- Loaded by JavaScript -->
+          <!-- Values -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Values / 価値観</h2>
+            <div id="values" class="grid grid-3"></div>
+          </div>
+
+          <div class="filmstrip" aria-hidden="true"></div>
+
+          <!-- Expertise -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Expertise / 得意領域</h2>
+            <div id="expertise" class="grid grid-2"></div>
+          </div>
+
+          <div class="filmstrip" aria-hidden="true"></div>
+
+          <!-- Timeline -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Timeline / 略歴</h2>
+            <div id="timeline" style="max-width: 820px;"></div>
+          </div>
+
+          <!-- AWS Services -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">AWS / 利用サービス</h2>
+            <div id="aws-services" class="skills-block" style="margin-top:0;"></div>
+          </div>
+
+          <!-- Certifications -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Certifications / 資格</h2>
+            <ul id="certifications" class="cert-list"></ul>
           </div>
         </div>
+      </section>
 
-        <!-- Expertise -->
-        <div class="film-border" style="margin-bottom: var(--space-20);">
-          <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-8); text-align: center;">得意領域</h2>
-          <div id="expertise" class="grid grid-3">
-            <!-- Loaded by JavaScript -->
+      <section class="section">
+        <div class="container">
+          <div class="viewfinder" style="max-width: 760px; margin: 0 auto; text-align: center;" data-reveal>
+            <h2 class="section-title">Let's Work Together</h2>
+            <p class="section-subtitle" style="margin: 0 auto var(--space-8);">お気軽にお問い合わせください。</p>
+            <a href="/renewal/contact/" class="btn btn-primary">お問い合わせ</a>
           </div>
         </div>
-
-        <!-- Timeline -->
-        <div class="film-border">
-          <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-8); text-align: center;">略歴</h2>
-          <div style="max-width: 800px; margin: 0 auto;">
-            <div id="timeline">
-              <!-- Loaded by JavaScript -->
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact CTA -->
-    <section class="section film-border">
-      <div class="container">
-        <div class="viewfinder" style="max-width: 700px; margin: 0 auto; text-align: center;">
-          <h2 class="section-title">Let's Work Together</h2>
-          <p style="font-size: var(--text-lg); color: var(--color-text-secondary); margin-bottom: var(--space-8);">
-            お気軽にお問い合わせください
-          </p>
-          <a href="/renewal/contact/" class="btn btn-primary">お問い合わせ</a>
-        </div>
-      </div>
-    </section>
+      </section>
     </main>
-
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3 class="footer-title">Navigate</h3>
-            <div class="footer-links">
-              <a href="/renewal/" class="footer-link">Home</a>
-              <a href="/renewal/work/" class="footer-link">Work</a>
-              <a href="/renewal/projects/" class="footer-link">Projects</a>
-              <a href="/renewal/writing/" class="footer-link">Writing</a>
-              <a href="/renewal/about/" class="footer-link">About</a>
-              <a href="/renewal/contact/" class="footer-link">Contact</a>
-            </div>
-          </div>
-
-          <div class="footer-section">
-            <h3 class="footer-title">Connect</h3>
-            <div class="footer-links">
-              <a href="https://github.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
-              <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="footer-link">Qiita</a>
-            </div>
-          </div>
-
-          <div class="footer-section">
-            <h3 class="footer-title">Info</h3>
-            <p class="text-muted" style="font-size: var(--text-sm);">
-              Toy Camera Noir<br>
-              Portfolio 2025
-            </p>
-          </div>
-        </div>
-
-        <div class="footer-bottom">
-          <p>&copy; 2025 Sakae Shunsuke. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
+    <div id="site-footer"></div>
   </div>
 
   <script src="/renewal/js/main.js"></script>
   <script src="/renewal/js/components.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      const profileData = await DataLoader.load('profile.json');
+      const data = await DataLoader.load('profile.json');
+      if (!data) return;
 
-      // Set bio
       const bioEl = document.getElementById('profile-bio');
-      if (bioEl && profileData?.bio) {
-        bioEl.textContent = profileData.bio;
+      if (bioEl) bioEl.textContent = data.bio || '';
+
+      // Skills grouped with years
+      const groups = [
+        { label: '言語', items: data.skills?.languages },
+        { label: 'フレームワーク', items: data.skills?.frameworks },
+        { label: 'インフラ / DB', items: data.skills?.infrastructure }
+      ];
+      const skillsBlock = document.getElementById('skills-block');
+      if (skillsBlock) {
+        skillsBlock.innerHTML = groups.filter(g => g.items?.length).map(g => `
+          <h3>${g.label}</h3>
+          <div class="skills-grid">
+            ${g.items.map(s => `<span class="skill-badge">${Utils.escapeHtml(s.name)}<span class="skill-years">${Utils.escapeHtml(s.years || '')}</span></span>`).join('')}
+          </div>
+        `).join('');
       }
 
-      // Render skills as badges
-      const skillsContainer = document.getElementById('skills');
-      const skillsData = profileData?.skills || {};
-      if (skillsContainer) {
-        // Extract skill names from various categories
-        const allSkills = [];
+      Components.renderItems('values', data.values || [], Components.createValueCard);
+      Components.renderItems('expertise', data.expertise || [], Components.createValueCard);
+      Components.renderItems('timeline', data.timeline || [], Components.createTimelineItem);
 
-        // Languages
-        if (skillsData.languages) {
-          skillsData.languages.forEach(s => allSkills.push(s.name));
-        }
-
-        // Frameworks
-        if (skillsData.frameworks) {
-          skillsData.frameworks.forEach(s => allSkills.push(s.name));
-        }
-
-        // Infrastructure
-        if (skillsData.infrastructure) {
-          skillsData.infrastructure.forEach(s => allSkills.push(s.name));
-        }
-
-        if (allSkills.length > 0) {
-          skillsContainer.innerHTML = allSkills.map(skill =>
-            `<span class="skill-badge">${skill}</span>`
-          ).join('');
-        }
+      // AWS services (core / integration / AI-ML)
+      const aws = data.skills?.awsServices;
+      const awsEl = document.getElementById('aws-services');
+      if (awsEl && aws) {
+        const cats = [
+          { label: 'コアサービス', items: aws.core },
+          { label: '統合サービス', items: aws.integration },
+          { label: 'AI/ML・処理サービス', items: aws.aiml }
+        ];
+        awsEl.innerHTML = cats.filter(c => c.items?.length).map(c => `
+          <h3>${c.label}</h3>
+          <div class="skills-grid">
+            ${c.items.map(s => `<span class="skill-badge">${Utils.escapeHtml(s)}</span>`).join('')}
+          </div>
+        `).join('');
       }
 
-      // Render values
-      const values = profileData?.values || [];
-      Components.renderItems('values', values, Components.createValueCard);
-
-      // Render expertise
-      const expertise = profileData?.expertise || [];
-      Components.renderItems('expertise', expertise, Components.createValueCard);
-
-      // Render timeline
-      const timeline = profileData?.timeline || [];
-      Components.renderItems('timeline', timeline, Components.createTimelineItem);
+      // Certifications (with acquisition year)
+      const certEl = document.getElementById('certifications');
+      if (certEl && data.certifications) {
+        certEl.innerHTML = data.certifications.map(c => {
+          const name = typeof c === 'string' ? c : (c.name || '');
+          const date = (c && typeof c === 'object' && c.date) ? c.date : '';
+          return `<li>${Utils.escapeHtml(name)}${date ? `<span class="cert-date">${Utils.escapeHtml(date)}</span>` : ''}</li>`;
+        }).join('');
+      }
     });
   </script>
 </body>
