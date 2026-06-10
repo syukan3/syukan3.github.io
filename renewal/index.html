@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="栄 俊介 - フルスタックエンジニア / システム部長 | Ruby on Rails、Python、AWS を駆使し、要件定義から運用まで一貫した開発">
   <meta name="keywords" content="栄俊介, エンジニア, Ruby on Rails, Python, AWS, フルスタック">
 
@@ -18,7 +18,7 @@
   <meta name="twitter:description" content="技術で事業を前に進める - フルスタックエンジニア / システム部長">
   <meta name="twitter:image" content="https://syukan3.github.io/renewal/images/og-image.png">
 
-  <meta name="theme-color" content="#0a0a0a">
+  <meta name="theme-color" content="#0b0a08">
   <title>栄 俊介 | Sakae Shunsuke - Portfolio</title>
 
   <link rel="icon" type="image/svg+xml" href="/renewal/favicon.svg">
@@ -26,10 +26,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/renewal/css/reset.css">
-  <link rel="stylesheet" href="/renewal/css/variables.css">
-  <link rel="stylesheet" href="/renewal/css/base.css">
-  <link rel="stylesheet" href="/renewal/css/components.css">
+  <link rel="stylesheet" href="/renewal/css/reset.css?v=20260611">
+  <link rel="stylesheet" href="/renewal/css/variables.css?v=20260611">
+  <link rel="stylesheet" href="/renewal/css/base.css?v=20260611">
+  <link rel="stylesheet" href="/renewal/css/components.css?v=20260611">
 </head>
 <body data-page="home">
   <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
@@ -38,20 +38,33 @@
   <div class="noir-frame">
     <main id="main-content">
       <!-- Hero -->
-      <section class="section hero">
-        <div class="container">
-          <div class="viewfinder">
-            <p class="hero-kicker">栄 俊介 / Sakae Shunsuke</p>
-            <h1 class="hero-title">技術で事業を<br class="hero-br"><span class="accent">前に進める</span>。</h1>
-            <p class="hero-lead">
-              Ruby on Rails、Python、React/Next.js、AWS を駆使し、要件定義から運用まで一貫した開発プロセスを推進するフルスタックエンジニア / システム部長。
-            </p>
-            <div class="hero-actions">
-              <a href="/renewal/work/" class="btn btn-primary">ケーススタディを見る</a>
-              <a href="/renewal/contact/" class="btn btn-secondary">相談する</a>
-            </div>
-          </div>
+      <section class="hero">
+        <canvas id="hero-canvas" class="hero-canvas" aria-hidden="true"></canvas>
+        <div class="hero-vignette" aria-hidden="true"></div>
+        <div class="hero-frame" aria-hidden="true">
+          <span class="hero-frame-tr"></span>
+          <span class="hero-frame-bl"></span>
         </div>
+        <div class="container hero-inner">
+          <p class="hero-kicker">栄 俊介 / Sakae Shunsuke — Full-Stack Engineer・システム部長</p>
+          <h1 class="hero-title">
+            <span class="hero-line"><span>攻めのAIを、</span></span>
+            <span class="hero-line"><span><span class="accent">守りの統制</span>で。</span></span>
+          </h1>
+          <p class="hero-lead">
+            金融グレードのガバナンス（FISC・J-SOX・個人情報保護法）の下で生成AIを全社導入し、要件定義から運用・内部統制対応まで一気通貫で推進します。転職・業務委託・技術顧問のご相談を承ります。
+          </p>
+          <div class="hero-actions">
+            <a href="/renewal/work/" class="btn btn-primary">ケーススタディを見る</a>
+            <a href="/renewal/contact/" class="btn btn-secondary">相談する</a>
+          </div>
+          <p class="hero-meta">
+            <span>生成AI 全社導入 × 内部統制</span>
+            <span>Qiita 143万PV・270記事超</span>
+            <span>要件定義から運用まで一気通貫</span>
+          </p>
+        </div>
+        <div class="hero-scroll" aria-hidden="true">SCROLL</div>
       </section>
 
       <div class="filmstrip" aria-hidden="true"></div>
@@ -59,45 +72,45 @@
       <!-- Featured Work -->
       <section class="section">
         <div class="container">
-          <div class="section-header" data-reveal>
-            <span class="section-eyebrow">Featured Case Studies</span>
-            <h2 class="section-title">主要なケーススタディ</h2>
-            <p class="section-subtitle">課題解決から実装・成果までを通してまとめた実績。</p>
+          <div class="section-header section-head-row" data-reveal>
+            <div>
+              <span class="section-eyebrow">Featured Case Studies</span>
+              <h2 class="section-title">主要なケーススタディ</h2>
+              <p class="section-subtitle">課題解決から実装・成果までを通してまとめた実績。</p>
+            </div>
+            <a href="/renewal/work/" class="view-all">すべての Work</a>
           </div>
           <div id="featured-works" class="grid grid-3"></div>
-          <div style="text-align:center; margin-top: var(--space-10);">
-            <a href="/renewal/work/" class="btn btn-secondary">すべての Work を見る →</a>
-          </div>
         </div>
       </section>
 
       <!-- Featured Projects -->
       <section class="section">
         <div class="container">
-          <div class="section-header" data-reveal>
-            <span class="section-eyebrow">Projects</span>
-            <h2 class="section-title">主要プロジェクト</h2>
-            <p class="section-subtitle">プロダクト・OSS・実験的な取り組み。</p>
+          <div class="section-header section-head-row" data-reveal>
+            <div>
+              <span class="section-eyebrow">Projects</span>
+              <h2 class="section-title">主要プロジェクト</h2>
+              <p class="section-subtitle">プロダクト・OSS・実験的な取り組み。</p>
+            </div>
+            <a href="/renewal/projects/" class="view-all">すべての Projects</a>
           </div>
           <div id="featured-projects" class="grid grid-3"></div>
-          <div style="text-align:center; margin-top: var(--space-10);">
-            <a href="/renewal/projects/" class="btn btn-secondary">すべての Projects を見る →</a>
-          </div>
         </div>
       </section>
 
       <!-- Writing & Talks -->
       <section class="section">
         <div class="container">
-          <div class="section-header" data-reveal>
-            <span class="section-eyebrow">Writing &amp; Talks</span>
-            <h2 class="section-title">技術発信・登壇</h2>
-            <p class="section-subtitle">Qiita 累計143万PV・270記事超。トレンドと深い解説の両立。</p>
+          <div class="section-header section-head-row" data-reveal>
+            <div>
+              <span class="section-eyebrow">Writing &amp; Talks</span>
+              <h2 class="section-title">技術発信・登壇</h2>
+              <p class="section-subtitle">Qiita 累計143万PV・270記事超。トレンドと深い解説の両立。</p>
+            </div>
+            <a href="/renewal/writing/" class="view-all">すべての記事・登壇</a>
           </div>
           <div id="pinned-writing" class="writing-list"></div>
-          <div style="text-align:center; margin-top: var(--space-10);">
-            <a href="/renewal/writing/" class="btn btn-secondary">すべての記事・登壇を見る →</a>
-          </div>
         </div>
       </section>
 
@@ -106,10 +119,10 @@
       <!-- Contact CTA -->
       <section class="section">
         <div class="container">
-          <div class="viewfinder" style="max-width: 760px; margin: 0 auto; text-align: center;" data-reveal>
+          <div class="cta-block" data-reveal>
             <span class="section-eyebrow">Let's Work Together</span>
-            <h2 class="section-title">技術で、事業を前に。</h2>
-            <p class="section-subtitle" style="margin: 0 auto var(--space-8);">
+            <h2 class="cta-title">技術で、事業を前に。</h2>
+            <p class="cta-lead">
               プロジェクトのご相談、業務委託、技術顧問など、お気軽にお問い合わせください。
             </p>
             <a href="/renewal/contact/" class="btn btn-primary">お問い合わせ</a>
@@ -121,8 +134,9 @@
     <div id="site-footer"></div>
   </div>
 
-  <script src="/renewal/js/main.js"></script>
-  <script src="/renewal/js/components.js"></script>
+  <script src="/renewal/js/main.js?v=20260611"></script>
+  <script src="/renewal/js/components.js?v=20260611"></script>
+  <script src="/renewal/js/hero.js?v=20260611"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       Components.showSkeleton('featured-works', 3);

@@ -33,12 +33,12 @@ const Site = {
             <span class="logo-mark" aria-hidden="true"></span>
             <span class="logo-text">Sakae Shunsuke</span>
           </a>
-          <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
-            <span class="menu-icon" aria-hidden="true"></span>
-          </button>
           <nav aria-label="メインナビゲーション">
             <ul class="nav-list">${items}</ul>
           </nav>
+          <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
+            <span class="menu-icon" aria-hidden="true"></span>
+          </button>
         </div>
       </header>
     `;
@@ -71,8 +71,8 @@ const Site = {
             </div>
           </div>
           <div class="footer-bottom">
-            <p>Toy Camera Noir — Portfolio</p>
-            <p>&copy; 2025 Sakae Shunsuke. All rights reserved.</p>
+            <p>技術で、事業を前に。</p>
+            <p>&copy; ${new Date().getFullYear()} Sakae Shunsuke. All rights reserved.</p>
           </div>
         </div>
       </footer>
@@ -111,11 +111,15 @@ const Site = {
       }
     });
 
-    // Shrink header on scroll for a more deliberate feel
+    // Shrink header on scroll. The page scrolls inside .noir-frame, not the
+    // root (see base.css) — listen on the frame, fall back to window.
     const header = document.querySelector('.header');
     if (header) {
-      const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
-      window.addEventListener('scroll', onScroll, { passive: true });
+      const frame = document.querySelector('.noir-frame');
+      const target = frame || window;
+      const getY = () => (frame ? frame.scrollTop : window.scrollY);
+      const onScroll = () => header.classList.toggle('is-scrolled', getY() > 8);
+      target.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
     }
   }
@@ -219,58 +223,13 @@ const Utils = {
 };
 
 // ---------------------------------------------------------------------------
-// Scroll Reveal Animation
+// Scroll Reveal — retired. Content now renders immediately; motion lives in
+// the hero canvas and hover feedback only. The no-op API is kept because
+// pages and components.js still call ScrollAnimation.refresh().
 // ---------------------------------------------------------------------------
 const ScrollAnimation = {
-  observer: null,
-  initialized: false,
-  reduced: false,
-
-  // Reveal an element that is already within (or above) the viewport right now,
-  // so above-the-fold content is never left hidden / dimmed on load.
-  isInInitialView(el) {
-    const rect = el.getBoundingClientRect();
-    return rect.top < (window.innerHeight || document.documentElement.clientHeight);
-  },
-
-  prepare(el) {
-    if (el.dataset.revealReady) return;
-    el.dataset.revealReady = '1';
-    if (this.reduced || this.isInInitialView(el)) {
-      // Show immediately — no fade for content the user can already see
-      el.classList.add('animate-on-scroll', 'is-visible');
-      return;
-    }
-    el.classList.add('animate-on-scroll');
-    if (this.observer) this.observer.observe(el);
-  },
-
-  ensureObserver() {
-    if (this.initialized) return;
-    this.initialized = true;
-    this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!this.reduced) {
-      this.observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            this.observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    }
-  },
-
-  init() {
-    this.ensureObserver();
-    document.querySelectorAll('[data-reveal]').forEach(el => this.prepare(el));
-  },
-
-  // Re-scan after dynamic content (cards) is injected
-  refresh() {
-    this.ensureObserver();
-    document.querySelectorAll('[data-reveal]:not([data-reveal-ready])').forEach(el => this.prepare(el));
-  }
+  init() {},
+  refresh() {}
 };
 
 // ---------------------------------------------------------------------------
@@ -278,7 +237,6 @@ const ScrollAnimation = {
 // ---------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   Site.initNav();
-  setTimeout(() => ScrollAnimation.init(), 80);
 });
 
 // Expose to global scope

@@ -15,7 +15,7 @@ const Components = {
         <div class="card-media">
           ${work.thumbnail
             ? `<img src="${safeUrl(work.thumbnail)}" alt="${e(work.title)}" loading="lazy">`
-            : ''}
+            : `<span class="card-media-fallback">${e(work.title)}</span>`}
           ${work.year ? `<span class="card-badge">${e(work.year)}</span>` : ''}
         </div>
         <div class="card-body">
@@ -33,6 +33,7 @@ const Components = {
     if (project.links?.demo) links.push(`<a href="${safeUrl(project.links.demo)}" target="_blank" rel="noopener noreferrer" class="card-action">Demo ↗</a>`);
     if (project.links?.github) links.push(`<a href="${safeUrl(project.links.github)}" target="_blank" rel="noopener noreferrer" class="card-action">GitHub ↗</a>`);
     if (project.links?.article) links.push(`<a href="${safeUrl(project.links.article)}" target="_blank" rel="noopener noreferrer" class="card-action">Article ↗</a>`);
+    if (project.code === 'private' && !project.links?.github) links.push(`<span class="card-action card-action-muted">コード非公開</span>`);
     const tags = (project.tags || []).slice(0, 4)
       .map(t => `<span class="tag">${e(t)}</span>`).join('');
 

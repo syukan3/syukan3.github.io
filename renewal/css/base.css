@@ -5,22 +5,27 @@ body {
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   color: var(--color-text-primary);
-  background-color: var(--color-bg-primary);
+  background-color: #0b0a08;
   background-image:
-    radial-gradient(ellipse 60% 50% at 100% 35%, rgba(255, 138, 66, 0.30), transparent 60%),
-    radial-gradient(circle at 8% 12%, rgba(255, 191, 105, 0.12), transparent 42%),
-    radial-gradient(circle at 96% 88%, rgba(255, 120, 60, 0.18), transparent 50%),
-    linear-gradient(180deg, #090806 0%, #050403 100%);
-  background-attachment: fixed;
-  min-height: 100vh;
-  padding-top: var(--header-height);
+    radial-gradient(ellipse 70% 44% at 84% -6%, rgba(255, 150, 70, 0.10), transparent 60%),
+    radial-gradient(ellipse 50% 36% at 0% 100%, rgba(255, 170, 90, 0.05), transparent 60%),
+    linear-gradient(180deg, #0c0b09 0%, #080706 100%);
+  height: 100%;
+  overflow: hidden;
   position: relative;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 html {
-  scroll-padding-top: calc(var(--header-height) + var(--space-4));
+  /* The ROOT never scrolls — .noir-frame is the scroller. iOS 26's Liquid
+     Glass mirrors whatever the root scroller pushes past the status bar
+     (content kept "showing through" above the fixed header); with a static
+     root it can only show this background color. It also makes horizontal
+     panning physically impossible. */
+  height: 100%;
+  overflow: hidden;
+  background-color: #0b0a08;
+  touch-action: pan-y pinch-zoom;
 }
 
 /* Film Grain Overlay - Very subtle */
@@ -140,8 +145,8 @@ pre {
   max-width: var(--container-xl);
   margin-left: auto;
   margin-right: auto;
-  padding-left: var(--container-padding);
-  padding-right: var(--container-padding);
+  padding-left: max(var(--container-padding), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--container-padding), env(safe-area-inset-right, 0px));
 }
 
 .container-sm {
@@ -162,84 +167,35 @@ pre {
 
 /* Section Spacing */
 .section {
-  padding-top: var(--space-14);
-  padding-bottom: var(--space-14);
+  padding-top: var(--section-pad);
+  padding-bottom: var(--section-pad);
 }
 
-@media (max-width: 768px) {
-  .section {
-    padding-top: var(--space-7);
-    padding-bottom: var(--space-7);
-  }
-}
-
-@media (max-width: 540px) {
-  .section {
-    padding-top: var(--space-4);
-    padding-bottom: var(--space-4);
-  }
-}
-
-/* Noir Frame */
+/* Noir Frame — full-bleed wrapper (the boxed card look was retired for an
+   airier, editorial layout; the class is kept because every page uses it).
+   It is also THE page scroller — see the html comment above. */
 .noir-frame {
   position: relative;
-  width: calc(100% - (var(--page-padding-x) * 2));
-  max-width: var(--frame-max-width);
-  margin: var(--page-padding-y) auto;
-  padding: var(--frame-padding);
-  background: linear-gradient(
-    180deg,
-    var(--color-bg-frame-highlight) 0%,
-    var(--color-bg-frame) 100%
-  );
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--frame-radius);
-  box-shadow: var(--shadow-frame);
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: var(--header-total);
+  scroll-padding-top: calc(var(--header-total) + var(--space-4));
 }
 
-.noir-frame::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='160'%20height='160'%20viewBox='0%200%20160%20160'%3E%3Cg%20stroke='%23ffffff'%20stroke-width='1'%20stroke-opacity='0.08'%3E%3Cline%20x1='80'%20y1='58'%20x2='80'%20y2='102'/%3E%3Cline%20x1='58'%20y1='80'%20x2='102'%20y2='80'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 240px 240px;
-  opacity: 0.25;
-  border-radius: inherit;
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
-
-.noir-frame::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 88% 42%, rgba(255, 138, 66, 0.42), transparent 42%),
-    radial-gradient(circle at 96% 88%, rgba(255, 110, 60, 0.30), transparent 45%),
-    radial-gradient(circle at 14% 16%, rgba(255, 191, 105, 0.16), transparent 38%);
-  background-repeat: no-repeat;
-  background-position: right -100px center, right -60px bottom -60px, left 40px top 40px;
-  background-size: 560px 560px, 420px 420px, 260px 260px;
-  opacity: 0.9;
-  border-radius: inherit;
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
-
-.noir-frame > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Skip Link */
+/* Skip Link — hidden via transform, NOT a negative top offset: iOS 26 Safari
+   composites fixed elements that sit above the layout viewport into its
+   status-bar glass, so an element parked at top:-100px "shows through"
+   blurred above the header while scrolling */
 .skip-link {
   position: fixed;
-  top: -100px;
+  top: var(--space-4);
   left: 50%;
-  transform: translateX(-50%);
+  /* Park it WELL above the viewport: iOS 26 samples roughly the first 60px
+     above the layout viewport for its status-bar glass — anything parked
+     within that band smears across the status bar while scrolling */
+  transform: translate(-50%, calc(-100% - 200px));
   z-index: 9999;
   padding: var(--space-3) var(--space-6);
   background: linear-gradient(180deg, var(--color-ember-bright) 0%, var(--color-ember) 100%);
@@ -248,12 +204,12 @@ pre {
   font-size: var(--text-sm);
   border-radius: var(--radius-md);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  transition: top var(--transition-fast);
+  transition: transform var(--transition-fast);
   text-decoration: none;
 }
 
 .skip-link:focus {
-  top: var(--space-4);
+  transform: translate(-50%, 0);
   outline: none;
 }
 
@@ -311,51 +267,5 @@ select:focus-visible {
   color: var(--color-white);
 }
 
-/* Page Transition Animation */
-.noir-frame {
-  animation: fadeInUp 0.5s ease-out;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Scroll Animation */
-.animate-on-scroll {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-
-.animate-on-scroll.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Staggered animation for grid items */
-.grid .animate-on-scroll:nth-child(1) { transition-delay: 0ms; }
-.grid .animate-on-scroll:nth-child(2) { transition-delay: 100ms; }
-.grid .animate-on-scroll:nth-child(3) { transition-delay: 200ms; }
-.grid .animate-on-scroll:nth-child(4) { transition-delay: 300ms; }
-.grid .animate-on-scroll:nth-child(5) { transition-delay: 400ms; }
-.grid .animate-on-scroll:nth-child(6) { transition-delay: 500ms; }
-
-/* Reduced motion support for animations */
-@media (prefers-reduced-motion: reduce) {
-  .noir-frame {
-    animation: none;
-  }
-
-  .animate-on-scroll {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
+/* Page transitions and scroll-reveal animations were removed deliberately:
+   content shows immediately. Ambient motion lives only in the hero canvas. */

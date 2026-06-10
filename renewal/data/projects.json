@@ -1,6 +1,78 @@
 {
   "projects": [
     {
+      "id": "ai-call-eval",
+      "title": "通話録音 一次評価自動化システム",
+      "featured": true,
+      "code": "private",
+      "thumbnail": "/renewal/images/project_ai_call_eval.webp",
+      "summary": "コンプラ通話の録音を文字起こしし、LLMで一次評価を自動化。FISC内部統制対応と地続きの自社稼働システム",
+      "role": "設計/実装/運用",
+      "tags": ["生成AI", "LLM", "文字起こし", "コンプライアンス"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2026"
+    },
+    {
+      "id": "ai-prompt-monitor",
+      "title": "生成AIプロンプト全量モニタリング",
+      "featured": true,
+      "code": "private",
+      "thumbnail": "/renewal/images/project_ai_prompt_monitor.webp",
+      "summary": "社員の生成AIへの入力プロンプトを全量モニタリングし、機密情報の取り扱いリスクを可視化・統制するガバナンス基盤",
+      "role": "設計/実装",
+      "tags": ["生成AI", "ガバナンス", "セキュリティ"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2024-2025"
+    },
+    {
+      "id": "ai-spec-gen",
+      "title": "AI仕様書自動生成",
+      "featured": true,
+      "code": "private",
+      "thumbnail": "/renewal/images/project_ai_spec_gen.webp",
+      "summary": "既存システムのソースから仕様書を全自動生成し、ドキュメント整備の工数を大幅に削減",
+      "role": "設計/実装",
+      "tags": ["生成AI", "LLM", "ドキュメント自動化"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2024-2025"
+    },
+    {
+      "id": "ai-first-reply",
+      "title": "顧客問い合わせ 一次回答システム",
+      "featured": false,
+      "code": "private",
+      "thumbnail": "/renewal/images/project_ai_first_reply.webp",
+      "summary": "顧客からの問い合わせに対する一次回答を生成AIで自動化し、応答スピードと運用効率を向上",
+      "role": "設計/実装",
+      "tags": ["生成AI", "LLM", "カスタマーサポート"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2025"
+    },
+    {
+      "id": "ai-assess-harness",
+      "title": "アセス回答生成ハーネス（J-SOX / FISC）",
+      "featured": false,
+      "code": "private",
+      "thumbnail": "/renewal/images/project_ai_assess_harness.webp",
+      "summary": "J-SOX IT全般統制・FISC安全基準アセスメントへの回答を生成するハーネスを構築し、監査対応を効率化",
+      "role": "設計/実装",
+      "tags": ["生成AI", "J-SOX", "FISC", "内部統制"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2026"
+    },
+    {
+      "id": "ai-company-research",
+      "title": "非上場企業 情報収集自動化ツール",
+      "featured": false,
+      "code": "private",
+      "thumbnail": "/renewal/images/project_ai_company_research.webp",
+      "summary": "非上場企業の情報収集を自動化するツールを開発し、リサーチ業務を効率化",
+      "role": "設計/実装",
+      "tags": ["生成AI", "自動化", "リサーチ"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2025"
+    },
+    {
       "id": "qiita-growth",
       "title": "技術ブログ143万PV獲得戦略",
       "featured": true,
