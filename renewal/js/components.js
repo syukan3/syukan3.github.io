@@ -135,16 +135,21 @@ const Components = {
   createPhotoItem(photo) {
     const captionLoc = photo.location ? `<span class="photo-loc">${e(photo.location)}</span>` : '';
     const captionDate = photo.date ? `<span class="photo-date">${e(photo.date)}</span>` : '';
+    const captionTitle = photo.title ? `<span class="photo-title">${e(photo.title)}</span>` : '';
+    const hasCaption = Boolean(captionTitle || captionLoc || captionDate);
+    const caption = hasCaption
+      ? `<figcaption class="photo-caption">
+          ${captionTitle}
+          <span class="photo-sub">${captionLoc}${captionDate}</span>
+        </figcaption>`
+      : '';
     const media = photo.src && !photo.placeholder
-      ? `<img src="${safeUrl(photo.src)}" alt="${e(photo.title)}" loading="lazy">`
+      ? `<img src="${safeUrl(photo.src)}" alt="${e(photo.alt || photo.title || '')}" loading="lazy">`
       : `<span class="photo-placeholder" aria-hidden="true"></span>`;
     return `
-      <figure class="photo-frame${photo.placeholder ? ' is-placeholder' : ''}" data-reveal>
+      <figure class="photo-frame${photo.placeholder ? ' is-placeholder' : ''}${hasCaption ? '' : ' photo-frame-no-caption'}" data-reveal>
         <div class="photo-media">${media}</div>
-        <figcaption class="photo-caption">
-          <span class="photo-title">${e(photo.title)}</span>
-          <span class="photo-sub">${captionLoc}${captionDate}</span>
-        </figcaption>
+        ${caption}
       </figure>
     `;
   },
