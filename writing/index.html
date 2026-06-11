@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="栄 俊介の技術記事・登壇一覧 - Qiita 143万PV達成">
+  <meta name="keywords" content="栄俊介, 記事, 登壇, 技術発信, Qiita">
+
+  <meta property="og:title" content="Writing & Talks - 栄 俊介 | Sakae Shunsuke">
+  <meta property="og:description" content="技術記事・登壇一覧 - Qiita 143万PV達成">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://syukan3.github.io/writing/">
+  <meta property="og:image" content="https://syukan3.github.io/images/og-image.png">
+
+  <meta name="theme-color" content="#0b0a08">
+  <link rel="canonical" href="https://syukan3.github.io/writing/">
+  <title>Writing & Talks - 栄 俊介 | Sakae Shunsuke</title>
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/reset.css?v=20260611">
+  <link rel="stylesheet" href="/css/variables.css?v=20260611">
+  <link rel="stylesheet" href="/css/base.css?v=20260611">
+  <link rel="stylesheet" href="/css/components.css?v=20260612">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QLXJBRYZZ8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-QLXJBRYZZ8');
+  </script>
+</head>
+<body data-page="writing">
+  <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+  <div id="site-header"></div>
+
+  <div class="noir-frame">
+    <main id="main-content">
+      <section class="section">
+        <div class="container container-lg">
+          <div class="section-header" data-reveal>
+            <span class="section-eyebrow">Writing &amp; Talks</span>
+            <h1 class="section-title">Writing &amp; Talks</h1>
+            <p class="section-subtitle">技術記事・登壇一覧。Qiita 累計143万PV・270記事超を公開。</p>
+          </div>
+
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Pinned</h2>
+            <div id="pinned-writing" class="writing-list"></div>
+          </div>
+
+          <div class="filmstrip" aria-hidden="true"></div>
+
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Recent</h2>
+            <div id="recent-writing" class="writing-list"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="/js/main.js?v=20260611"></script>
+  <script src="/js/components.js?v=20260611"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const writing = await DataLoader.getWriting();
+      const sortByDate = (a, b) => new Date(b.date) - new Date(a.date);
+      Components.renderItems('pinned-writing', writing.filter(w => w.pinned).sort(sortByDate), Components.createWritingItem);
+      Components.renderItems('recent-writing', writing.filter(w => !w.pinned).sort(sortByDate), Components.createWritingItem);
+    });
+  </script>
+</body>
+</html>

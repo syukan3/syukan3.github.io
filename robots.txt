@@ -1,7 +1,5 @@
 User-agent: *
 Allow: /
-Sitemap: https://example.com/sitemap.xml
+Disallow: /legacy/
 
-# Disallow access to specific files or directories if needed
-# Disallow: /private/
-# Disallow: /admin/
+Sitemap: https://syukan3.github.io/sitemap.xml

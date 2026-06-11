@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="栄 俊介へのお問い合わせ - プロジェクトのご相談、業務委託、技術顧問など">
+  <meta name="keywords" content="栄俊介, お問い合わせ, コンタクト, 連絡">
+
+  <meta property="og:title" content="Contact - 栄 俊介 | Sakae Shunsuke">
+  <meta property="og:description" content="プロジェクトのご相談、業務委託、技術顧問など">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://syukan3.github.io/contact/">
+  <meta property="og:image" content="https://syukan3.github.io/images/og-image.png">
+
+  <meta name="theme-color" content="#0b0a08">
+  <link rel="canonical" href="https://syukan3.github.io/contact/">
+  <title>Contact - 栄 俊介 | Sakae Shunsuke</title>
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/reset.css?v=20260611">
+  <link rel="stylesheet" href="/css/variables.css?v=20260611">
+  <link rel="stylesheet" href="/css/base.css?v=20260611">
+  <link rel="stylesheet" href="/css/components.css?v=20260612">
+
+  <!-- reCAPTCHA Enterprise (existing contact mechanism) -->
+  <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdTCEUqAAAAAI6AkAc5CuVYcLPqPHlRXz0OG9Xj" async defer></script>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QLXJBRYZZ8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-QLXJBRYZZ8');
+  </script>
+</head>
+<body data-page="contact">
+  <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+  <div id="site-header"></div>
+
+  <div class="noir-frame">
+    <main id="main-content">
+      <section class="section">
+        <div class="container container-lg">
+          <div class="section-header section-title-center" data-reveal>
+            <span class="section-eyebrow">Contact</span>
+            <h1 class="section-title">Get in Touch</h1>
+            <p class="section-subtitle">プロジェクトのご相談、業務委託、技術顧問など、お気軽にお問い合わせください。</p>
+          </div>
+
+          <div class="contact-grid">
+            <!-- Form -->
+            <div class="contact-form-section" data-reveal>
+              <div id="form-status" class="form-status" role="alert" aria-live="polite"></div>
+              <form id="contact-form" class="contact-form" novalidate>
+                <div class="form-group">
+                  <label for="name" class="form-label">Name <span aria-hidden="true">*</span></label>
+                  <input type="text" id="name" name="name" class="form-input" placeholder="お名前" required>
+                  <span class="form-error">お名前を入力してください</span>
+                </div>
+                <div class="form-group">
+                  <label for="email" class="form-label">Email <span aria-hidden="true">*</span></label>
+                  <input type="email" id="email" name="email" class="form-input" placeholder="メールアドレス" required>
+                  <span class="form-error">有効なメールアドレスを入力してください</span>
+                </div>
+                <div class="form-group">
+                  <label for="message" class="form-label">Message <span aria-hidden="true">*</span></label>
+                  <textarea id="message" name="message" class="form-textarea" placeholder="お問い合わせ内容" required></textarea>
+                  <span class="form-error">メッセージを入力してください</span>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submit-btn">Send Message</button>
+              </form>
+            </div>
+
+            <!-- Aside -->
+            <div class="contact-aside" data-reveal>
+              <h2>Direct</h2>
+              <div class="contact-info-item">
+                <p class="contact-info-label">Location</p>
+                <p class="contact-info-value">Tokyo, Japan</p>
+              </div>
+              <div class="contact-info-item">
+                <p class="contact-info-label">Response</p>
+                <p class="contact-info-value">通常 2〜3 営業日以内に返信します</p>
+              </div>
+              <div class="contact-info-item">
+                <p class="contact-info-label">対応可能な案件</p>
+                <ul class="contact-list">
+                  <li>新規プロジェクトの技術選定・設計</li>
+                  <li>既存システムのリファクタリング</li>
+                  <li>チームの技術顧問</li>
+                  <li>技術記事執筆・登壇</li>
+                </ul>
+              </div>
+              <div class="social-links">
+                <a href="https://github.com/syukan3" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+                <a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Qiita">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.4c5.302 0 9.6 4.298 9.6 9.6s-4.298 9.6-9.6 9.6-9.6-4.298-9.6-9.6S6.698 2.4 12 2.4zm3.6 4.8h-7.2v2.4h2.4v7.2h2.4v-7.2h2.4V7.2z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="/js/main.js?v=20260611"></script>
+  <script>
+    // Validate then open the user's mail client (no backend required).
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('contact-form');
+      const statusEl = document.getElementById('form-status');
+      if (!form) return;
+
+      const inputs = form.querySelectorAll('.form-input, .form-textarea');
+      const validateField = (field) => {
+        const ok = field.validity.valid && field.value.trim() !== '';
+        field.parentElement.classList.toggle('has-error', !ok);
+        return ok;
+      };
+      inputs.forEach(input => {
+        input.addEventListener('blur', () => validateField(input));
+        input.addEventListener('input', () => {
+          if (input.parentElement.classList.contains('has-error')) validateField(input);
+        });
+      });
+
+      const submitBtn = document.getElementById('submit-btn');
+
+      // Existing contact mechanism: reCAPTCHA Enterprise v3 + AWS Lambda Function URL
+      const RECAPTCHA_SITE_KEY = '6LdTCEUqAAAAAI6AkAc5CuVYcLPqPHlRXz0OG9Xj';
+      const ENDPOINT = 'https://5kpdn47l2j4ovl3fuiuro2wf3q0oixif.lambda-url.ap-northeast-1.on.aws/';
+
+      const setBusy = (busy) => {
+        submitBtn.disabled = busy;
+        submitBtn.textContent = busy ? '送信中…' : 'Send Message';
+      };
+
+      function postWithToken(token) {
+        const formData = new FormData(form);
+        formData.append('recaptcha_response', token);
+        fetch(ENDPOINT, { method: 'POST', body: formData })
+          .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
+          .then(() => {
+            statusEl.className = 'form-status success';
+            statusEl.textContent = 'メッセージが正常に送信されました。確認次第、返信いたします。';
+            form.reset();
+          })
+          .catch(() => {
+            statusEl.className = 'form-status error';
+            statusEl.textContent = 'メッセージの送信中にエラーが発生しました。もう一度お試しください。';
+          })
+          .finally(() => setBusy(false));
+      }
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        let valid = true;
+        inputs.forEach(i => { if (!validateField(i)) valid = false; });
+        if (!valid) {
+          statusEl.className = 'form-status error';
+          statusEl.textContent = '入力内容を確認してください。';
+          return;
+        }
+        if (typeof grecaptcha === 'undefined' || !grecaptcha.enterprise) {
+          statusEl.className = 'form-status error';
+          statusEl.textContent = '認証の読み込みに失敗しました。ページを再読み込みしてお試しください。';
+          return;
+        }
+
+        setBusy(true);
+        statusEl.className = 'form-status';
+        statusEl.textContent = '';
+        grecaptcha.enterprise.ready(() => {
+          grecaptcha.enterprise.execute(RECAPTCHA_SITE_KEY, { action: 'submit' })
+            .then(postWithToken)
+            .catch(() => {
+              statusEl.className = 'form-status error';
+              statusEl.textContent = '認証に失敗しました。もう一度お試しください。';
+              setBusy(false);
+            });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

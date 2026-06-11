@@ -1,0 +1,217 @@
+{
+  "projects": [
+    {
+      "id": "ai-call-eval",
+      "title": "通話録音 一次評価自動化システム",
+      "featured": true,
+      "code": "private",
+      "thumbnail": "/images/project_ai_call_eval.webp",
+      "summary": "コンプラ通話の録音を文字起こしし、LLMで一次評価を自動化。FISC内部統制対応と地続きの自社稼働システム",
+      "role": "設計/実装/運用",
+      "tags": ["生成AI", "LLM", "文字起こし", "コンプライアンス"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2026"
+    },
+    {
+      "id": "ai-prompt-monitor",
+      "title": "生成AIプロンプト全量モニタリング",
+      "featured": true,
+      "code": "private",
+      "thumbnail": "/images/project_ai_prompt_monitor.webp",
+      "summary": "社員の生成AIへの入力プロンプトを全量モニタリングし、機密情報の取り扱いリスクを可視化・統制するガバナンス基盤",
+      "role": "設計/実装",
+      "tags": ["生成AI", "ガバナンス", "セキュリティ"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2024-2025"
+    },
+    {
+      "id": "ai-spec-gen",
+      "title": "AI仕様書自動生成",
+      "featured": true,
+      "code": "private",
+      "thumbnail": "/images/project_ai_spec_gen.webp",
+      "summary": "既存システムのソースから仕様書を全自動生成し、ドキュメント整備の工数を大幅に削減",
+      "role": "設計/実装",
+      "tags": ["生成AI", "LLM", "ドキュメント自動化"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2024-2025"
+    },
+    {
+      "id": "ai-first-reply",
+      "title": "顧客問い合わせ 一次回答システム",
+      "featured": false,
+      "code": "private",
+      "thumbnail": "/images/project_ai_first_reply.webp",
+      "summary": "顧客からの問い合わせに対する一次回答を生成AIで自動化し、応答スピードと運用効率を向上",
+      "role": "設計/実装",
+      "tags": ["生成AI", "LLM", "カスタマーサポート"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2025"
+    },
+    {
+      "id": "ai-assess-harness",
+      "title": "アセス回答生成ハーネス（J-SOX / FISC）",
+      "featured": false,
+      "code": "private",
+      "thumbnail": "/images/project_ai_assess_harness.webp",
+      "summary": "J-SOX IT全般統制・FISC安全基準アセスメントへの回答を生成するハーネスを構築し、監査対応を効率化",
+      "role": "設計/実装",
+      "tags": ["生成AI", "J-SOX", "FISC", "内部統制"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2026"
+    },
+    {
+      "id": "ai-company-research",
+      "title": "非上場企業 情報収集自動化ツール",
+      "featured": false,
+      "code": "private",
+      "thumbnail": "/images/project_ai_company_research.webp",
+      "summary": "非上場企業の情報収集を自動化するツールを開発し、リサーチ業務を効率化",
+      "role": "設計/実装",
+      "tags": ["生成AI", "自動化", "リサーチ"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2025"
+    },
+    {
+      "id": "qiita-growth",
+      "title": "技術ブログ143万PV獲得戦略",
+      "featured": true,
+      "thumbnail": "/images/blog_mosaicai.webp",
+      "summary": "戦略的アプローチで143万PV達成。日間PVを7倍に成長させ、270記事超を公開",
+      "role": "執筆/戦略設計",
+      "tags": ["Qiita", "SEO", "Analytics", "Growth"],
+      "links": {
+        "github": "",
+        "demo": "https://qiita.com/syukan3",
+        "article": ""
+      },
+      "year": "2019-現在",
+      "metrics": {
+        "totalViews": "1,434,762",
+        "articles": "270",
+        "dailyPV": "5,000",
+        "growthRate": "7倍"
+      }
+    },
+    {
+      "id": "censify",
+      "title": "Censify",
+      "featured": true,
+      "thumbnail": "/images/project_censify.webp",
+      "summary": "不適切な表現を検出するAPIサービス。LLMを活用した高精度な判定を実現",
+      "role": "設計/実装",
+      "tags": ["TypeScript", "Cloudflare Workers", "AI", "HonoJS"],
+      "links": {
+        "github": "",
+        "demo": "https://censify-lp.pages.dev",
+        "article": ""
+      },
+      "year": "2024"
+    },
+    {
+      "id": "gaugenix",
+      "title": "Gaugenix",
+      "featured": true,
+      "thumbnail": "/images/project_gaugenix.webp",
+      "summary": "IoTデバイスで計器の画像を撮影し、AI解析で値を取得するシステム",
+      "role": "設計/実装/運用",
+      "tags": ["Next.js", "Supabase", "Python", "AI", "AWS"],
+      "links": {
+        "github": "",
+        "demo": "",
+        "article": ""
+      },
+      "year": "2023-2024"
+    },
+    {
+      "id": "mosaicai",
+      "title": "MosaicAI",
+      "featured": true,
+      "thumbnail": "/images/project_mosaicai.webp",
+      "summary": "複数のAI言語モデルを統一的に利用できるオープンソースPythonライブラリ",
+      "role": "設計/実装",
+      "tags": ["Python", "AI", "OpenSource"],
+      "links": {
+        "github": "https://github.com/syukan3/MosaicAI",
+        "demo": "",
+        "article": "https://qiita.com/syukan3/items/d810f727ad223e2d60d5"
+      },
+      "year": "2024"
+    },
+    {
+      "id": "omniocr",
+      "title": "OmniOCR",
+      "featured": true,
+      "thumbnail": "/images/project_omniocr.webp",
+      "summary": "画像やPDFからテキストを抽出し、構造化データに変換するAI OCRサービス",
+      "role": "設計/実装",
+      "tags": ["TypeScript", "Next.js", "AI", "Cloudflare"],
+      "links": {
+        "github": "",
+        "demo": "https://omni-ocr-lp.pages.dev/",
+        "article": ""
+      },
+      "year": "2024"
+    },
+    {
+      "id": "wolverine-ruby",
+      "title": "Wolverine Ruby",
+      "featured": true,
+      "thumbnail": "/images/project_wolverine_ruby.webp",
+      "summary": "自律型プログラムバグ修復ツール。ChatGPT APIリリース直後に開発",
+      "role": "実装",
+      "tags": ["Ruby", "OpenAI GPT-3.5 API"],
+      "links": {
+        "github": "",
+        "demo": "",
+        "article": ""
+      },
+      "year": "2023"
+    },
+    {
+      "id": "hijojo",
+      "title": "HiJoJo.com",
+      "featured": false,
+      "thumbnail": "/images/hero.webp",
+      "summary": "オンラインファンド販売システム。Ruby 2.7→3.3、Rails 5.2→7.1 のバージョンアップを主導",
+      "role": "設計/実装/運用",
+      "tags": ["Ruby on Rails", "MySQL", "AWS", "JavaScript"],
+      "links": {
+        "github": "",
+        "demo": "",
+        "article": ""
+      },
+      "year": "2022-現在"
+    },
+    {
+      "id": "onegate",
+      "title": "OneGATE 保守管理システム",
+      "featured": false,
+      "thumbnail": "/images/blog_openai_filesearch.webp",
+      "summary": "インシデント管理、コールセンター（Amazon Connect）、カスタマーポータル機能を実装。Ruby Association の活用事例にも掲載",
+      "role": "設計/実装",
+      "tags": ["Ruby on Rails", "AWS", "Amazon Connect", "JavaScript"],
+      "links": {
+        "github": "",
+        "demo": "https://www.pdc-ds.com/service/onegate",
+        "article": "https://www.ruby.or.jp/ja/showcase/case77"
+      },
+      "year": "2019-2022"
+    },
+    {
+      "id": "face-authentication",
+      "title": "画像解析・属性取得システム",
+      "featured": false,
+      "thumbnail": "/images/blog_iot.webp",
+      "summary": "画像分析による属性取得・視聴率測定システム。年齢推定モデルの作成を担当",
+      "role": "設計/実装",
+      "tags": ["Python", "PyTorch", "OpenVINO", "AWS IoT", "SageMaker"],
+      "links": {
+        "github": "",
+        "demo": "https://www.pdc-ds.com/service/face_authentication",
+        "article": ""
+      },
+      "year": "2020-2022"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "writing": [
+    {
+      "id": "qiita-bash-2025",
+      "title": "Qiita Bash - MCPで広がる生成AI活用の可能性",
+      "pinned": true,
+      "date": "2025-06-01",
+      "summary": "生成AIを活用したシステム開発の最新動向について登壇発表（登壇動画あり）",
+      "url": "https://www.youtube.com/watch?v=F57I8uMovBo",
+      "type": "talk"
+    },
+    {
+      "id": "deep-research",
+      "title": "ChatGPT 新機能「Deep Research」徹底解説＆使用レビュー",
+      "pinned": true,
+      "date": "2025-01-15",
+      "summary": "25万ビュー超の人気記事。$200の費用対効果を検証",
+      "url": "https://qiita.com/syukan3/items/b2bd98d2f61a75777d38",
+      "type": "article"
+    },
+    {
+      "id": "mosaicai-article",
+      "title": "【Python】MosaicAI：複数のLLMを統合する革新的インターフェイス",
+      "pinned": true,
+      "date": "2024-08-15",
+      "summary": "ChatGPT、Claude、Gemini等を統一インターフェースで利用できるライブラリの解説",
+      "url": "https://qiita.com/syukan3/items/d810f727ad223e2d60d5",
+      "type": "article"
+    },
+    {
+      "id": "openai-filesearch",
+      "title": "【Ruby】OpenAI Assistants API File Search機能の実装方法",
+      "pinned": false,
+      "date": "2024-05-19",
+      "summary": "RubyでFile Search機能を実装し、ファイル関連の質問に回答を生成する方法を解説",
+      "url": "https://qiita.com/syukan3/items/667359fee91f3605ac40",
+      "type": "article"
+    },
+    {
+      "id": "iot-dynamodb",
+      "title": "【AWS】IoT Core - DynamoDBv2チュートリアル",
+      "pinned": false,
+      "date": "2024-02-19",
+      "summary": "AWS IoT CoreとDynamoDBv2を使用したデバイスデータの保存・管理方法を解説",
+      "url": "https://qiita.com/syukan3/items/e1bd2b3fbe7b73a7086c",
+      "type": "article"
+    },
+    {
+      "id": "ieee-2014",
+      "title": "Energy management method for residential distributed generation system",
+      "pinned": false,
+      "date": "2014-10-01",
+      "summary": "IEEE Industry Application Society Annual Meeting での論文発表",
+      "url": "https://ieeexplore.ieee.org/author/37085512035",
+      "type": "talk"
+    }
+  ]
+}

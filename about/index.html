@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="栄 俊介 - 価値観・略歴・得意領域 | AIガバナンス・アーキテクト / システム部長">
+  <meta name="keywords" content="栄俊介, プロフィール, 経歴, スキル, Ruby on Rails, AWS">
+
+  <meta property="og:title" content="About - 栄 俊介 | Sakae Shunsuke">
+  <meta property="og:description" content="価値観・略歴・得意領域 | AIガバナンス・アーキテクト / システム部長">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://syukan3.github.io/about/">
+  <meta property="og:image" content="https://syukan3.github.io/images/og-image.png">
+
+  <meta name="theme-color" content="#0b0a08">
+  <link rel="canonical" href="https://syukan3.github.io/about/">
+  <title>About - 栄 俊介 | Sakae Shunsuke</title>
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/reset.css?v=20260611">
+  <link rel="stylesheet" href="/css/variables.css?v=20260611">
+  <link rel="stylesheet" href="/css/base.css?v=20260611">
+  <link rel="stylesheet" href="/css/components.css?v=20260612">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QLXJBRYZZ8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-QLXJBRYZZ8');
+  </script>
+</head>
+<body data-page="about">
+  <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+  <div id="site-header"></div>
+
+  <div class="noir-frame">
+    <main id="main-content">
+      <section class="section">
+        <div class="container container-lg">
+          <div class="section-header" data-reveal>
+            <span class="section-eyebrow">About</span>
+            <h1 class="section-title">About Me</h1>
+          </div>
+
+          <!-- Bio -->
+          <div class="bio-section" data-reveal>
+            <div class="bio-photo">
+              <img src="/images/profile.webp" alt="栄 俊介" loading="lazy">
+            </div>
+            <div class="bio-content">
+              <h2>Bio</h2>
+              <p id="profile-bio" class="bio-text"></p>
+              <div class="skills-block" id="skills-block"></div>
+            </div>
+          </div>
+
+          <!-- Values -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Values / 価値観</h2>
+            <div id="values" class="grid grid-3"></div>
+          </div>
+
+          <div class="filmstrip" aria-hidden="true"></div>
+
+          <!-- Expertise -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Expertise / 得意領域</h2>
+            <div id="expertise" class="grid grid-2"></div>
+          </div>
+
+          <div class="filmstrip" aria-hidden="true"></div>
+
+          <!-- Timeline -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Timeline / 略歴</h2>
+            <div id="timeline" style="max-width: 820px;"></div>
+          </div>
+
+          <!-- AWS Services -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">AWS / 利用サービス</h2>
+            <div id="aws-services" class="skills-block" style="margin-top:0;"></div>
+          </div>
+
+          <!-- Certifications -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Certifications / 資格</h2>
+            <ul id="certifications" class="cert-list"></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="viewfinder" style="max-width: 760px; margin: 0 auto; text-align: center;" data-reveal>
+            <h2 class="section-title">Let's Work Together</h2>
+            <p class="section-subtitle" style="margin: 0 auto var(--space-8);">お気軽にお問い合わせください。</p>
+            <a href="/contact/" class="btn btn-primary">お問い合わせ</a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="/js/main.js?v=20260611"></script>
+  <script src="/js/components.js?v=20260611"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const data = await DataLoader.load('profile.json');
+      if (!data) return;
+
+      const bioEl = document.getElementById('profile-bio');
+      if (bioEl) bioEl.textContent = data.bio || '';
+
+      // Skills grouped with years
+      const groups = [
+        { label: '言語', items: data.skills?.languages },
+        { label: 'フレームワーク', items: data.skills?.frameworks },
+        { label: 'インフラ / DB', items: data.skills?.infrastructure }
+      ];
+      const skillsBlock = document.getElementById('skills-block');
+      if (skillsBlock) {
+        skillsBlock.innerHTML = groups.filter(g => g.items?.length).map(g => `
+          <h3>${g.label}</h3>
+          <div class="skills-grid">
+            ${g.items.map(s => `<span class="skill-badge">${Utils.escapeHtml(s.name)}<span class="skill-years">${Utils.escapeHtml(s.years || '')}</span></span>`).join('')}
+          </div>
+        `).join('');
+      }
+
+      Components.renderItems('values', data.values || [], Components.createValueCard);
+      Components.renderItems('expertise', data.expertise || [], Components.createValueCard);
+      Components.renderItems('timeline', data.timeline || [], Components.createTimelineItem);
+
+      // AWS services (core / integration / AI-ML)
+      const aws = data.skills?.awsServices;
+      const awsEl = document.getElementById('aws-services');
+      if (awsEl && aws) {
+        const cats = [
+          { label: 'コアサービス', items: aws.core },
+          { label: '統合サービス', items: aws.integration },
+          { label: 'AI/ML・処理サービス', items: aws.aiml }
+        ];
+        awsEl.innerHTML = cats.filter(c => c.items?.length).map(c => `
+          <h3>${c.label}</h3>
+          <div class="skills-grid">
+            ${c.items.map(s => `<span class="skill-badge">${Utils.escapeHtml(s)}</span>`).join('')}
+          </div>
+        `).join('');
+      }
+
+      // Certifications (with acquisition year)
+      const certEl = document.getElementById('certifications');
+      if (certEl && data.certifications) {
+        certEl.innerHTML = data.certifications.map(c => {
+          const name = typeof c === 'string' ? c : (c.name || '');
+          const date = (c && typeof c === 'object' && c.date) ? c.date : '';
+          return `<li>${Utils.escapeHtml(name)}${date ? `<span class="cert-date">${Utils.escapeHtml(date)}</span>` : ''}</li>`;
+        }).join('');
+      }
+    });
+  </script>
+</body>
+</html>

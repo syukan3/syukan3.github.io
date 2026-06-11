@@ -1,0 +1,271 @@
+/* Base Styles */
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--color-text-primary);
+  background-color: #0b0a08;
+  background-image:
+    radial-gradient(ellipse 70% 44% at 84% -6%, rgba(255, 150, 70, 0.10), transparent 60%),
+    radial-gradient(ellipse 50% 36% at 0% 100%, rgba(255, 170, 90, 0.05), transparent 60%),
+    linear-gradient(180deg, #0c0b09 0%, #080706 100%);
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+html {
+  /* The ROOT never scrolls — .noir-frame is the scroller. iOS 26's Liquid
+     Glass mirrors whatever the root scroller pushes past the status bar
+     (content kept "showing through" above the fixed header); with a static
+     root it can only show this background color. It also makes horizontal
+     panning physically impossible. */
+  height: 100%;
+  overflow: hidden;
+  background-color: #0b0a08;
+  touch-action: pan-y pinch-zoom;
+}
+
+/* Film Grain Overlay - Very subtle */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  z-index: 9999;
+  mix-blend-mode: overlay;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-tight);
+  margin-bottom: var(--space-4);
+  color: var(--color-heading);
+}
+
+h1 {
+  font-size: var(--text-5xl);
+  letter-spacing: 0.01em;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: var(--text-4xl);
+  letter-spacing: 0.005em;
+}
+
+h3 {
+  font-size: var(--text-3xl);
+}
+
+h4 {
+  font-size: var(--text-2xl);
+}
+
+h5 {
+  font-size: var(--text-xl);
+}
+
+h6 {
+  font-size: var(--text-lg);
+}
+
+p {
+  margin-bottom: var(--space-4);
+}
+
+/* Links */
+a {
+  color: var(--color-text-primary);
+  transition: color var(--transition-fast);
+  position: relative;
+}
+
+a:hover {
+  color: var(--color-ember-bright);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-ember);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+/* Content links (links within text) */
+main p a,
+main li a,
+.bio-text a,
+.card-description a {
+  color: var(--color-ember);
+  text-decoration: underline;
+  text-decoration-color: rgba(209, 154, 74, 0.4);
+  text-underline-offset: 3px;
+  transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
+}
+
+main p a:hover,
+main li a:hover,
+.bio-text a:hover,
+.card-description a:hover {
+  color: var(--color-ember-bright);
+  text-decoration-color: var(--color-ember-bright);
+}
+
+/* Code */
+code,
+pre {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+code {
+  padding: var(--space-1) var(--space-2);
+}
+
+pre {
+  padding: var(--space-4);
+  overflow-x: auto;
+  margin-bottom: var(--space-4);
+}
+
+/* Layout Utilities */
+.container {
+  width: 100%;
+  max-width: var(--container-xl);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: max(var(--container-padding), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--container-padding), env(safe-area-inset-right, 0px));
+}
+
+.container-sm {
+  max-width: var(--container-sm);
+}
+
+.container-md {
+  max-width: var(--container-md);
+}
+
+.container-lg {
+  max-width: var(--container-lg);
+}
+
+.container-2xl {
+  max-width: var(--container-2xl);
+}
+
+/* Section Spacing */
+.section {
+  padding-top: var(--section-pad);
+  padding-bottom: var(--section-pad);
+}
+
+/* Noir Frame — full-bleed wrapper (the boxed card look was retired for an
+   airier, editorial layout; the class is kept because every page uses it).
+   It is also THE page scroller — see the html comment above. */
+.noir-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: var(--header-total);
+  scroll-padding-top: calc(var(--header-total) + var(--space-4));
+}
+
+/* Skip Link — hidden via transform, NOT a negative top offset: iOS 26 Safari
+   composites fixed elements that sit above the layout viewport into its
+   status-bar glass, so an element parked at top:-100px "shows through"
+   blurred above the header while scrolling */
+.skip-link {
+  position: fixed;
+  top: var(--space-4);
+  left: 50%;
+  /* Park it WELL above the viewport: iOS 26 samples roughly the first 60px
+     above the layout viewport for its status-bar glass — anything parked
+     within that band smears across the status bar while scrolling */
+  transform: translate(-50%, calc(-100% - 200px));
+  z-index: 9999;
+  padding: var(--space-3) var(--space-6);
+  background: linear-gradient(180deg, var(--color-ember-bright) 0%, var(--color-ember) 100%);
+  color: #1b130a;
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: transform var(--transition-fast);
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  transform: translate(-50%, 0);
+  outline: none;
+}
+
+/* Utility Classes */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+/* Focus Management */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ember);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 6px rgba(209, 154, 74, 0.25);
+  border-radius: var(--radius-sm);
+}
+
+/* Interactive elements focus */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-ember);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(209, 154, 74, 0.2);
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-slate);
+  color: var(--color-white);
+}
+
+/* Page transitions and scroll-reveal animations were removed deliberately:
+   content shows immediately. Ambient motion lives only in the hero canvas. */

@@ -79,6 +79,8 @@ jspm_packages/
 # Temporary folders
 tmp/
 temp/
+.playwright-mcp/
+renewal_img/
 
 # Python
 __pycache__/
@@ -120,3 +122,6 @@ __pycache__/
 
 # Ignore public uploads
 /public/uploads
+
+# Playwright CLI artifacts
+.playwright-cli/
