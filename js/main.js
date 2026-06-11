@@ -7,12 +7,12 @@
 // ---------------------------------------------------------------------------
 const Site = {
   nav: [
-    { key: 'work', label: 'Work', href: '/renewal/work/' },
-    { key: 'projects', label: 'Projects', href: '/renewal/projects/' },
-    { key: 'writing', label: 'Writing', href: '/renewal/writing/' },
-    { key: 'photo', label: 'Photo', href: '/renewal/photo/' },
-    { key: 'about', label: 'About', href: '/renewal/about/' },
-    { key: 'contact', label: 'Contact', href: '/renewal/contact/' }
+    { key: 'work', label: 'Work', href: '/work/' },
+    { key: 'projects', label: 'Projects', href: '/projects/' },
+    { key: 'writing', label: 'Writing', href: '/writing/' },
+    { key: 'photo', label: 'Photo', href: '/photo/' },
+    { key: 'about', label: 'About', href: '/about/' },
+    { key: 'contact', label: 'Contact', href: '/contact/' }
   ],
 
   social: [
@@ -29,7 +29,7 @@ const Site = {
     return `
       <header class="header">
         <div class="header-container">
-          <a href="/renewal/" class="logo">
+          <a href="/" class="logo">
             <span class="logo-mark" aria-hidden="true"></span>
             <span class="logo-text">Sakae Shunsuke</span>
           </a>
@@ -137,7 +137,7 @@ const DataLoader = {
   async load(dataFile) {
     if (this.cache[dataFile]) return this.cache[dataFile];
     try {
-      const response = await fetch(`/renewal/data/${dataFile}`);
+      const response = await fetch(`/data/${dataFile}`);
       if (!response.ok) throw new Error(`Failed to load ${dataFile}`);
       const data = await response.json();
       this.cache[dataFile] = data;

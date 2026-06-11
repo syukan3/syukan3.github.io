@@ -6,7 +6,7 @@
       "slug": "genai-governance",
       "featured": true,
       "summary": "金融グレードの統制を効かせ、生成AIを全社へ安全に導入。業務自動化で運用工数とコストを削減",
-      "thumbnail": "/renewal/images/cover-genai.svg",
+      "thumbnail": "/images/cover-genai.svg",
       "background": "金融事業を営む中で、生成AIを全社的に活用して生産性を高めたいニーズがあった。一方で、個人情報保護法・社内規程・機密情報の取り扱いを厳格に守る必要があり、無秩序な利用はコンプライアンス上のリスクとなる環境だった。",
       "constraints": [
         "個人情報保護法・社内規程との整合",
@@ -32,7 +32,7 @@
       "slug": "hijojo-system",
       "featured": true,
       "summary": "会社の収益を生む販売チャネルそのものを少人数で支え、パートナー連携など販路を広げる機能開発で事業拡大に貢献",
-      "thumbnail": "/renewal/images/hero.webp",
+      "thumbnail": "/images/hero.webp",
       "background": "非上場株式ファンドをオンラインで販売する事業では、システムが「コスト」ではなく収益を生む販売チャネルそのもの。障害は販売機会の喪失に直結し、第二種金融商品取引業の規制下で信頼性と事業スピードの両立が求められた。",
       "constraints": [
         "金融規制（第二種金融商品取引業）への準拠必須",
@@ -58,7 +58,7 @@
       "slug": "qiita-growth",
       "featured": true,
       "summary": "戦略的アプローチで Qiita 累計143万PVを達成。日間PVを7倍に成長",
-      "thumbnail": "/renewal/images/blog_mosaicai.webp",
+      "thumbnail": "/images/blog_mosaicai.webp",
       "background": "技術知識の共有と自身のブランディングを目的に技術ブログを運営。2024年11月時点で40万ビューだったものを、戦略的に成長させる必要があった。",
       "constraints": [
         "本業との両立（限られた執筆時間）",
@@ -83,7 +83,7 @@
       "slug": "iot-vision-system",
       "featured": true,
       "summary": "社内にML知見ゼロの状態から独学でAIモデル開発を立ち上げ、デジタルサイネージ広告効果測定の新規事業をゼロから事業化",
-      "thumbnail": "/renewal/images/blog_iot.webp",
+      "thumbnail": "/images/blog_iot.webp",
       "background": "デジタルサイネージの広告効果を視聴者属性（年齢・性別）と視聴率で計測する自社の新規事業を立ち上げることになった。ただし社内に機械学習・IoTの知見を持つメンバーがおらず、技術の実現可能性の証明からのスタートだった。",
       "constraints": [
         "社内にML・IoTのナレッジが無い（独学での技術立ち上げ）",

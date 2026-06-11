@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Sitemap: https://example.com/sitemap.xml
+
+# Disallow access to specific files or directories if needed
+# Disallow: /private/
+# Disallow: /admin/

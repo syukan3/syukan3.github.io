@@ -7,7 +7,7 @@ const safeUrl = (u) => Utils.sanitizeUrl(u);
 const Components = {
   // ---- Work / Case study card (used on Home + Work) --------------------
   createWorkCard(work) {
-    const href = `/renewal/work/#${encodeURIComponent(work.slug || '')}`;
+    const href = `/work/#${encodeURIComponent(work.slug || '')}`;
     const tags = (work.tags || []).slice(0, 4)
       .map(t => `<span class="tag">${e(t)}</span>`).join('');
     return `
