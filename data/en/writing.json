@@ -1,0 +1,58 @@
+{
+  "writing": [
+    {
+      "id": "qiita-bash-2025",
+      "title": "Qiita Bash — How MCP Expands What Generative AI Can Do",
+      "pinned": true,
+      "date": "2025-06-01",
+      "summary": "Conference talk on the latest in generative-AI-powered system development (video available; in Japanese)",
+      "url": "https://www.youtube.com/watch?v=F57I8uMovBo",
+      "type": "talk"
+    },
+    {
+      "id": "deep-research",
+      "title": "ChatGPT 'Deep Research' — In-Depth Review",
+      "pinned": true,
+      "date": "2025-01-15",
+      "summary": "250K+ views. A hands-on review weighing the $200 price tag (in Japanese)",
+      "url": "https://qiita.com/syukan3/items/b2bd98d2f61a75777d38",
+      "type": "article"
+    },
+    {
+      "id": "mosaicai-article",
+      "title": "MosaicAI: A Unified Python Interface for Multiple LLMs",
+      "pinned": true,
+      "date": "2024-08-15",
+      "summary": "Introducing a library that puts ChatGPT, Claude, Gemini and more behind one interface (in Japanese)",
+      "url": "https://qiita.com/syukan3/items/d810f727ad223e2d60d5",
+      "type": "article"
+    },
+    {
+      "id": "openai-filesearch",
+      "title": "Implementing OpenAI Assistants API File Search in Ruby",
+      "pinned": false,
+      "date": "2024-05-19",
+      "summary": "How to implement File Search in Ruby and generate answers to questions about files (in Japanese)",
+      "url": "https://qiita.com/syukan3/items/667359fee91f3605ac40",
+      "type": "article"
+    },
+    {
+      "id": "iot-dynamodb",
+      "title": "AWS IoT Core → DynamoDBv2 Tutorial",
+      "pinned": false,
+      "date": "2024-02-19",
+      "summary": "Storing and managing device data with AWS IoT Core and DynamoDBv2 (in Japanese)",
+      "url": "https://qiita.com/syukan3/items/e1bd2b3fbe7b73a7086c",
+      "type": "article"
+    },
+    {
+      "id": "ieee-2014",
+      "title": "Energy management method for residential distributed generation system",
+      "pinned": false,
+      "date": "2014-10-01",
+      "summary": "Paper presented at the IEEE Industry Application Society Annual Meeting",
+      "url": "https://ieeexplore.ieee.org/author/37085512035",
+      "type": "talk"
+    }
+  ]
+}

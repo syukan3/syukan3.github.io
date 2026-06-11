@@ -1,11 +1,19 @@
 // Main JavaScript
 
 // ---------------------------------------------------------------------------
+// Locale — English pages live under /en/ and declare <html lang="en">.
+// The chrome (nav, footer, labels) and data loading key off this flag.
+// ---------------------------------------------------------------------------
+const IS_EN = document.documentElement.lang === 'en';
+
+// ---------------------------------------------------------------------------
 // Site Chrome (shared header / footer, injected from a single source)
 // Each page only needs <div id="site-header"></div> / <div id="site-footer"></div>
 // and <body data-page="work"> to mark the active nav item.
 // ---------------------------------------------------------------------------
 const Site = {
+  lang: IS_EN ? 'en' : 'ja',
+
   nav: [
     { key: 'work', label: 'Work', href: '/work/' },
     { key: 'projects', label: 'Projects', href: '/projects/' },
@@ -15,6 +23,20 @@ const Site = {
     { key: 'contact', label: 'Contact', href: '/contact/' }
   ],
 
+  localizeHref(href) {
+    return IS_EN ? `/en${href}` : href;
+  },
+
+  // Path of the current page in the other language (/work/ ⇄ /en/work/)
+  altLangHref() {
+    const path = window.location.pathname;
+    if (IS_EN) {
+      const stripped = path.replace(/^\/en\/?/, '/');
+      return stripped || '/';
+    }
+    return path === '/' ? '/en/' : `/en${path}`;
+  },
+
   social: [
     { label: 'GitHub', href: 'https://github.com/syukan3' },
     { label: 'Qiita', href: 'https://qiita.com/syukan3' }
@@ -23,22 +45,28 @@ const Site = {
   renderHeader(active) {
     const items = this.nav.map(item => {
       const isActive = item.key === active;
-      return `<li><a href="${item.href}" class="nav-link${isActive ? ' active' : ''}"${isActive ? ' aria-current="page"' : ''}>${item.label}</a></li>`;
+      return `<li><a href="${this.localizeHref(item.href)}" class="nav-link${isActive ? ' active' : ''}"${isActive ? ' aria-current="page"' : ''}>${item.label}</a></li>`;
     }).join('');
+
+    const switchLabel = IS_EN ? '日本語' : 'EN';
+    const switchTitle = IS_EN ? 'このページを日本語で読む' : 'Read this page in English';
 
     return `
       <header class="header">
         <div class="header-container">
-          <a href="/" class="logo">
+          <a href="${IS_EN ? '/en/' : '/'}" class="logo">
             <span class="logo-mark" aria-hidden="true"></span>
             <span class="logo-text">Sakae Shunsuke</span>
           </a>
-          <nav aria-label="メインナビゲーション">
+          <nav aria-label="${IS_EN ? 'Main navigation' : 'メインナビゲーション'}">
             <ul class="nav-list">${items}</ul>
           </nav>
-          <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
-            <span class="menu-icon" aria-hidden="true"></span>
-          </button>
+          <div class="header-tools">
+            <a href="${this.altLangHref()}" class="lang-switch" lang="${IS_EN ? 'ja' : 'en'}" title="${switchTitle}">${switchLabel}</a>
+            <button class="menu-toggle" aria-label="${IS_EN ? 'Open menu' : 'メニューを開く'}" aria-expanded="false">
+              <span class="menu-icon" aria-hidden="true"></span>
+            </button>
+          </div>
         </div>
       </header>
     `;
@@ -46,7 +74,7 @@ const Site = {
 
   renderFooter() {
     const navLinks = this.nav
-      .map(item => `<a href="${item.href}" class="footer-link">${item.label}</a>`)
+      .map(item => `<a href="${this.localizeHref(item.href)}" class="footer-link">${item.label}</a>`)
       .join('');
     const socialLinks = this.social
       .map(s => `<a href="${s.href}" target="_blank" rel="noopener noreferrer" class="footer-link">${s.label}</a>`)
@@ -71,7 +99,7 @@ const Site = {
             </div>
           </div>
           <div class="footer-bottom">
-            <p>技術で、事業を前に。</p>
+            <p>${IS_EN ? 'Engineering that moves business forward.' : '技術で、事業を前に。'}</p>
             <p>&copy; ${new Date().getFullYear()} Sakae Shunsuke. All rights reserved.</p>
           </div>
         </div>
@@ -134,10 +162,15 @@ Site.renderChrome();
 const DataLoader = {
   cache: {},
 
+  // Files with translated copies under /data/en/. photos.json has no prose,
+  // so both languages share the single Japanese-root copy.
+  localized: ['profile.json', 'works.json', 'projects.json', 'writing.json'],
+
   async load(dataFile) {
     if (this.cache[dataFile]) return this.cache[dataFile];
     try {
-      const response = await fetch(`/data/${dataFile}`);
+      const dir = (IS_EN && this.localized.includes(dataFile)) ? '/data/en/' : '/data/';
+      const response = await fetch(`${dir}${dataFile}`);
       if (!response.ok) throw new Error(`Failed to load ${dataFile}`);
       const data = await response.json();
       this.cache[dataFile] = data;
@@ -202,7 +235,7 @@ const Utils = {
   formatDate(dateString) {
     const date = new Date(dateString);
     if (isNaN(date)) return Utils.escapeHtml(dateString);
-    return new Intl.DateTimeFormat('ja-JP', {
+    return new Intl.DateTimeFormat(IS_EN ? 'en-US' : 'ja-JP', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'

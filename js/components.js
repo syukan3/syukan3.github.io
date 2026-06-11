@@ -4,10 +4,26 @@
 const e = (t) => Utils.escapeHtml(t);
 const safeUrl = (u) => Utils.sanitizeUrl(u);
 
+// UI strings rendered by components, per language. Japanese case-study labels
+// keep their bilingual "背景 / Background" form; English pages drop the kanji.
+const STR = document.documentElement.lang === 'en'
+  ? {
+      talk: 'Talk', article: 'Article', role: 'Role', privateCode: 'Private codebase',
+      empty: 'Nothing here yet.',
+      caseLabels: ['Background', 'Constraints', 'Approach', 'Implementation', 'Results', 'Learnings'],
+      workBase: '/en/work/'
+    }
+  : {
+      talk: '登壇', article: '記事', role: '役割', privateCode: 'コード非公開',
+      empty: 'コンテンツがありません',
+      caseLabels: ['背景 / Background', '制約 / Constraints', '打ち手 / Approach', '実装 / Implementation', '成果 / Results', '学び / Learnings'],
+      workBase: '/work/'
+    };
+
 const Components = {
   // ---- Work / Case study card (used on Home + Work) --------------------
   createWorkCard(work) {
-    const href = `/work/#${encodeURIComponent(work.slug || '')}`;
+    const href = `${STR.workBase}#${encodeURIComponent(work.slug || '')}`;
     const tags = (work.tags || []).slice(0, 4)
       .map(t => `<span class="tag">${e(t)}</span>`).join('');
     return `
@@ -33,7 +49,7 @@ const Components = {
     if (project.links?.demo) links.push(`<a href="${safeUrl(project.links.demo)}" target="_blank" rel="noopener noreferrer" class="card-action">Demo ↗</a>`);
     if (project.links?.github) links.push(`<a href="${safeUrl(project.links.github)}" target="_blank" rel="noopener noreferrer" class="card-action">GitHub ↗</a>`);
     if (project.links?.article) links.push(`<a href="${safeUrl(project.links.article)}" target="_blank" rel="noopener noreferrer" class="card-action">Article ↗</a>`);
-    if (project.code === 'private' && !project.links?.github) links.push(`<span class="card-action card-action-muted">コード非公開</span>`);
+    if (project.code === 'private' && !project.links?.github) links.push(`<span class="card-action card-action-muted">${STR.privateCode}</span>`);
     const tags = (project.tags || []).slice(0, 4)
       .map(t => `<span class="tag">${e(t)}</span>`).join('');
 
@@ -49,7 +65,7 @@ const Components = {
           <h3 class="card-title">${e(project.title)}</h3>
           <p class="card-description">${e(project.summary)}</p>
           ${tags ? `<div class="tag-list">${tags}</div>` : ''}
-          ${project.role ? `<p class="card-meta">役割 / ${e(project.role)}</p>` : ''}
+          ${project.role ? `<p class="card-meta">${STR.role} / ${e(project.role)}</p>` : ''}
           ${links.length ? `<div class="card-actions">${links.join('')}</div>` : ''}
         </div>
       </article>
@@ -58,7 +74,7 @@ const Components = {
 
   // ---- Writing / Talk item --------------------------------------------
   createWritingItem(item) {
-    const typeLabel = item.type === 'talk' ? '登壇' : '記事';
+    const typeLabel = item.type === 'talk' ? STR.talk : STR.article;
     return `
       <a href="${safeUrl(item.url)}" target="_blank" rel="noopener noreferrer" class="writing-row card-link" data-reveal>
         <div class="writing-meta">
@@ -120,12 +136,12 @@ const Components = {
           ${tags ? `<div class="tag-list">${tags}</div>` : ''}
         </div>
         <div class="case-grid">
-          ${block('背景 / Background', `<p>${e(work.background)}</p>`)}
-          ${block('制約 / Constraints', list(work.constraints))}
-          ${block('打ち手 / Approach', `<p>${e(work.approach)}</p>`)}
-          ${block('実装 / Implementation', `<p>${e(work.implementation)}</p>`)}
-          ${block('成果 / Results', list(work.results))}
-          ${block('学び / Learnings', `<p>${e(work.learnings)}</p>`)}
+          ${block(STR.caseLabels[0], `<p>${e(work.background)}</p>`)}
+          ${block(STR.caseLabels[1], list(work.constraints))}
+          ${block(STR.caseLabels[2], `<p>${e(work.approach)}</p>`)}
+          ${block(STR.caseLabels[3], `<p>${e(work.implementation)}</p>`)}
+          ${block(STR.caseLabels[4], list(work.results))}
+          ${block(STR.caseLabels[5], `<p>${e(work.learnings)}</p>`)}
         </div>
       </article>
     `;
@@ -159,7 +175,7 @@ const Components = {
     const container = document.getElementById(containerId);
     if (!container) return;
     if (!items || items.length === 0) {
-      container.innerHTML = '<p class="text-muted">コンテンツがありません</p>';
+      container.innerHTML = `<p class="text-muted">${STR.empty}</p>`;
       return;
     }
     container.innerHTML = items.map(item => createItemFn(item)).join('');

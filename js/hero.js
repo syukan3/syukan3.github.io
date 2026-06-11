@@ -204,17 +204,33 @@
       offc.width = Math.ceil(W);
       offc.height = Math.ceil(H);
       const o = offc.getContext('2d');
-      o.font = `600 ${fs}px Fraunces, "Shippori Mincho", serif`;
       o.textBaseline = 'alphabetic';
+      // Draw whatever the page's .hero-line spans contain (works for both the
+      // Japanese and English titles); .accent segments get the ember color.
+      // The canvas draws one row per .hero-line with no wrapping, so shrink
+      // the font until the widest line fits the title box.
+      const font = (size) => `600 ${size}px Fraunces, "Shippori Mincho", serif`;
+      const lines = Array.from(titleEl.querySelectorAll('.hero-line > span'));
+      o.font = font(fs);
+      const lineWidth = (line) => Array.from(line.childNodes)
+        .reduce((w, node) => w + o.measureText(node.textContent || '').width, 0);
+      const maxWidth = Math.max(...lines.map(lineWidth), 1);
+      const drawFs = maxWidth > rect.width ? fs * rect.width / maxWidth : fs;
+      o.font = font(drawFs);
       const x0 = rect.left - canvasRect.left;
-      const y1 = rect.top - canvasRect.top + fs * 0.92;
-      const y2 = y1 + fs * 1.18;
-      o.fillStyle = '#f3ecdc';
-      o.fillText('攻めのAIを、', x0, y1);
-      o.fillStyle = '#f6cf86';
-      o.fillText('守りの統制', x0, y2);
-      o.fillStyle = '#f3ecdc';
-      o.fillText('で。', x0 + o.measureText('守りの統制').width, y2);
+      const y1 = rect.top - canvasRect.top + drawFs * 0.92;
+      lines.forEach((line, idx) => {
+        const y = y1 + idx * drawFs * 1.18;
+        let x = x0;
+        line.childNodes.forEach(node => {
+          const text = node.textContent;
+          if (!text) return;
+          const isAccent = node.nodeType === 1 && node.classList.contains('accent');
+          o.fillStyle = isAccent ? '#f6cf86' : '#f3ecdc';
+          o.fillText(text, x, y);
+          x += o.measureText(text).width;
+        });
+      });
 
       const budget = W < 700 ? 1600 : 3200;
       let step = 2;

@@ -1,0 +1,217 @@
+{
+  "projects": [
+    {
+      "id": "ai-call-eval",
+      "title": "Call-Recording First-Pass Evaluation",
+      "featured": true,
+      "code": "private",
+      "thumbnail": "/images/project_ai_call_eval.webp",
+      "summary": "Transcribes compliance call recordings and automates first-pass evaluation with an LLM. Runs in production, directly supporting FISC internal-control work",
+      "role": "Design / Build / Operate",
+      "tags": ["Generative AI", "LLM", "Transcription", "Compliance"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2026"
+    },
+    {
+      "id": "ai-prompt-monitor",
+      "title": "GenAI Prompt Monitoring Platform",
+      "featured": true,
+      "code": "private",
+      "thumbnail": "/images/project_ai_prompt_monitor.webp",
+      "summary": "A governance platform that monitors 100% of employee prompts to generative AI, making confidential-data handling risk visible and controllable",
+      "role": "Design / Build",
+      "tags": ["Generative AI", "Governance", "Security"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2024–2025"
+    },
+    {
+      "id": "ai-spec-gen",
+      "title": "AI Specification Generator",
+      "featured": true,
+      "code": "private",
+      "thumbnail": "/images/project_ai_spec_gen.webp",
+      "summary": "Generates system specifications fully automatically from existing source code, drastically reducing documentation effort",
+      "role": "Design / Build",
+      "tags": ["Generative AI", "LLM", "Docs automation"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2024–2025"
+    },
+    {
+      "id": "ai-first-reply",
+      "title": "Customer-Inquiry First-Response System",
+      "featured": false,
+      "code": "private",
+      "thumbnail": "/images/project_ai_first_reply.webp",
+      "summary": "Automates first responses to customer inquiries with generative AI, improving response speed and operational efficiency",
+      "role": "Design / Build",
+      "tags": ["Generative AI", "LLM", "Customer support"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2025"
+    },
+    {
+      "id": "ai-assess-harness",
+      "title": "Assessment Answer Harness (J-SOX / FISC)",
+      "featured": false,
+      "code": "private",
+      "thumbnail": "/images/project_ai_assess_harness.webp",
+      "summary": "A harness that generates draft answers for J-SOX ITGC and FISC security-guideline assessments, streamlining audit response",
+      "role": "Design / Build",
+      "tags": ["Generative AI", "J-SOX", "FISC", "Internal controls"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2026"
+    },
+    {
+      "id": "ai-company-research",
+      "title": "Unlisted-Company Research Automation",
+      "featured": false,
+      "code": "private",
+      "thumbnail": "/images/project_ai_company_research.webp",
+      "summary": "A tool that automates information gathering on unlisted companies, making research work far more efficient",
+      "role": "Design / Build",
+      "tags": ["Generative AI", "Automation", "Research"],
+      "links": { "github": "", "demo": "", "article": "" },
+      "year": "2025"
+    },
+    {
+      "id": "qiita-growth",
+      "title": "Tech-Blog Growth Strategy: 1.43M Views",
+      "featured": true,
+      "thumbnail": "/images/blog_mosaicai.webp",
+      "summary": "Reached 1.43M views through a deliberate strategy — 7× daily-view growth and 270+ articles published",
+      "role": "Writing / Strategy",
+      "tags": ["Qiita", "SEO", "Analytics", "Growth"],
+      "links": {
+        "github": "",
+        "demo": "https://qiita.com/syukan3",
+        "article": ""
+      },
+      "year": "2019–present",
+      "metrics": {
+        "totalViews": "1,434,762",
+        "articles": "270",
+        "dailyPV": "5,000",
+        "growthRate": "7×"
+      }
+    },
+    {
+      "id": "censify",
+      "title": "Censify",
+      "featured": true,
+      "thumbnail": "/images/project_censify.webp",
+      "summary": "An API service that detects inappropriate language, using LLMs for high-accuracy judgments",
+      "role": "Design / Build",
+      "tags": ["TypeScript", "Cloudflare Workers", "AI", "HonoJS"],
+      "links": {
+        "github": "",
+        "demo": "https://censify-lp.pages.dev",
+        "article": ""
+      },
+      "year": "2024"
+    },
+    {
+      "id": "gaugenix",
+      "title": "Gaugenix",
+      "featured": true,
+      "thumbnail": "/images/project_gaugenix.webp",
+      "summary": "Captures images of analog gauges with IoT devices and reads the values through AI analysis",
+      "role": "Design / Build / Operate",
+      "tags": ["Next.js", "Supabase", "Python", "AI", "AWS"],
+      "links": {
+        "github": "",
+        "demo": "",
+        "article": ""
+      },
+      "year": "2023–2024"
+    },
+    {
+      "id": "mosaicai",
+      "title": "MosaicAI",
+      "featured": true,
+      "thumbnail": "/images/project_mosaicai.webp",
+      "summary": "An open-source Python library that provides a unified interface to multiple AI language models",
+      "role": "Design / Build",
+      "tags": ["Python", "AI", "OpenSource"],
+      "links": {
+        "github": "https://github.com/syukan3/MosaicAI",
+        "demo": "",
+        "article": "https://qiita.com/syukan3/items/d810f727ad223e2d60d5"
+      },
+      "year": "2024"
+    },
+    {
+      "id": "omniocr",
+      "title": "OmniOCR",
+      "featured": true,
+      "thumbnail": "/images/project_omniocr.webp",
+      "summary": "An AI OCR service that extracts text from images and PDFs and converts it into structured data",
+      "role": "Design / Build",
+      "tags": ["TypeScript", "Next.js", "AI", "Cloudflare"],
+      "links": {
+        "github": "",
+        "demo": "https://omni-ocr-lp.pages.dev/",
+        "article": ""
+      },
+      "year": "2024"
+    },
+    {
+      "id": "wolverine-ruby",
+      "title": "Wolverine Ruby",
+      "featured": true,
+      "thumbnail": "/images/project_wolverine_ruby.webp",
+      "summary": "An autonomous program bug-repair tool, built right after the ChatGPT API was released",
+      "role": "Build",
+      "tags": ["Ruby", "OpenAI GPT-3.5 API"],
+      "links": {
+        "github": "",
+        "demo": "",
+        "article": ""
+      },
+      "year": "2023"
+    },
+    {
+      "id": "hijojo",
+      "title": "HiJoJo.com",
+      "featured": false,
+      "thumbnail": "/images/hero.webp",
+      "summary": "An online fund-distribution system. Led the Ruby 2.7→3.3 and Rails 5.2→7.1 version upgrades",
+      "role": "Design / Build / Operate",
+      "tags": ["Ruby on Rails", "MySQL", "AWS", "JavaScript"],
+      "links": {
+        "github": "",
+        "demo": "",
+        "article": ""
+      },
+      "year": "2022–present"
+    },
+    {
+      "id": "onegate",
+      "title": "OneGATE Maintenance Management System",
+      "featured": false,
+      "thumbnail": "/images/blog_openai_filesearch.webp",
+      "summary": "Incident management, a call center (Amazon Connect), and a customer portal. Featured as a Ruby Association case study",
+      "role": "Design / Build",
+      "tags": ["Ruby on Rails", "AWS", "Amazon Connect", "JavaScript"],
+      "links": {
+        "github": "",
+        "demo": "https://www.pdc-ds.com/service/onegate",
+        "article": "https://www.ruby.or.jp/ja/showcase/case77"
+      },
+      "year": "2019–2022"
+    },
+    {
+      "id": "face-authentication",
+      "title": "Image Analysis & Attribute Detection",
+      "featured": false,
+      "thumbnail": "/images/blog_iot.webp",
+      "summary": "Attribute detection and viewing-rate measurement through image analysis. Built the age-estimation model",
+      "role": "Design / Build",
+      "tags": ["Python", "PyTorch", "OpenVINO", "AWS IoT", "SageMaker"],
+      "links": {
+        "github": "",
+        "demo": "https://www.pdc-ds.com/service/face_authentication",
+        "article": ""
+      },
+      "year": "2020–2022"
+    }
+  ]
+}

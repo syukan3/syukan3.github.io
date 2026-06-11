@@ -1,0 +1,107 @@
+{
+  "works": [
+    {
+      "id": "work-genai-governance",
+      "title": "Company-Wide Generative-AI Adoption & Governance",
+      "slug": "genai-governance",
+      "featured": true,
+      "summary": "Rolled out generative AI across a financial-services company under financial-grade controls, cutting operational workload and cost through automation",
+      "thumbnail": "/images/cover-genai.svg",
+      "background": "The company wanted to use generative AI across the whole organization to raise productivity. As a financial-services business, however, it had to strictly observe Japan's APPI (personal-data law), internal regulations, and confidential-information handling — uncontrolled use would have been a compliance risk.",
+      "constraints": [
+        "Alignment with Japan's APPI and internal regulations",
+        "Managing the risk of confidential data leaving the company",
+        "Conformance with J-SOX IT general controls (ITGC) and the FISC security guidelines",
+        "Responding to internal audits and remediating findings"
+      ],
+      "approach": "Chose to 'enable safe use' rather than prohibit. Established usage guidelines and designed permissions and logging first, then built a platform that monitors 100% of input prompts. With controls in place, rolled out business automation across the company in stages.",
+      "implementation": "Built and operate multiple generative-AI business systems around the Claude / OpenAI APIs and AWS: (1) fully automated specification generation for existing systems, (2) call-recording transcription with LLM-based first-pass evaluation, (3) full monitoring of employee prompts to generative AI, (4) first-response drafting for customer inquiries, (5) an answer-generation harness for J-SOX ITGC / FISC security-guideline assessments, and (6) automated research on unlisted companies.",
+      "results": [
+        "Established company-wide generative-AI use without loosening controls",
+        "Cut operational workload and cost by automating multiple workflows",
+        "Made confidential-data handling risk visible and manageable through full prompt monitoring",
+        "Addressed and remediated internal-audit findings"
+      ],
+      "learnings": "Generative-AI governance is not about banning — it is about designing for safe use. Control and adoption are not a trade-off: putting logs, permissions, and monitoring in place first makes both possible.",
+      "tags": ["Generative AI", "Governance", "J-SOX", "FISC", "APPI", "Claude", "AWS"],
+      "year": "2024–present"
+    },
+    {
+      "id": "work-hijojo",
+      "title": "HiJoJo.com — Online Fund-Distribution Platform",
+      "slug": "hijojo-system",
+      "featured": true,
+      "summary": "Sustained the company's revenue-generating sales channel with a small team, and expanded the business with features such as a site for distribution partners",
+      "thumbnail": "/images/hero.webp",
+      "background": "In a business that sells unlisted-equity funds online, the system is not a cost center — it is the sales channel itself. Outages translate directly into lost sales, and under Japan's Type II Financial Instruments Business regulation, reliability and business speed both had to be delivered.",
+      "constraints": [
+        "Mandatory compliance with financial regulation (Type II Financial Instruments Business)",
+        "Outage = lost sales: high-availability requirements tied directly to business continuity",
+        "Development and operations with a small team (doubling as corporate IT)",
+        "Platform modernization without stopping the service (Ruby 2.7→3.3, Rails 5.2→7.1)"
+      ],
+      "approach": "'Defend, then attack.' With stable operations and compliance as the foundation, prioritized features that expand sales opportunities. Platform modernization was staged so sales never stopped.",
+      "implementation": "Channel expansion: built a partner site for distribution partners, opening sales routes beyond the company's own site. Product strength: developed fund-transfer and amount/time-priority features. Back office: built accounting export tooling. Platform: robust AWS infrastructure (EC2, RDS, CloudFront, WAF) and multiple major Ruby/Rails version upgrades completed.",
+      "results": [
+        "Opened a sales channel beyond the company's own site with a partner site for distributors",
+        "Strengthened the product with fund-transfer and amount/time-priority features",
+        "Maintained stable operations with a small team, protecting sales opportunities",
+        "Completed Ruby 2.7→3.3 / Rails 5.2→7.1 upgrades with zero downtime"
+      ],
+      "learnings": "Financial systems get attention for their 'defense', but this system is, at heart, a revenue-generating sales channel. Engineering value lies in how quickly and safely you can ship business-expanding features on a foundation of stability and control.",
+      "tags": ["Business platform", "Ruby on Rails", "AWS", "Financial regulation", "Partner integration"],
+      "year": "2022–present"
+    },
+    {
+      "id": "work-qiita",
+      "title": "Growing a Tech Blog to 1.43M Views",
+      "slug": "qiita-growth",
+      "featured": true,
+      "summary": "Reached 1.43M cumulative views on Qiita through a deliberate growth strategy, growing daily views 7×",
+      "thumbnail": "/images/blog_mosaicai.webp",
+      "background": "I run a tech blog to share knowledge and build my personal brand. It stood at 400K views in November 2024 and needed a deliberate push to grow.",
+      "constraints": [
+        "Balancing with a full-time job (limited writing time)",
+        "A crowded tech-blog market",
+        "Sustaining a consistent publishing cadence"
+      ],
+      "approach": "Focused on high-demand topics such as AI and cloud, identified through trend analysis. Applied thorough SEO (titles, tags, structure) and aimed for one high-quality article per day.",
+      "implementation": "Used analytics to study what made articles popular and fed it back into the writing. Prioritized reader relationships through comment responses and feedback.",
+      "results": [
+        "1.43M cumulative views (+1M in 8 months)",
+        "~5,000 daily views (7× growth)",
+        "270+ articles published",
+        "Top article on 'Deep Research' exceeded 250K views and 100 likes"
+      ],
+      "learnings": "Consistency matters most in technical writing. Combining timely coverage of trends with genuinely deep explanations is what earns reader trust.",
+      "tags": ["Qiita", "SEO", "Analytics", "Tech writing"],
+      "year": "2019–present"
+    },
+    {
+      "id": "work-iot-vision",
+      "title": "IoT × AI Audience Measurement — A New Business from Zero",
+      "slug": "iot-vision-system",
+      "featured": true,
+      "summary": "With zero in-house ML expertise, taught myself AI model development and launched a digital-signage ad-effectiveness measurement business from scratch",
+      "thumbnail": "/images/blog_iot.webp",
+      "background": "The company decided to launch a new business measuring digital-signage advertising effectiveness through viewer attributes (age, gender) and viewing rates. No one in-house had machine-learning or IoT experience, so it started from proving technical feasibility.",
+      "constraints": [
+        "No in-house ML/IoT knowledge (self-taught technical ramp-up)",
+        "Real-time processing on edge devices",
+        "Privacy by design (attribute estimation, not face identification)",
+        "Diverse installation environments (lighting conditions, camera angles)"
+      ],
+      "approach": "Prove 'can we build it?' as fast as possible. Developed age-estimation and face-attribute models on my own to demonstrate feasibility, then designed everything end to end, from hardware and camera selection to the inference platform. Led ML/IoT validation for a team of seven programmers to drive the business to launch.",
+      "implementation": "Built an age-estimation model with PyTorch/OpenVINO, running inference at the edge. Edge computing on AWS IoT Core/Greengrass, with a data collection and analytics pipeline built on Lambda and SageMaker.",
+      "results": [
+        "Established the technical foundation of a new business in an organization starting from zero knowledge",
+        "Successful pilots in multiple commercial facilities moved the business toward launch",
+        "Delivered real-time attribute capture and a viewing-rate dashboard as a service",
+        "Led ML/IoT validation for a seven-person team"
+      ],
+      "learnings": "A new venture's early velocity is decided by how fast you can prove technical feasibility. Even without in-house expertise, running the validation loop yourself gets the business off the ground — an experience that now powers my company-wide generative-AI rollouts.",
+      "tags": ["New business", "Zero to one", "PyTorch", "AWS IoT", "Edge AI"],
+      "year": "2020–2022"
+    }
+  ]
+}
