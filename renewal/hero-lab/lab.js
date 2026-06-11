@@ -1,29 +1,36 @@
-// Hero — one of three interactive scenes, picked at random per visit:
-//   "fluid"     墨流しの光 — stable-fluids sim; drag stirs, tap blooms
-//   "particles" 粒子の書   — the title assembled from embers; pointer scatters
-//   "spotlight" 暗室の光   — a darkroom beam follows the pointer, dust in it
-// Force one with ?hero=fluid|particles|spotlight. The variant shown last time
-// is excluded from the draw so repeat visits always feel different.
+// Hero Lab — three interactive hero candidates, switchable live.
+// A "fluid":     real fluid simulation, light-ink stirred by the pointer
+// B "particles": the title itself assembled from thousands of embers
+// C "spotlight": a darkroom beam that follows the pointer, dust in the light
 (function () {
   'use strict';
 
-  const canvas = document.getElementById('hero-canvas');
-  if (!canvas) return;
-
+  const canvas = document.getElementById('lab-canvas');
   const ctx = canvas.getContext('2d');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const TAU = Math.PI * 2;
 
-  let W = 0, H = 0;
+  let W = 0, H = 0, DPR = 1;
   let engine = null;
-  let running = false, rafId = 0;
+  let engineName = 'fluid';
+  let rafId = 0, running = false;
+  let t = 0;
 
-  const pointer = { x: -1, y: -1, active: false };
+  const pointer = { x: 0.5, y: 0.5, px: 0.5, py: 0.5, active: false };
 
   function rand(a, b) { return a + Math.random() * (b - a); }
 
+  function resizeCanvas() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(W * DPR);
+    canvas.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+
   // =========================================================================
-  // A. FLUID — Jos Stam "stable fluids", light-ink on dark paper
+  // A. FLUID — Jos Stam "stable fluids", dye = light-ink on dark paper
   // =========================================================================
   function FluidEngine() {
     const isMobile = W < 700;
@@ -122,13 +129,28 @@
       }
     }
 
-    function step(time) {
+    this.pointerMove = (x, y, dx, dy) => {
+      strokeHue += 0.018;
+      const c = PALETTE[Math.floor(strokeHue) % PALETTE.length];
+      splat(x / W, y / H, dx / W * 110, dy / H * 110, c, 0.85);
+    };
+    this.pointerDown = (x, y) => {
+      const c = PALETTE[Math.floor(rand(0, PALETTE.length))];
+      for (let k = 0; k < 10; k++) {
+        const a = rand(0, TAU);
+        splat(x / W + Math.cos(a) * 0.012, y / H + Math.sin(a) * 0.012, Math.cos(a) * 4, Math.sin(a) * 4, c, 1.1);
+      }
+    };
+
+    this.frame = (time) => {
+      // Ambient emitters keep it alive without input
       const e1x = 0.68 + Math.sin(time * 0.21) * 0.2, e1y = 0.62 + Math.cos(time * 0.16) * 0.22;
       const e2x = 0.3 + Math.cos(time * 0.13) * 0.16, e2y = 0.35 + Math.sin(time * 0.18) * 0.2;
       splat(e1x, e1y, Math.cos(time * 0.5) * 1.1, Math.sin(time * 0.4) * 1.1, PALETTE[0], 0.13);
       splat(e2x, e2y, Math.sin(time * 0.45) * 0.9, Math.cos(time * 0.35) * 0.9, PALETTE[3], 0.06);
 
       const dt = 0.016, visc = 0.00008;
+      // velocity step
       u0.set(u); v0.set(v);
       linSolve(1, u, u0, dt * visc * N * N, 1 + 4 * dt * visc * N * N);
       linSolve(2, v, v0, dt * visc * N * N, 1 + 4 * dt * visc * N * N);
@@ -137,15 +159,14 @@
       advect(1, u, u0, u0, v0, dt);
       advect(2, v, v0, u0, v0, dt);
       project();
+      // dye step (advect + fade, no diffusion: keeps the ink crisp)
       r0.set(r); g0.set(g); b0.set(b);
       advect(0, r, r0, u, v, dt);
       advect(0, g, g0, u, v, dt);
       advect(0, b, b0, u, v, dt);
       for (let k = 0; k < size; k++) { r[k] *= 0.991; g[k] *= 0.991; b[k] *= 0.991; }
-    }
 
-    this.frame = (time) => {
-      step(time);
+      // render
       const d = img.data;
       let p = 0;
       for (let j = 1; j <= N; j++) {
@@ -160,19 +181,12 @@
       offCtx.putImageData(img, 0, 0);
       ctx.imageSmoothingEnabled = true;
       ctx.drawImage(off, 0, 0, W, H);
-    };
-
-    this.pointerMove = (x, y, dx, dy) => {
-      strokeHue += 0.018;
-      const c = PALETTE[Math.floor(strokeHue) % PALETTE.length];
-      splat(x / W, y / H, dx / W * 110, dy / H * 110, c, 0.85);
-    };
-    this.pointerDown = (x, y) => {
-      const c = PALETTE[Math.floor(rand(0, PALETTE.length))];
-      for (let k = 0; k < 10; k++) {
-        const a = rand(0, TAU);
-        splat(x / W + Math.cos(a) * 0.012, y / H + Math.sin(a) * 0.012, Math.cos(a) * 4, Math.sin(a) * 4, c, 1.1);
-      }
+      // vignette for type legibility
+      const vg = ctx.createLinearGradient(0, 0, W * 0.7, 0);
+      vg.addColorStop(0, 'rgba(11,10,8,0.55)');
+      vg.addColorStop(1, 'rgba(11,10,8,0)');
+      ctx.fillStyle = vg;
+      ctx.fillRect(0, 0, W, H);
     };
 
     // Seed so the very first paint is already alive
@@ -180,34 +194,32 @@
       const a = rand(0, TAU);
       splat(rand(0.3, 0.9), rand(0.25, 0.85), Math.cos(a) * 5, Math.sin(a) * 5, PALETTE[k % PALETTE.length], 1.4);
     }
-    for (let k = 0; k < 26; k++) step(k * 0.016);
+    for (let k = 0; k < 26; k++) this.frame(k * 0.016);
 
-    this.warmup = () => { for (let k = 0; k < 40; k++) step(k * 0.016); };
+    this.warmup = () => { for (let k = 0; k < 40; k++) this.frame(k * 0.016); };
   }
 
   // =========================================================================
-  // B. PARTICLES — the title assembled from embers (the HTML title is hidden
-  // via .hero-mode-particles; its layout box drives where the glyphs form)
+  // B. PARTICLES — the title assembled from embers, scattered by the pointer
   // =========================================================================
   function ParticleEngine() {
-    const titleEl = document.querySelector('.hero-title');
+    const titleEl = document.getElementById('lab-title');
     let particles = [];
     let burst = null;
 
     function buildTargets() {
       particles = [];
-      if (!titleEl) return;
-      const canvasRect = canvas.getBoundingClientRect();
       const rect = titleEl.getBoundingClientRect();
       const fs = parseFloat(getComputedStyle(titleEl).fontSize);
       const offc = document.createElement('canvas');
       offc.width = Math.ceil(W);
       offc.height = Math.ceil(H);
       const o = offc.getContext('2d');
-      o.font = `600 ${fs}px Fraunces, "Shippori Mincho", serif`;
+      const font = (w) => `${w} ${fs}px Fraunces, "Shippori Mincho", serif`;
+      o.font = font(600);
       o.textBaseline = 'alphabetic';
-      const x0 = rect.left - canvasRect.left;
-      const y1 = rect.top - canvasRect.top + fs * 0.92;
+      const x0 = rect.left;
+      const y1 = rect.top + fs * 0.92;
       const y2 = y1 + fs * 1.18;
       o.fillStyle = '#f3ecdc';
       o.fillText('攻めのAIを、', x0, y1);
@@ -218,14 +230,16 @@
 
       const budget = W < 700 ? 1600 : 3200;
       let step = 2;
-      const data = o.getImageData(0, 0, offc.width, offc.height).data;
+      let data = o.getImageData(0, 0, offc.width, offc.height).data;
       let pts = [];
       do {
         pts = [];
         for (let y = 0; y < offc.height; y += step) {
           for (let x = 0; x < offc.width; x += step) {
             const i = (y * offc.width + x) * 4;
-            if (data[i + 3] > 140) pts.push({ tx: x, ty: y, warm: data[i + 2] < 180 });
+            if (data[i + 3] > 140) {
+              pts.push({ tx: x, ty: y, warm: data[i + 2] < 180 });
+            }
           }
         }
         step++;
@@ -241,21 +255,28 @@
       }));
     }
 
+    this.pointerDown = (x, y) => { burst = { x, y, power: 14 }; };
+    this.pointerMove = () => {};
+
     this.frame = (time) => {
       ctx.fillStyle = '#0b0a08';
       ctx.fillRect(0, 0, W, H);
+      // faint ambient glow bottom-right
       const gl = ctx.createRadialGradient(W * 0.8, H * 0.85, 0, W * 0.8, H * 0.85, Math.min(W, H) * 0.7);
       gl.addColorStop(0, 'rgba(255,140,60,0.10)');
       gl.addColorStop(1, 'rgba(255,140,60,0)');
       ctx.fillStyle = gl;
       ctx.fillRect(0, 0, W, H);
 
+      const px = pointer.x * W, py = pointer.y * H;
       const repelR = 95;
       for (const p of particles) {
+        // spring to target
         p.vx += (p.tx - p.x) * 0.045;
         p.vy += (p.ty - p.y) * 0.045;
+        // pointer repulsion
         if (pointer.active) {
-          const dx = p.x - pointer.x, dy = p.y - pointer.y;
+          const dx = p.x - px, dy = p.y - py;
           const d = Math.hypot(dx, dy);
           if (d < repelR && d > 0.5) {
             const f = (1 - d / repelR) * 3.4;
@@ -263,6 +284,7 @@
             p.vy += dy / d * f;
           }
         }
+        // click shockwave
         if (burst) {
           const dx = p.x - burst.x, dy = p.y - burst.y;
           const d = Math.hypot(dx, dy) || 1;
@@ -284,8 +306,7 @@
       if (burst) burst = null;
     };
 
-    this.pointerMove = () => {};
-    this.pointerDown = (x, y) => { burst = { x, y, power: 14 }; };
+    this.rebuild = buildTargets;
     this.warmup = () => {
       buildTargets();
       for (const p of particles) { p.x = p.tx; p.y = p.ty; }
@@ -298,7 +319,7 @@
   }
 
   // =========================================================================
-  // C. SPOTLIGHT — darkroom beam aimed by the pointer, dust in the light
+  // C. SPOTLIGHT — a darkroom beam aimed by the pointer, dust in the light
   // =========================================================================
   function SpotlightEngine() {
     const dust = [];
@@ -310,11 +331,16 @@
         s: rand(0.7, 2.1), tw: rand(0, TAU)
       });
     }
+    const origin = { x: 0.76, y: -0.12 };
     const aim = { x: 0.4, y: 0.55 };
     let flash = 0;
     let ring = null;
 
+    this.pointerMove = () => {};
+    this.pointerDown = (x, y) => { flash = 0.55; ring = { x, y, r: 10, a: 0.5 }; };
+
     function beamFactor(x, y, ox, oy, ax, ay, halfWidth) {
+      // distance from point to the beam axis (a line from origin through aim)
       const bx = ax - ox, by = ay - oy;
       const len = Math.hypot(bx, by) || 1;
       const px = x - ox, py = y - oy;
@@ -329,12 +355,13 @@
       ctx.fillStyle = '#0a0907';
       ctx.fillRect(0, 0, W, H);
 
-      const ix = pointer.active ? pointer.x / W : 0.42 + Math.sin(time * 0.3) * 0.16;
-      const iy = pointer.active ? pointer.y / H : 0.52 + Math.sin(time * 0.43) * 0.1;
+      // aim: pointer if active, else a slow figure-eight sweep
+      const ix = pointer.active ? pointer.x : 0.42 + Math.sin(time * 0.3) * 0.16;
+      const iy = pointer.active ? pointer.y : 0.52 + Math.sin(time * 0.43) * 0.1;
       aim.x += (ix - aim.x) * 0.05;
       aim.y += (iy - aim.y) * 0.05;
 
-      const ox = 0.76 * W, oy = -0.12 * H;
+      const ox = origin.x * W, oy = origin.y * H;
       const ax = aim.x * W, ay = aim.y * H;
       const dirX = ax - ox, dirY = ay - oy;
       const len = Math.hypot(dirX, dirY) || 1;
@@ -344,6 +371,7 @@
       const wEnd = Math.min(W, H) * 0.42;
 
       ctx.globalCompositeOperation = 'lighter';
+      // wide soft cone + narrow bright core
       const cones = [
         { w: wEnd, a: 0.085, c: '255,170,90' },
         { w: wEnd * 0.45, a: 0.12, c: '255,205,140' }
@@ -362,6 +390,7 @@
         ctx.closePath();
         ctx.fill();
       }
+      // light pool at the aim point
       const pool = ctx.createRadialGradient(ax, ay, 0, ax, ay, Math.min(W, H) * 0.3);
       pool.addColorStop(0, 'rgba(255,190,110,0.16)');
       pool.addColorStop(1, 'rgba(255,190,110,0)');
@@ -370,6 +399,7 @@
       ctx.arc(ax, ay, Math.min(W, H) * 0.3, 0, TAU);
       ctx.fill();
 
+      // dust — bright inside the beam, faint outside
       for (const p of dust) {
         p.x += p.vx; p.y += p.vy;
         if (p.y < -4) { p.y = H + 4; p.x = rand(0, W); }
@@ -382,6 +412,7 @@
         ctx.fillRect(p.x, p.y, p.s, p.s);
       }
 
+      // click: shutter flash + ring
       if (ring) {
         ring.r += 14; ring.a *= 0.92;
         ctx.strokeStyle = `rgba(243,236,220,${ring.a})`;
@@ -399,102 +430,87 @@
       }
     };
 
-    this.pointerMove = () => {};
-    this.pointerDown = (x, y) => { flash = 0.55; ring = { x, y, r: 10, a: 0.5 }; };
     this.warmup = () => { this.frame(0); };
   }
 
   // =========================================================================
-  // Variant selection + loop
+  // Manager
   // =========================================================================
   const ENGINES = { fluid: FluidEngine, particles: ParticleEngine, spotlight: SpotlightEngine };
+  const HINTS = {
+    fluid: 'ドラッグで光を流す ・ タップで滲む',
+    particles: 'なぞると文字が散る ・ タップで弾ける',
+    spotlight: '光がポインタを追う ・ タップでフラッシュ'
+  };
 
-  function pickVariant() {
-    const forced = new URLSearchParams(location.search).get('hero');
-    if (ENGINES[forced]) return forced;
-    let names = Object.keys(ENGINES);
-    try {
-      const last = localStorage.getItem('hero-variant-last');
-      if (last && names.includes(last) && names.length > 1) {
-        names = names.filter(n => n !== last);
-      }
-    } catch (e) {}
-    return names[Math.floor(Math.random() * names.length)];
-  }
-
-  const variant = pickVariant();
-  try { localStorage.setItem('hero-variant-last', variant); } catch (e) {}
-
-  const hero = canvas.closest('.hero') || canvas;
-  hero.classList.add('hero-mode-' + variant);
-
-  function resize() {
-    const rect = canvas.getBoundingClientRect();
-    W = Math.max(1, rect.width);
-    H = Math.max(1, rect.height);
-    const scale = Math.min(window.devicePixelRatio || 1, variant === 'particles' ? 2 : 1.5);
-    canvas.width = Math.round(W * scale);
-    canvas.height = Math.round(H * scale);
-    ctx.setTransform(scale, 0, 0, scale, 0, 0);
-    engine = new ENGINES[variant]();
+  function switchTo(name) {
+    engineName = name;
+    document.body.dataset.variant = name;
+    document.getElementById('lab-hint').textContent = HINTS[name];
+    document.querySelectorAll('.lab-chip').forEach(btn => {
+      btn.setAttribute('aria-pressed', String(btn.dataset.variant === name));
+    });
+    engine = new ENGINES[name]();
     if (reduced) {
       engine.warmup();
       engine.frame(0);
     }
+    try { localStorage.setItem('hero-lab-variant', name); } catch (e) {}
   }
 
-  function frame(now) {
-    engine.frame(now / 1000);
-    if (running) rafId = requestAnimationFrame(frame);
+  function loop(now) {
+    t = now / 1000;
+    engine.frame(t);
+    if (running) rafId = requestAnimationFrame(loop);
   }
   function start() {
     if (running || reduced) return;
     running = true;
-    rafId = requestAnimationFrame(frame);
+    rafId = requestAnimationFrame(loop);
   }
-  function stop() {
-    running = false;
-    cancelAnimationFrame(rafId);
-  }
+  function stop() { running = false; cancelAnimationFrame(rafId); }
 
   // --- Events ---------------------------------------------------------------
-  let lastX = null, lastY = null;
-
-  hero.addEventListener('pointermove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    pointer.x = x; pointer.y = y; pointer.active = true;
-    if (lastX !== null && engine) engine.pointerMove(x, y, x - lastX, y - lastY);
-    lastX = x; lastY = y;
+  document.querySelectorAll('.lab-chip').forEach(btn => {
+    btn.addEventListener('click', () => switchTo(btn.dataset.variant));
   });
-  hero.addEventListener('pointerleave', () => { lastX = lastY = null; pointer.active = false; });
-  hero.addEventListener('pointercancel', () => { lastX = lastY = null; pointer.active = false; });
 
-  hero.addEventListener('pointerdown', (e) => {
+  window.addEventListener('pointermove', (e) => {
+    const nx = e.clientX / W, ny = e.clientY / H;
+    const dx = e.clientX - pointer.px * W, dy = e.clientY - pointer.py * H;
+    pointer.px = pointer.x; pointer.py = pointer.y;
+    pointer.x = nx; pointer.y = ny;
+    pointer.active = true;
+    if (engine && engine.pointerMove) engine.pointerMove(e.clientX, e.clientY, dx, dy);
+  });
+  window.addEventListener('pointerdown', (e) => {
     if (e.target.closest('a, button')) return;
-    const rect = canvas.getBoundingClientRect();
-    if (engine) engine.pointerDown(e.clientX - rect.left, e.clientY - rect.top);
+    pointer.x = e.clientX / W; pointer.y = e.clientY / H;
+    pointer.active = true;
+    if (engine && engine.pointerDown) engine.pointerDown(e.clientX, e.clientY);
   });
+  window.addEventListener('pointerleave', () => { pointer.active = false; });
 
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(resize, 200);
+    resizeTimer = setTimeout(() => {
+      resizeCanvas();
+      switchTo(engineName); // rebuild for new size
+    }, 200);
   });
 
-  if ('IntersectionObserver' in window && !reduced) {
-    new IntersectionObserver((entries) => {
-      entries.forEach(entry => entry.isIntersecting ? start() : stop());
-    }, { threshold: 0.02 }).observe(canvas);
-  }
-
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stop();
-    else if (!reduced) start();
+    if (document.hidden) stop(); else start();
   });
 
   // --- Init -------------------------------------------------------------------
-  resize();
-  if (!reduced) start();
+  resizeCanvas();
+  let initial = new URLSearchParams(location.search).get('variant');
+  if (!initial) {
+    try { initial = localStorage.getItem('hero-lab-variant'); } catch (e) {}
+  }
+  if (!initial || !ENGINES[initial]) initial = 'fluid';
+  switchTo(initial);
+  start();
 })();

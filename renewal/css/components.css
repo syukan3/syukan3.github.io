@@ -653,9 +653,9 @@
   z-index: -1;
   pointer-events: none;
   background:
-    linear-gradient(100deg, rgba(10, 9, 7, 0.78) 0%, rgba(10, 9, 7, 0.35) 46%, transparent 72%),
-    linear-gradient(180deg, rgba(8, 7, 6, 0.55) 0%, transparent 24%, transparent 70%, rgba(8, 7, 6, 0.82) 100%),
-    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 58%, rgba(5, 4, 3, 0.5) 100%);
+    linear-gradient(100deg, rgba(10, 9, 7, 0.66) 0%, rgba(10, 9, 7, 0.26) 46%, transparent 72%),
+    linear-gradient(180deg, rgba(8, 7, 6, 0.45) 0%, transparent 24%, transparent 72%, rgba(8, 7, 6, 0.7) 100%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 62%, rgba(5, 4, 3, 0.4) 100%);
 }
 
 /* Viewport-edge viewfinder corners */
@@ -723,6 +723,10 @@
 }
 .hero-line { display: block; overflow: hidden; }
 .hero-line > span { display: inline-block; }
+
+/* Particle hero mode: the canvas renders the title as embers — the HTML
+   title keeps its layout box and stays in the accessibility tree */
+.hero-mode-particles .hero-title { opacity: 0; }
 
 .hero-lead {
   font-size: clamp(var(--text-base), 0.95rem + 0.5vw, var(--text-lg));
@@ -996,6 +1000,7 @@
   transition: transform var(--transition-base), border-color var(--transition-base);
 }
 .photo-frame:hover { transform: translateY(-4px); border-color: rgba(224, 164, 90, 0.35); }
+.photo-frame-no-caption { padding-bottom: var(--space-2); }
 .photo-media {
   position: relative;
   aspect-ratio: 4 / 3;
