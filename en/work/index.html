@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="栄 俊介のケーススタディ - 課題解決から実装・成果まで">
-  <meta name="keywords" content="栄俊介, ケーススタディ, プロジェクト, 実績">
+  <meta name="description" content="Case studies by Sakae Shunsuke — from problem through implementation to results">
+  <meta name="keywords" content="Sakae Shunsuke, case studies, projects, AI governance">
 
-  <meta property="og:title" content="Work - 栄 俊介 | Sakae Shunsuke">
-  <meta property="og:description" content="課題解決から実装・成果までのケーススタディ">
+  <meta property="og:title" content="Work — Sakae Shunsuke">
+  <meta property="og:description" content="Case studies from problem through implementation to results">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://syukan3.github.io/work/">
+  <meta property="og:url" content="https://syukan3.github.io/en/work/">
   <meta property="og:image" content="https://syukan3.github.io/images/og-image.png">
+  <meta property="og:locale" content="en_US">
 
   <meta name="theme-color" content="#0b0a08">
-  <link rel="canonical" href="https://syukan3.github.io/work/">
+  <link rel="canonical" href="https://syukan3.github.io/en/work/">
   <link rel="alternate" hreflang="ja" href="https://syukan3.github.io/work/">
   <link rel="alternate" hreflang="en" href="https://syukan3.github.io/en/work/">
   <link rel="alternate" hreflang="x-default" href="https://syukan3.github.io/work/">
-  <title>Work - 栄 俊介 | Sakae Shunsuke</title>
+  <title>Work — Sakae Shunsuke</title>
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -38,7 +39,7 @@
   </script>
 </head>
 <body data-page="work">
-  <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div id="site-header"></div>
 
   <div class="noir-frame">
@@ -48,7 +49,7 @@
           <div class="section-header" data-reveal>
             <span class="section-eyebrow">Case Studies</span>
             <h1 class="section-title">Work</h1>
-            <p class="section-subtitle">課題解決から実装・成果までのケーススタディ。背景・制約・打ち手・成果・学びの順でまとめています。</p>
+            <p class="section-subtitle">Case studies from problem through implementation to results — background, constraints, approach, results, and learnings.</p>
           </div>
           <div id="case-studies"></div>
         </div>
@@ -66,7 +67,7 @@
 
       const works = await DataLoader.getWorks();
       if (!works.length) {
-        container.innerHTML = '<p class="text-muted">ケーススタディがありません</p>';
+        container.innerHTML = '<p class="text-muted">No case studies yet.</p>';
         return;
       }
       container.innerHTML = works.map(w => Components.createCaseStudy(w)).join('');

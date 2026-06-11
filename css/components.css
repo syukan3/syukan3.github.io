@@ -116,6 +116,36 @@
 .nav-link:hover::after,
 .nav-link.active::after { opacity: 1; transform: scaleX(1); }
 
+/* Right-hand header tools: language switch + mobile menu toggle.
+   nav takes margin-left:auto so the auto margin (not space-between)
+   pushes nav + tools to the right on desktop; on mobile the nav is
+   position:absolute, leaving logo ⇄ tools spread by space-between. */
+.header-container nav { margin-left: auto; }
+
+.header-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: var(--space-6);
+}
+
+.lang-switch {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  padding: 5px 12px;
+  white-space: nowrap;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+.lang-switch:hover {
+  color: var(--color-ember-bright);
+  border-color: rgba(224, 164, 90, 0.5);
+}
+
 /* Mobile menu toggle */
 .menu-toggle {
   display: none;

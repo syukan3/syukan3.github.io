@@ -1,0 +1,122 @@
+{
+  "profile": {
+    "name": "Sakae Shunsuke",
+    "nameEn": "Sakae Shunsuke",
+    "title": "AI Governance Architect / Head of Systems",
+    "tagline": "Engineering that moves business forward",
+    "description": "Works across Ruby on Rails, Python, React/Next.js, and AWS, owning the full development process from requirements to operations. Focused on generative-AI-powered system development and efficient engineering workflows built around Claude Code.",
+    "email": "",
+    "social": {
+      "github": "https://github.com/syukan3",
+      "qiita": "https://qiita.com/syukan3"
+    }
+  },
+  "bio": "An AI governance architect who designs and drives company-wide generative-AI adoption — controls included — under financial-grade governance (FISC security guidelines, J-SOX IT general controls, and Japan's APPI). As Head of Systems at a fintech company, I lead a team of four and own technology selection, hiring and mentoring, and internal-audit response. The foundation is end-to-end engineering, from requirements through operations, in Ruby on Rails, Python, React/Next.js, and AWS. I also write actively about technology: 1.43M+ cumulative views across 270+ articles on Qiita (as of 2026).",
+  "values": [
+    {
+      "title": "End-to-End Development",
+      "description": "Leading the full system lifecycle — requirements, design, implementation, and operations"
+    },
+    {
+      "title": "Sharing Knowledge",
+      "description": "1.43M+ cumulative views and 270+ articles on Qiita. Committed to sharing what I learn"
+    },
+    {
+      "title": "AI in Practice",
+      "description": "Focused on generative-AI-powered system development and efficient engineering workflows"
+    },
+    {
+      "title": "Control × Adoption",
+      "description": "Turning generative AI into business leverage, safely, under financial-grade governance (J-SOX, FISC, APPI)"
+    }
+  ],
+  "expertise": [
+    {
+      "area": "Management / Engineering Organization",
+      "description": "Lead a four-person systems department: delegation design for technical decisions, hiring, mentoring and evaluation, roadmap planning, and alignment with executives"
+    },
+    {
+      "area": "Backend Development",
+      "description": "API design and implementation in Ruby on Rails (5+ years) and Python. Systems built to comply with financial regulation"
+    },
+    {
+      "area": "Frontend Development",
+      "description": "UI implementation with React/Next.js and JavaScript. Responsive and accessibility-minded"
+    },
+    {
+      "area": "Cloud Infrastructure",
+      "description": "AWS (5+ years). Robust infrastructure built on EC2, RDS, Lambda, IoT Core, and many other services"
+    },
+    {
+      "area": "AI/ML & Generative AI",
+      "description": "AI system development with the OpenAI API, Claude, and Amazon Bedrock/SageMaker. Led company-wide generative-AI adoption, automating and streamlining operations"
+    },
+    {
+      "area": "Security, Governance & Compliance",
+      "description": "J-SOX IT general controls (ITGC), FISC security-guideline assessments, internal-audit response and remediation, alignment with Japan's APPI and internal policy, and confidential-data handling design. Generative-AI adoption with controls in place"
+    }
+  ],
+  "timeline": [
+    {
+      "year": "May 2024 – present",
+      "title": "HiJoJo Partners, Inc. — Head of Systems",
+      "description": "Lead a four-person systems department, owning hiring, mentoring, technology selection, and the roadmap. Drive company-wide generative-AI adoption and governance: FISC security guidelines, J-SOX IT general controls, and internal-audit response"
+    },
+    {
+      "year": "Nov 2022 – Apr 2024",
+      "title": "HiJoJo Partners, Inc. — Solutions Architect",
+      "description": "Led development, maintenance, and operations of HiJoJo.com, the online fund-distribution system that serves as the company's revenue channel. Contributed channel-expanding features such as a partner site for distribution partners"
+    },
+    {
+      "year": "Aug 2019 – Nov 2022",
+      "title": "PDC Inc. — Full-Stack Engineer",
+      "description": "Led the technical launch of an IoT×AI audience-measurement business from zero in-house ML knowledge (self-taught model development; led validation for a seven-person team). Also built content-delivery and maintenance-management systems"
+    },
+    {
+      "year": "Apr 2015 – Jul 2019",
+      "title": "Isuzu Motors Ltd. — Production Division",
+      "description": "Production planning for new-vehicle programs. Automated 37% of data-entry work with RPA, saving 775 hours per year, and shortened document circulation from 17.5 days to 7.5 business days"
+    },
+    {
+      "year": "Apr 2013 – Mar 2015",
+      "title": "Okayama University — Graduate School of Natural Science and Technology",
+      "description": "Presented at an IEEE international conference. Researched energy-management systems for residential solar generation and fuel-cell vehicles"
+    }
+  ],
+  "certifications": [
+    {"name": "AWS Certified Solutions Architect – Associate", "date": "Apr 2021"},
+    {"name": "AWS Certified Developer – Associate", "date": "May 2021"},
+    {"name": "AWS Certified SysOps Administrator – Associate", "date": "Jun 2021"},
+    {"name": "AWS Certified Machine Learning – Specialty", "date": "Feb 2022"},
+    {"name": "AWS Certified Cloud Practitioner", "date": "Mar 2021"},
+    {"name": "Ruby Association Certified Ruby Programmer Gold", "date": "Dec 2019"},
+    {"name": "Chief Electrical Engineer, Class 3 (Japan)", "date": "Oct 2019"},
+    {"name": "Type 1 Securities Sales Representative (JSDA)", "date": "Dec 2024"}
+  ],
+  "skills": {
+    "languages": [
+      {"name": "Ruby", "years": "5+ years"},
+      {"name": "JavaScript", "years": "5+ years"},
+      {"name": "Python", "years": "5+ years"},
+      {"name": "TypeScript", "years": "1–3 years"},
+      {"name": "Dart", "years": "<1 year"},
+      {"name": "Go", "years": "<1 year"}
+    ],
+    "frameworks": [
+      {"name": "Ruby on Rails", "years": "5+ years"},
+      {"name": "React", "years": "3–5 years"},
+      {"name": "Next.js", "years": "<1 year"},
+      {"name": "Flutter", "years": "<1 year"},
+      {"name": "OpenCV", "years": "1–3 years"}
+    ],
+    "infrastructure": [
+      {"name": "MySQL", "years": "5+ years"},
+      {"name": "AWS", "years": "5+ years"}
+    ],
+    "awsServices": {
+      "core": ["EC2", "RDS", "CloudFront", "S3", "IAM", "Route 53", "ElastiCache", "CloudFormation", "ECR", "ECS", "WAF"],
+      "integration": ["IoT Core", "IoT Greengrass", "IoT Events", "EventBridge", "Step Functions", "Cognito", "SES", "Amplify", "CodePipeline", "Cloud9"],
+      "aiml": ["Bedrock", "SageMaker", "Transcribe", "Connect", "Kinesis Firehose", "Athena", "QuickSight", "Redshift"]
+    }
+  }
+}
