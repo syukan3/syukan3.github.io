@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>消灯 | GAME — 坂江 俊輔</title>
+<meta name="description" content="サーバ室の警告ランプを全部消して帰る、十字反転ライツアウトパズル。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a; --green: #2ecc71;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 440px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(30px, 7vw, 46px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #lv { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 18px; letter-spacing: .15em; color: var(--cream); }
+  #best { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #btn-quit { position: absolute; top: max(12px, env(safe-area-inset-top)); right: 14px; pointer-events: auto;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .2em; color: var(--silver);
+    background: transparent; border: 1px solid var(--slate); border-radius: 999px; padding: 7px 14px; cursor: pointer; transition: color .2s, border-color .2s; }
+  #btn-quit:hover { color: var(--risk); border-color: var(--risk); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">BEST LV 0</div>
+  <div id="lv">LV 1</div>
+  <button id="btn-quit">諦めて帰る</button>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Lights Out — Server Room</div>
+  <h1 class="title">消灯</h1>
+  <div class="title-en">S H O U T O U</div>
+  <p class="tagline">押すと十字に反転。全部消したら帰れる。</p>
+  <p class="hint">
+    終業後のサーバ室。警告ランプだけが、まだ起きている。<br>
+    ランプを押すと、<em>その十字（上下左右）が反転</em>する。<br>
+    全部消えたフロアから、順に施錠して次へ。<br>
+    失敗はない。急ぐ理由もない。<br>
+    ただし<em>PAR以内</em>で消せたら、<em>★</em>がひとつ灯る。皮肉なことに。
+  </p>
+  <button class="btn" id="btn-start">消灯作業をはじめる</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">Closing Report</div>
+  <div class="cause" id="cause">本日の消灯、ここまで</div>
+  <div class="dist-line">消灯 <b id="r-count">0</b> フロア</div>
+  <div class="dist-line" id="r-star">★ 0（PAR以内クリア）</div>
+  <div class="dist-line" id="r-best">BEST LV 0</div>
+  <div class="rank-label">当直格付け</div>
+  <div class="rank" id="rank">見回りのみ</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">もう一晩</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP / SPACE でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   消灯 / SHOUTOU — サーバ室ライツアウト
+   押すと十字に反転。警告ランプを全部消したら、帰れる。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const N = 5;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8", slate: "#3a3a3a", green: "#2ecc71",
+};
+
+const RANKS = [
+  [1,  "見回りのみ", "ランプは点いたまま。それでも夜は明ける。"],
+  [3,  "見習い当直", "少しずつ、部屋が静かになっていく。"],
+  [6,  "当直主任", "消灯の手際に、もう迷いがない。"],
+  [10, "消灯名人", "サーバたちは安心して眠っている。"],
+  [Infinity, "夜の管理者", "この部屋の闇は、あなたの作品だ。"],
+];
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+resize();
+window.addEventListener("resize", resize);
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.16;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0, at = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime + at;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  click()  { this.blip(170, 0.05, "square", 0.4, -60); this.blip(1250, 0.03, "sine", 0.18); },
+  clear()  { this.blip(523, 0.5, "sine", 0.4); this.blip(659, 0.6, "sine", 0.3, 0, 0.14); this.blip(784, 0.9, "sine", 0.22, 0, 0.28); },
+  star()   { this.blip(1047, 0.5, "sine", 0.25, 0, 0.42); },
+  over()   { this.blip(196, 0.9, "sine", 0.4, -30); this.blip(147, 1.1, "sine", 0.3, -20, 0.2); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",      // title | play | clear | over
+  level: 1,
+  moves: 0, par: 0,
+  cleared: 0, stars: 0,
+  grid: [],           // 5x5 boolean（true = 点灯）
+  cells: [],          // 5x5 {v, pulse} 見た目のトゥイーン
+  scramble: [],       // この面を作った押下列（同じ場所をもう一度押せば解ける）
+  lastStar: false,
+  clearT: 0, overT: 0, gridAlpha: 1,
+  particles: [],
+  best: Number(localStorage.getItem("shoutou-best") || 0),
+};
+
+function makeGrid(val) {
+  return Array.from({ length: N }, () => Array.from({ length: N }, () => val));
+}
+
+function toggleCross(r, c) {
+  const flip = (rr, cc) => { if (rr >= 0 && rr < N && cc >= 0 && cc < N) S.grid[rr][cc] = !S.grid[rr][cc]; };
+  flip(r, c); flip(r - 1, c); flip(r + 1, c); flip(r, c - 1); flip(r, c + 1);
+}
+
+const allOff = () => S.grid.every(row => row.every(v => !v));
+
+function genLevel(n) {
+  const k = Math.min(n + 2, 14);
+  let tries = 0;
+  do {
+    S.grid = makeGrid(false);
+    S.scramble = [];
+    const idx = Array.from({ length: N * N }, (_, i) => i);
+    for (let i = idx.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [idx[i], idx[j]] = [idx[j], idx[i]];
+    }
+    for (const i of idx.slice(0, k)) {
+      const r = Math.floor(i / N), c = i % N;
+      toggleCross(r, c);
+      S.scramble.push([r, c]);
+    }
+    tries++;
+  } while (allOff() && tries < 30);   // 静穏パターン（押しただけで全消灯）を引いたら作り直し
+  S.par = k;
+  S.moves = 0;
+  S.gridAlpha = 0;
+  S.cells = Array.from({ length: N }, () => Array.from({ length: N }, () => ({ v: 0, pulse: 0 })));
+  document.querySelector(".leaks").style.opacity = "1";
+  if (S.level > S.best) { S.best = S.level; localStorage.setItem("shoutou-best", String(S.best)); }
+  updateHUD();
+}
+
+function burst(x, y, color, n, speed = 60) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 30, life: rand(0.6, 1.4), age: 0, color, r: rand(1, 2.5) });
+  }
+}
+
+/* ---------- 盤面座標 ---------- */
+function gridGeom() {
+  const size = Math.min(W * 0.86, H * 0.58, 430);
+  const gap = size * 0.045;
+  const cell = (size - gap * (N - 1)) / N;
+  return { x0: (W - size) / 2, y0: H * 0.52 - size / 2, size, gap, cell };
+}
+
+/* ---------- 操作 ---------- */
+function press(r, c) {
+  if (S.mode !== "play") return;
+  if (r < 0 || r >= N || c < 0 || c >= N) return;
+  toggleCross(r, c);
+  S.moves++;
+  S.cells[r][c].pulse = 1;
+  AudioFX.click();
+  if (allOff()) {
+    S.mode = "clear";
+    S.clearT = 0;
+    S.cleared++;
+    S.lastStar = S.moves <= S.par;
+    if (S.lastStar) S.stars++;
+    AudioFX.clear();
+    if (S.lastStar) AudioFX.star();
+    const g = gridGeom();
+    burst(W / 2, g.y0 + g.size / 2, COLOR.ember, 18, 70);
+  }
+}
+
+canvas.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  AudioFX.init();
+  if (S.mode !== "play") return;
+  const g = gridGeom();
+  const c = Math.floor((e.clientX - g.x0) / (g.cell + g.gap));
+  const r = Math.floor((e.clientY - g.y0) / (g.cell + g.gap));
+  if (r < 0 || r >= N || c < 0 || c >= N) return;
+  // セル間の隙間タップは無視
+  const lx = (e.clientX - g.x0) - c * (g.cell + g.gap);
+  const ly = (e.clientY - g.y0) - r * (g.cell + g.gap);
+  if (lx > g.cell || ly > g.cell) return;
+  press(r, c);
+});
+
+function updateHUD() {
+  document.getElementById("lv").textContent = "LV " + S.level;
+  document.getElementById("best").textContent = "BEST LV " + S.best;
+}
+
+function nextLevel() {
+  S.level++;
+  genLevel(S.level);
+  S.mode = "play";
+}
+
+function giveUp() {
+  gameOver("本日の消灯、ここまで");
+}
+document.getElementById("btn-quit").addEventListener("click", giveUp);
+
+function gameOver(cause) {
+  if (S.mode === "over" || S.mode === "title") return;
+  S.mode = "over"; S.overT = 0;
+  AudioFX.over();
+  document.querySelector(".leaks").style.opacity = "1";
+  document.getElementById("cause").textContent = cause;
+  document.getElementById("r-count").textContent = S.cleared;
+  document.getElementById("r-star").textContent = `★ ${S.stars}（PAR以内クリア）`;
+  document.getElementById("r-best").textContent = "BEST LV " + S.best;
+  const rk = RANKS.find(r => S.cleared < r[0]);
+  document.getElementById("rank").textContent = rk[1];
+  document.getElementById("rank-sub").textContent = rk[2];
+  document.getElementById("hud").classList.remove("on");
+  document.getElementById("screen-result").classList.remove("hidden");
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  S.level = 1; S.cleared = 0; S.stars = 0;
+  S.particles = []; S.clearT = 0; S.overT = 0; S.lastStar = false;
+  genLevel(1);
+  S.mode = "play";
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  updateHUD();
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.6) startGame();
+});
+window.addEventListener("keydown", e => {
+  if (e.code === "Space" && S.mode === "over") { e.preventDefault(); if (!e.repeat && S.overT > 0.6) startGame(); }
+}, { passive: false });
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+
+function update(dt) {
+  if (S.gridAlpha < 1) S.gridAlpha = Math.min(1, S.gridAlpha + dt * 2.2);
+  if (S.cells.length) {
+    for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+      const cell = S.cells[r][c];
+      const target = S.grid[r][c] ? 1 : 0;
+      cell.v += (target - cell.v) * Math.min(1, dt * 9);   // グロウのトゥイーン
+      if (cell.pulse > 0) cell.pulse = Math.max(0, cell.pulse - dt * 4);
+    }
+  }
+  if (S.mode === "clear") {
+    S.clearT += dt;
+    const k = clamp(S.clearT / 0.6, 0, 1);
+    document.querySelector(".leaks").style.opacity = String(1 - k * 0.85);   // 部屋が暗くなる
+    if (S.clearT >= 1.7) nextLevel();
+  }
+  if (S.mode === "over") S.overT += dt;
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy -= 12 * dt;   // 火の粉はゆっくり上へ
+  }
+}
+
+function rr(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function draw(time) {
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+
+  const mono = getComputedStyle(document.body).getPropertyValue("--font-mono");
+  const body = getComputedStyle(document.body).getPropertyValue("--font-body");
+
+  if (S.mode !== "title" && S.cells.length) {
+    const g = gridGeom();
+    ctx.globalAlpha = S.gridAlpha;
+
+    // ラックの枠とラベル
+    const pad = g.gap * 1.6;
+    ctx.strokeStyle = "rgba(243,236,220,.12)";
+    ctx.lineWidth = 1;
+    rr(g.x0 - pad, g.y0 - pad, g.size + pad * 2, g.size + pad * 2, 8);
+    ctx.stroke();
+    ctx.font = "10px " + mono;
+    ctx.textAlign = "left";
+    ctx.fillStyle = "rgba(184,184,184,.5)";
+    ctx.fillText("RACK A-" + String(S.level).padStart(2, "0"), g.x0 - pad, g.y0 - pad - 10);
+    ctx.textAlign = "right";
+    ctx.fillText("MOVES " + S.moves + " ／ PAR " + S.par, g.x0 + g.size + pad, g.y0 - pad - 10);
+
+    // 5×5 警告ランプ
+    for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+      const cell = S.cells[r][c];
+      const v = cell.v;
+      const x = g.x0 + c * (g.cell + g.gap);
+      const y = g.y0 + r * (g.cell + g.gap);
+      const cx = x + g.cell / 2, cy = y + g.cell / 2;
+      const sc = 1 + cell.pulse * 0.07;
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(sc, sc);
+      ctx.translate(-cx, -cy);
+
+      // ブルームのハロー
+      if (v > 0.02) {
+        const halo = ctx.createRadialGradient(cx, cy, 0, cx, cy, g.cell * 1.05);
+        halo.addColorStop(0, `rgba(224,164,90,${0.4 * v})`);
+        halo.addColorStop(0.5, `rgba(224,164,90,${0.12 * v})`);
+        halo.addColorStop(1, "rgba(224,164,90,0)");
+        ctx.fillStyle = halo;
+        ctx.beginPath(); ctx.arc(cx, cy, g.cell * 1.05, 0, TAU); ctx.fill();
+      }
+
+      // ユニット本体
+      ctx.fillStyle = `rgb(${Math.round(22 + 70 * v)},${Math.round(17 + 46 * v)},${Math.round(11 + 18 * v)})`;
+      rr(x, y, g.cell, g.cell, g.cell * 0.14);
+      ctx.fill();
+      ctx.strokeStyle = v > 0.5
+        ? `rgba(246,207,134,${0.25 + 0.55 * v})`
+        : `rgba(243,236,220,${0.14 + 0.2 * v})`;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      // 通気スリット
+      ctx.strokeStyle = `rgba(0,0,0,${0.3 - 0.15 * v})`;
+      ctx.lineWidth = 1;
+      for (let i = 1; i <= 3; i++) {
+        const sy = y + g.cell * (0.58 + i * 0.09);
+        ctx.beginPath();
+        ctx.moveTo(x + g.cell * 0.2, sy);
+        ctx.lineTo(x + g.cell * 0.8, sy);
+        ctx.stroke();
+      }
+
+      // LEDコア
+      const ly = y + g.cell * 0.36;
+      ctx.fillStyle = `rgba(246,207,134,${0.12 + 0.85 * v})`;
+      ctx.beginPath(); ctx.arc(cx, ly, g.cell * 0.13, 0, TAU); ctx.fill();
+      if (v > 0.4) {
+        ctx.fillStyle = `rgba(255,245,225,${(v - 0.4) * 1.2})`;
+        ctx.beginPath(); ctx.arc(cx, ly, g.cell * 0.05, 0, TAU); ctx.fill();
+      }
+      ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+
+    // フッターの小言
+    if (S.mode === "play") {
+      ctx.font = "12px " + body;
+      ctx.textAlign = "center";
+      ctx.fillStyle = "rgba(216,205,182,.5)";
+      ctx.fillText("消灯済 " + S.cleared + " フロア ／ ★ " + S.stars, W / 2, g.y0 + g.size + pad + 26);
+    }
+  }
+
+  // 消灯ビート
+  if (S.mode === "clear") {
+    const k = clamp(S.clearT / 0.6, 0, 1);
+    const fade = S.clearT > 1.3 ? clamp(1 - (S.clearT - 1.3) / 0.4, 0, 1) : 1;
+    ctx.fillStyle = `rgba(0,0,0,${0.6 * k * fade})`;
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalAlpha = k * fade;
+    ctx.textAlign = "center";
+    ctx.fillStyle = COLOR.creamDim;
+    ctx.font = `700 ${Math.round(Math.min(34, W * 0.055))}px 'Shippori Mincho', serif`;
+    ctx.fillText("お疲れさまでした", W / 2, H * 0.46);
+    ctx.font = "12px " + mono;
+    ctx.fillStyle = S.lastStar ? COLOR.emberBright : "rgba(184,184,184,.8)";
+    ctx.fillText(S.lastStar ? "★ PAR以内 — 美しい手際" : "フロア消灯 — 次へ", W / 2, H * 0.46 + 30);
+    ctx.globalAlpha = 1;
+  }
+
+  // 火の粉
+  for (const p of S.particles) {
+    ctx.globalAlpha = (1 - p.age / p.life) * 0.8;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  update(dt);
+  draw(now);
+}
+requestAnimationFrame(loop);
+window.__G = { S, startGame, press, giveUp, nextLevel, genLevel };
+</script>
+</body>
+</html>

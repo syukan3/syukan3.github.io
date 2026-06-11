@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>遊び場 — GAMES | syukan3</title>
+<meta name="description" content="実験的なミニゲーム置き場。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a;
+    --black: #100b05;
+    --smoke: #2a2a2a;
+    --slate: #3a3a3a;
+    --silver: #b8b8b8;
+    --cream: #f3ecdc;
+    --cream-dim: #d8cdb6;
+    --ember: #e0a45a;
+    --ember-bright: #f6cf86;
+    --cyan: #69bfff;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    min-height: 100%;
+    background: var(--noir);
+    color: var(--cream);
+    font-family: var(--font-body);
+  }
+  body {
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100svh; padding: 80px 24px 60px; position: relative;
+    background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.06), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%),
+      var(--noir);
+  }
+  .grain {
+    position: fixed; inset: 0; pointer-events: none; opacity: .06; z-index: 5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  }
+  .back-link {
+    position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 6;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em;
+    color: var(--silver); text-decoration: none;
+  }
+  .back-link:hover { color: var(--ember); }
+  .bracket {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em;
+    color: var(--ember); text-transform: uppercase;
+  }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(40px, 9vw, 64px); letter-spacing: .14em;
+    color: var(--cream); margin: 14px 0 2px;
+  }
+  .sub {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .5em;
+    color: var(--silver); margin-bottom: 14px; text-indent: .5em;
+  }
+  .lead {
+    font-size: 13px; color: var(--cream-dim); letter-spacing: .08em;
+    margin-bottom: 44px; text-align: center; line-height: 1.8;
+  }
+  .games {
+    display: grid; gap: 18px; width: min(640px, 100%);
+  }
+  .game-card {
+    display: block; text-decoration: none; color: inherit;
+    border: 1px solid var(--smoke); background: rgba(20, 18, 14, .6);
+    padding: 26px 28px 24px; position: relative;
+    transition: border-color .25s, background .25s, transform .2s;
+  }
+  .game-card:hover {
+    border-color: var(--ember);
+    background: rgba(28, 24, 18, .7);
+    transform: translateY(-2px);
+  }
+  .game-card .num {
+    position: absolute; top: 18px; right: 22px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .2em;
+    color: var(--slate);
+  }
+  .game-card:hover .num { color: var(--ember); }
+  .game-card .kicker {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .3em;
+    color: var(--ember); text-transform: uppercase; margin-bottom: 10px;
+  }
+  .game-card h2 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(26px, 5vw, 34px); letter-spacing: .12em;
+    color: var(--cream); line-height: 1.2;
+  }
+  .game-card .romaji {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .45em;
+    color: var(--silver); margin: 4px 0 14px;
+  }
+  .game-card p {
+    font-size: 13px; color: var(--cream-dim); line-height: 1.8; letter-spacing: .04em;
+  }
+  .game-card .play {
+    display: inline-block; margin-top: 16px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em;
+    color: var(--ember-bright);
+  }
+  .game-card .play::after { content: " ▸"; }
+  footer {
+    margin-top: 48px;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em;
+    color: var(--slate); text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<a class="back-link" href="/">← SYUKAN3.GITHUB.IO</a>
+
+<div class="bracket">Playground — Experiments</div>
+<h1>遊び場</h1>
+<div class="sub">G A M E S</div>
+<p class="lead">昔からシンプルなゲームが好きだったので、好きなゲームを集めました。<br>音が出ます。</p>
+
+<nav class="games">
+  <a class="game-card" href="/game/rectify/">
+    <span class="num">01</span>
+    <div class="kicker">Sorting Shooter — 90 sec</div>
+    <h2>整流</h2>
+    <div class="romaji">RECTIFY</div>
+    <p>混沌を構造に変えるシューティング。降り注ぐノイズ・リスク・アイデア・期待を撃ち分けて、自分なりの秩序をつくる。撃たない判断が、いちばん難しい。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/souchiku/">
+    <span class="num">02</span>
+    <div class="kicker">Absurd Build Runner — Endless</div>
+    <h2>走築</h2>
+    <div class="romaji">SOUCHIKU</div>
+    <p>キャスター付きサーバーラックで走る不条理ラン。走った分だけシステム構築が進み、要件定義からリリースへ。仕様変更を避け、承認と予算を集めろ。死因は大体、会議。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/sekisou/">
+    <span class="num">03</span>
+    <div class="kicker">Tower Builder — One Tap</div>
+    <h2>積層</h2>
+    <div class="romaji">SEKISOU</div>
+    <p>流れるブロックをタップで真上に積む。ズレた分は「スコープ削減」で切り落とされ、ぴったり積めば「完全一致」で塔が回復する。何スプリントで天に届くか。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/hensai/">
+    <span class="num">04</span>
+    <div class="kicker">Debt Breakout — Arcade</div>
+    <h2>返済</h2>
+    <div class="romaji">HENSAI</div>
+    <p>パドルはスプリント、球はリファクタリング。TODO・旧仕様・密結合・レガシー・属人化を砕いて技術的負債を返済する。「自動化」と「テスト」を拾え。「仕様変更」は拾うな。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/haisen/">
+    <span class="num">05</span>
+    <div class="kicker">Network Snake — Classic</div>
+    <h2>配線</h2>
+    <div class="romaji">HAISEN</div>
+    <p>あなたは1本のLANケーブル。パケットを拾って転送量を稼ぎ、金色の帯域パケットは消える前に確保する。壁に届かなければ断線、自分を踏めばループ構成で全停止。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/hantei/">
+    <span class="num">06</span>
+    <div class="kicker">Release Window — Timing</div>
+    <h2>判定</h2>
+    <div class="romaji">HANTEI</div>
+    <p>針が緑のデプロイ窓にいる一瞬にタップしてリリース。重ねるほど窓は狭く針は速い。ロールバックは3回まで。そして5回ごとに「金曜デプロイ」がやってくる。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/rensa/">
+    <span class="num">07</span>
+    <div class="kicker">Orb Match — Combo Puzzle</div>
+    <h2>連鎖</h2>
+    <div class="romaji">RENSA</div>
+    <p>ドロップを掴んでなぞり、通り道と入れ替えて3つ揃える。落ちて繋がれば連鎖。障害・データ・承認・予算・負債を、8手でまとめて消し込め。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/seiton/">
+    <span class="num">08</span>
+    <div class="kicker">Falling Blocks — Classic</div>
+    <h2>整頓</h2>
+    <div class="romaji">SEITON</div>
+    <p>落ちてくるタスクの塊を回して並べ、横一列で完了させる王道の落ちもの。4列同時消しは「全部完了」。四半期が進むほど速くなる。机が埋まったら、終わり。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/kujo/">
+    <span class="num">09</span>
+    <div class="kicker">Pull &amp; Smash — Slingshot</div>
+    <h2>駆除</h2>
+    <div class="romaji">KUJO</div>
+    <p>デバッガを引っ張って放ち、壁に反射しながらバグを轢き潰すターン制ひっぱりアクション。止まればバグの反撃。5ウェーブごとに「本番障害」が降臨する。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/tougou/">
+    <span class="num">10</span>
+    <div class="kicker">Merge Physics — Suika Style</div>
+    <h2>統合</h2>
+    <div class="romaji">TOUGOU</div>
+    <p>箱に部品を落とし、同じもの同士をぶつけて統合する物理パズル。バグ→TODO→関数→アプリ→サービス→基盤→クラウド→AI、その先の特異点へ。あふれたら終わり。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/soushin/">
+    <span class="num">11</span>
+    <div class="kicker">Approval Gate — One Tap</div>
+    <h2>送信</h2>
+    <div class="romaji">SOUSHIN</div>
+    <p>重力に逆らい、決裁ゲートの隙間を縫って飛ぶメール封筒。ハンコの柱に触れたら即差し戻し。進むほど回線は速く、ゲートは狭い。あなたのメールは、宛先にたどり着けるか。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/sokou/">
+    <span class="num">12</span>
+    <div class="kicker">Stack Climber — Endless</div>
+    <h2>遡行</h2>
+    <div class="romaji">SOKOU</div>
+    <p>例外の現場から、スタックトレースを跳んで遡る縦登り。キャッシュで加速し、脆弱フレームを踏み抜きながら上を目指せ。落ちたら捜査打ち切り——根本原因は、また今度。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/oudan/">
+    <span class="num">13</span>
+    <div class="kicker">Road Crossing — Arcade</div>
+    <h2>横断</h2>
+    <div class="romaji">OUDAN</div>
+    <p>定時後のオフィス街を、ノートPC片手にリリース台まで渡るアーケード。会議のセダン、仕様変更のトラック、至急のバイクをかいくぐれ。渡るたび、交通量は加速する。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/ningetsu/">
+    <span class="num">14</span>
+    <div class="kicker">Crowd Runner — Man-Month</div>
+    <h2>人月</h2>
+    <div class="romaji">NINGETSU</div>
+    <p>広告でよく見るアレ。採用ゲートでエンジニアを増やし、炎上案件に人数でぶつかる群衆ラン。退職と予算削減を避け、×3を取れ。人月は神話だが、数は正義だ。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/sesshou/">
+    <span class="num">15</span>
+    <div class="kicker">Negotiation Pong — First to 7</div>
+    <h2>折衝</h2>
+    <div class="romaji">SESSHOU</div>
+    <p>顧客が打ち込んでくる「要求」を、パドル一枚で打ち返す交渉ポン。角度とスピンで切り返し、先に7点で受注。6-6からは最終交渉——次の一本で、すべてが決まる。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/chinka/">
+    <span class="num">16</span>
+    <div class="kicker">Alert Whack — 60 sec</div>
+    <h2>鎮火</h2>
+    <div class="romaji">CHINKA</div>
+    <p>深夜2時、ラックが燃えている。CRITICALとWARNを叩いて鎮火、ただし正常稼働を叩くと大減点。動いてるものに触るな。60秒のオンコール体験。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/douki/">
+    <span class="num">17</span>
+    <div class="kicker">Pipeline Rhythm — 75 sec</div>
+    <h2>同期</h2>
+    <div class="romaji">DOUKI</div>
+    <p>PUSH・BUILD・TEST・DEPLOY、4本のパイプラインに音を同期させるリズムゲーム。合えばペンタトニックが歌い、外せば音が消える。CI/CDは、つまるところ演奏である。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/kukaku/">
+    <span class="num">18</span>
+    <div class="kicker">Territory Capture — Qix Style</div>
+    <h2>区画</h2>
+    <div class="romaji">KUKAKU</div>
+    <p>フラットネットワークは無法地帯。境界線を引いて全域の75%を隔離せよ。引きかけの線にウイルスが触れたらインシデント発生。線を引いた者が、境界を制す。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/shoukaku/">
+    <span class="num">19</span>
+    <div class="kicker">Slide Merge — Corporate 2048</div>
+    <h2>昇格</h2>
+    <div class="romaji">SHOUKAKU</div>
+    <p>同じ役職を重ねて昇格していく4×4のスライドパズル。新人から始めて、係長、部長、執行役員——空きポストが尽きる前に、社長の椅子へ。辞令一枚で、盤面のすべてが動く。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/chousa/">
+    <span class="num">20</span>
+    <div class="kicker">Log Sweeper — 9×9</div>
+    <h2>調査</h2>
+    <div class="romaji">CHOUSA</div>
+    <p>深夜の本番DBに、WHERE句のない削除クエリが10本。数字を頼りにログを精査し、踏まずに全部開けば原因特定。長押しの調査メモが命綱だ。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/shoutou/">
+    <span class="num">21</span>
+    <div class="kicker">Lights Out — Zen Puzzle</div>
+    <h2>消灯</h2>
+    <div class="romaji">SHOUTOU</div>
+    <p>終業後のサーバ室、警告ランプだけがまだ起きている。押すと十字に反転、全部消えたら帰宅。失敗なし、締切なし。ただPAR以内で消すと★が灯る——消灯ゲームなのに。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/ikou/">
+    <span class="num">22</span>
+    <div class="kicker">Server Sokoban — 8 Levels</div>
+    <h2>移行</h2>
+    <div class="romaji">IKOU</div>
+    <p>移行作業は今夜中。サーバーは押せるが、引けない。全8室のラックに納めて移行完了——角に詰んだら「戻す」勇気もエンジニアの仕事だ。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/genzou/">
+    <span class="num">23</span>
+    <div class="kicker">Open World Photo Drive — 3D / TPS</div>
+    <h2>現像</h2>
+    <div class="romaji">GENZOU</div>
+    <p>霧のノワール都市をポルシェで流し、トイカメラで「IT」を撮る。お題はクラウド・データセンター・レガシービル・電波塔・本番環境ビルの5つ。街はすべて、被写体だ。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/shounin/">
+    <span class="num">24</span>
+    <div class="kicker">Approval Rush — 60 sec</div>
+    <h2>承認</h2>
+    <div class="romaji">SHOUNIN</div>
+    <p>決裁トレイに飛び込む書類を捌く60秒。稟議・請求・申請にはハンコを、フィッシングとウイルスには絶対に押すな。見逃せば現場が止まる。あなたの決裁速度が試される。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/totsugou/">
+    <span class="num">25</span>
+    <div class="kicker">Reconciliation — Memory Pairs</div>
+    <h2>突合</h2>
+    <div class="romaji">TOTSUGOU</div>
+    <p>月次決算の夜。伏せられた伝票をめくり、同じ勘定科目を消し込む神経衰弱。めくって外すと「差異」として記録される。速く、正確に。監査はいつも見ている。</p>
+    <span class="play">PLAY</span>
+  </a>
+  <a class="game-card" href="/game/junsei/">
+    <span class="num">26</span>
+    <div class="kicker">Grand Tour — Solar System</div>
+    <h2>巡星</h2>
+    <div class="romaji">JUNSEI</div>
+    <p>探査機SYUKAN-3で太陽を発ち、水星から海王星まで8惑星を巡る旅。観測データを集め、デブリと小惑星帯を抜け、太陽系の端を目指す。急がなくていい。宇宙は逃げない。</p>
+    <span class="play">PLAY</span>
+  </a>
+</nav>
+
+<footer>NO SAVE DATA WAS HARMED</footer>
+</body>
+</html>

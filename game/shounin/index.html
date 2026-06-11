@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>承認 — SHOUNIN | 押すべきか、押さざるべきか。</title>
+<meta name="description" content="60秒の決裁ラッシュ。正しい書類だけにハンコを押せ。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 460px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .hint .bad { color: var(--magenta); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(30px, 7vw, 46px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #score { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 18px; letter-spacing: .12em; color: var(--ember-bright); }
+  #best { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #combo { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 11px; letter-spacing: .2em; color: var(--cyan); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">BEST 0</div>
+  <div id="score">¥0万</div>
+  <div id="combo"></div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Approval Rush — 60 sec</div>
+  <h1 class="title">承認</h1>
+  <div class="title-en">S H O U N I N</div>
+  <p class="tagline">押すべきか、押さざるべきか。</p>
+  <p class="hint">
+    決裁トレイに書類が飛び込んでくる。<em>正しい書類だけ</em>をタップしてハンコを押せ。<br>
+    <em>稟議・請求・申請</em>は承認。<span class="bad">フィッシングとウイルス</span>に押したら大事故。<br>
+    良い書類を見逃すと、現場が止まる（コンボが切れる）。<br>
+    60秒。あなたの決裁スピードが試される。
+  </p>
+  <button class="btn" id="btn-start">決裁開始</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">CLOSING TIME</div>
+  <div class="cause" id="cause">定時が来た</div>
+  <div class="dist-line">決裁額 <b id="r-score">¥0万</b></div>
+  <div class="dist-line" id="r-stats">承認 0 ／ 見逃し 0 ／ 誤決裁 0</div>
+  <div class="dist-line" id="r-best">BEST ¥0万</div>
+  <div class="rank-label">人事評価</div>
+  <div class="rank" id="rank">新任係長</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">明日も決裁する</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   承認 / SHOUNIN — 決裁ラッシュ
+   正しい書類だけにハンコを押す、60秒のもぐら叩き。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8", slate: "#3a3a3a", green: "#2ecc71",
+};
+
+const GAME_LEN = 60;
+const TYPES = [
+  { id: "ringi", label: "稟議", color: COLOR.cream,  good: true,  value: 100, w: 5 },
+  { id: "bill",  label: "請求", color: COLOR.ember,  good: true,  value: 150, w: 4 },
+  { id: "apply", label: "申請", color: COLOR.cyan,   good: true,  value: 80,  w: 4 },
+  { id: "phish", label: "怪文", color: COLOR.magenta, good: false, value: -250, w: 2.4 },
+  { id: "virus", label: "蟲",   color: COLOR.risk,   good: false, value: -400, w: 1.4 },
+];
+
+const RANKS = [
+  [1500, "新任係長", "ハンコの持ち方から覚えよう。"],
+  [3500, "課長", "現場が少し、楽になった。"],
+  [6000, "部長", "決裁が速い。会議が短い。神。"],
+  [9000, "役員", "あなたの印影は社内で伝説。"],
+  [Infinity, "即決の人", "迷いがない。リスクも見えている。"],
+];
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  layout();
+}
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.16;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  stamp(n) { this.blip(180, 0.08, "square", 0.5, -60); this.blip(700 * Math.pow(1.04, Math.min(n, 14)), 0.1, "sine", 0.3, 100); },
+  bad()    { this.blip(160, 0.4, "sawtooth", 0.55, -90); },
+  miss()   { this.blip(300, 0.18, "sine", 0.3, -120); },
+  tick()   { this.blip(900, 0.03, "square", 0.18, 0); },
+  over()   { this.blip(523, 0.3, "sine", 0.45); this.blip(392, 0.45, "sine", 0.4); },
+};
+
+/* ---------- 盤面 ---------- */
+let CELLS = [];   // {x,y,w,h}
+function layout() {
+  CELLS = [];
+  const cols = 3, rows = 3;
+  const gw = Math.min(W * 0.92, 520);
+  const gh = Math.min(H * 0.62, 520);
+  const cw = gw / cols, ch = gh / rows;
+  const ox = (W - gw) / 2, oy = (H - gh) / 2 + 16;
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++)
+      CELLS.push({ x: ox + c * cw + 8, y: oy + r * ch + 8, w: cw - 16, h: ch - 16 });
+}
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",
+  items: new Array(9).fill(null),   // {type, age, life, state:pop|hide, stamped}
+  t: 0, spawnAcc: 0,
+  score: 0, combo: 0, maxCombo: 0,
+  approved: 0, missed: 0, wrong: 0,
+  particles: [], floats: [], shake: 0,
+  lastTick: 99,
+  best: Number(localStorage.getItem("shounin-best") || 0),
+};
+
+function resetGame() {
+  S.items = new Array(9).fill(null);
+  S.t = 0; S.spawnAcc = 0;
+  S.score = 0; S.combo = 0; S.maxCombo = 0;
+  S.approved = 0; S.missed = 0; S.wrong = 0;
+  S.particles = []; S.floats = []; S.shake = 0;
+  S.lastTick = 99;
+}
+
+function weightedType() {
+  const total = TYPES.reduce((a, t) => a + t.w, 0);
+  let r = Math.random() * total;
+  for (const t of TYPES) { r -= t.w; if (r <= 0) return t; }
+  return TYPES[0];
+}
+
+function burst(x, y, color, n, speed = 150) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.25, 0.55), age: 0, color, r: rand(1, 2.6) });
+  }
+}
+function floatAdd(x, y, text, color, life = 0.9, size = 13) {
+  S.floats.push({ x, y, text, color, age: 0, life, size });
+}
+
+/* ---------- 入力 ---------- */
+canvas.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  if (S.mode !== "play") return;
+  for (let i = 0; i < 9; i++) {
+    const it = S.items[i];
+    if (!it || it.state !== "pop" || it.stamped) continue;
+    const c = CELLS[i];
+    if (e.clientX < c.x - 6 || e.clientX > c.x + c.w + 6 || e.clientY < c.y - 6 || e.clientY > c.y + c.h + 6) continue;
+    hit(i);
+    return;
+  }
+});
+
+function hit(i) {
+  const it = S.items[i];
+  const c = CELLS[i];
+  const cx = c.x + c.w / 2, cy = c.y + c.h / 2;
+  it.stamped = true;
+  it.stampAge = 0;
+  if (it.type.good) {
+    S.combo++;
+    S.maxCombo = Math.max(S.maxCombo, S.combo);
+    const bonus = 1 + Math.min(S.combo, 20) * 0.1;
+    const v = Math.round(it.type.value * bonus);
+    S.score += v;
+    S.approved++;
+    burst(cx, cy, COLOR.emberBright, 10, 150);
+    floatAdd(cx, cy - 30, `+¥${v}万`, COLOR.emberBright);
+    if (S.combo >= 3) floatAdd(cx, cy - 48, `×${S.combo}`, COLOR.cyan, 0.7, 11);
+    AudioFX.stamp(S.combo);
+  } else {
+    S.combo = 0;
+    S.score += it.type.value;
+    S.wrong++;
+    S.shake = 10;
+    burst(cx, cy, it.type.color, 20, 220);
+    floatAdd(cx, cy - 30, it.type.id === "virus" ? "ウイルスに押印した！？" : "それ、フィッシング！", it.type.color, 1.3);
+    AudioFX.bad();
+  }
+  updateHUD();
+}
+
+/* ---------- 進行 ---------- */
+function update(dt) {
+  S.t += dt;
+  const remain = GAME_LEN - S.t;
+  if (remain <= 0) return gameOver();
+  if (remain < 5 && Math.ceil(remain) !== S.lastTick) { S.lastTick = Math.ceil(remain); AudioFX.tick(); }
+
+  const d = clamp(S.t / GAME_LEN, 0, 1);
+  // 出現
+  S.spawnAcc += (1.1 + d * 1.7) * dt;
+  while (S.spawnAcc >= 1) {
+    S.spawnAcc -= 1;
+    const free = [];
+    for (let i = 0; i < 9; i++) if (!S.items[i]) free.push(i);
+    if (free.length) {
+      const idx = pick(free);
+      const type = weightedType();
+      S.items[idx] = {
+        type, age: 0, stamped: false, stampAge: 0,
+        life: (type.good ? rand(1.5, 2.4) : rand(1.6, 2.6)) * (1 - d * 0.42),
+        state: "pop",
+      };
+    }
+  }
+  // アイテム寿命
+  for (let i = 0; i < 9; i++) {
+    const it = S.items[i];
+    if (!it) continue;
+    it.age += dt;
+    if (it.stamped) {
+      it.stampAge += dt;
+      if (it.stampAge > 0.45) S.items[i] = null;
+      continue;
+    }
+    if (it.age >= it.life) {
+      if (it.type.good) {
+        // 見逃し
+        S.missed++;
+        S.combo = 0;
+        const c = CELLS[i];
+        floatAdd(c.x + c.w / 2, c.y + c.h / 2, "未決裁…現場が止まった", COLOR.silver, 1.0, 11);
+        AudioFX.miss();
+        updateHUD();
+      }
+      S.items[i] = null;
+    }
+  }
+  // パーティクル / フロート
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 400 * dt;
+  }
+  for (let i = S.floats.length - 1; i >= 0; i--) {
+    const f = S.floats[i];
+    f.age += dt; f.y -= 24 * dt;
+    if (f.age >= f.life) S.floats.splice(i, 1);
+  }
+  if (S.shake > 0) S.shake = Math.max(0, S.shake - dt * 26);
+}
+
+function updateHUD() {
+  document.getElementById("score").textContent = "¥" + S.score + "万";
+  document.getElementById("combo").textContent = S.combo >= 3 ? `連続決裁 ×${S.combo}` : "";
+}
+
+function gameOver() {
+  S.mode = "over";
+  AudioFX.over();
+  if (S.score > S.best) { S.best = S.score; localStorage.setItem("shounin-best", String(S.score)); }
+  setTimeout(() => {
+    document.getElementById("r-score").textContent = "¥" + S.score + "万";
+    document.getElementById("r-stats").textContent = `承認 ${S.approved} ／ 見逃し ${S.missed} ／ 誤決裁 ${S.wrong}`;
+    document.getElementById("r-best").textContent = "BEST ¥" + S.best + "万";
+    const r = RANKS.find(r => S.score < r[0]);
+    document.getElementById("rank").textContent = r[1];
+    document.getElementById("rank-sub").innerHTML = r[2];
+    document.getElementById("hud").classList.remove("on");
+    document.getElementById("screen-result").classList.remove("hidden");
+  }, 600);
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  resetGame();
+  S.mode = "play";
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  document.getElementById("best").textContent = "BEST ¥" + S.best + "万";
+  updateHUD();
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  startGame();
+});
+
+/* ---------- 描画 ---------- */
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function draw(time) {
+  const t = time / 1000;
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (S.shake > 0.3) ctx.translate(rand(-S.shake, S.shake) * 0.5, rand(-S.shake, S.shake) * 0.5);
+
+  // 残り時間バー
+  if (S.mode === "play" || S.mode === "over") {
+    const remain = clamp(1 - S.t / GAME_LEN, 0, 1);
+    const bw = Math.min(W * 0.8, 440);
+    ctx.fillStyle = "rgba(255,255,255,.1)";
+    ctx.fillRect((W - bw) / 2, 52, bw, 3);
+    ctx.fillStyle = remain < 0.15 ? COLOR.risk : COLOR.ember;
+    ctx.fillRect((W - bw) / 2, 52, bw * remain, 3);
+  }
+
+  // トレイ
+  const mono = getComputedStyle(document.body).getPropertyValue("--font-mono");
+  for (let i = 0; i < 9; i++) {
+    const c = CELLS[i];
+    ctx.strokeStyle = "rgba(243,236,220,.14)";
+    ctx.lineWidth = 1;
+    roundRect(c.x, c.y, c.w, c.h, 10);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(243,236,220,.03)";
+    roundRect(c.x, c.y, c.w, c.h, 10);
+    ctx.fill();
+
+    const it = S.items[i];
+    if (!it) continue;
+    const cx = c.x + c.w / 2, cy = c.y + c.h / 2;
+    // ポップ・消滅アニメ
+    let sc;
+    if (it.stamped) sc = 1 + it.stampAge * 0.3;
+    else {
+      const inT = clamp(it.age / 0.16, 0, 1);
+      const outT = clamp((it.life - it.age) / 0.2, 0, 1);
+      sc = Math.min(1.08 - 0.08 * inT, 1) * (0.4 + 0.6 * inT) * (0.5 + 0.5 * outT);
+    }
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(sc, sc);
+    if (it.stamped) ctx.globalAlpha = clamp(1 - it.stampAge / 0.45, 0, 1);
+
+    // 書類カード
+    const dw = Math.min(c.w * 0.66, 86), dh = Math.min(c.h * 0.7, 100);
+    const bad = !it.type.good;
+    ctx.fillStyle = bad ? "rgba(30,18,22,.95)" : "rgba(40,35,28,.95)";
+    roundRect(-dw / 2, -dh / 2, dw, dh, 6);
+    ctx.fill();
+    ctx.strokeStyle = it.type.color;
+    ctx.lineWidth = 1.6;
+    if (it.type.id === "virus" && Math.sin(t * 16) > 0) ctx.strokeStyle = "#fff";
+    roundRect(-dw / 2, -dh / 2, dw, dh, 6);
+    ctx.stroke();
+    // 書類の線
+    ctx.strokeStyle = "rgba(184,184,184,.35)";
+    ctx.lineWidth = 1;
+    for (let li = 0; li < 3; li++) {
+      ctx.beginPath();
+      ctx.moveTo(-dw / 2 + 9, -dh / 2 + 16 + li * 8);
+      ctx.lineTo(dw / 2 - 9, -dh / 2 + 16 + li * 8);
+      ctx.stroke();
+    }
+    // ラベル
+    ctx.fillStyle = it.type.color;
+    ctx.font = `700 ${Math.round(dw * 0.3)}px 'Shippori Mincho', serif`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(it.type.label, 0, dh * 0.12);
+    ctx.textBaseline = "alphabetic";
+    // 期限ゲージ
+    if (!it.stamped) {
+      const lr = clamp(1 - it.age / it.life, 0, 1);
+      ctx.fillStyle = lr < 0.3 ? COLOR.risk : "rgba(243,236,220,.4)";
+      ctx.fillRect(-dw / 2, dh / 2 + 5, dw * lr, 2.5);
+    }
+    // 押印
+    if (it.stamped && it.type.good) {
+      ctx.strokeStyle = "#c0392b";
+      ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.arc(0, -dh * 0.16, dw * 0.24, 0, TAU); ctx.stroke();
+      ctx.fillStyle = "#c0392b";
+      ctx.font = `700 ${Math.round(dw * 0.24)}px 'Shippori Mincho', serif`;
+      ctx.textBaseline = "middle";
+      ctx.fillText("承", 0, -dh * 0.15);
+      ctx.textBaseline = "alphabetic";
+    }
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  }
+
+  // パーティクル / フロート
+  for (const p of S.particles) {
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+  ctx.textAlign = "center";
+  for (const f of S.floats) {
+    ctx.globalAlpha = 1 - f.age / f.life;
+    ctx.fillStyle = f.color;
+    ctx.font = f.size + "px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+    ctx.fillText(f.text, f.x, f.y);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+/* ---------- ループ ---------- */
+resize();
+window.addEventListener("resize", resize);
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (S.mode === "play") update(dt);
+  draw(now);
+}
+requestAnimationFrame(loop);
+window.__G = { S, startGame, hit, CELLS: () => CELLS };
+</script>
+</body>
+</html>

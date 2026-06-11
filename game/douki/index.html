@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>同期 | GAME — 坂江 俊輔</title>
+<meta name="description" content="パイプラインに音を合わせる、4レーンのリズムゲーム。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a; --green: #2ecc71;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 440px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(30px, 7vw, 46px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #score { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 18px; letter-spacing: .15em; color: var(--cream); }
+  #best { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #phase { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 11px; letter-spacing: .2em; color: var(--magenta); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">BEST 0</div>
+  <div id="score">0</div>
+  <div id="phase">SYNC 100 BPM</div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Pipeline Rhythm — Sync</div>
+  <h1 class="title">同期</h1>
+  <div class="title-en">D O U K I</div>
+  <p class="tagline">揃った瞬間だけ、音が鳴る。</p>
+  <p class="hint">
+    <em>D F J K</em> か下のゾーンをタップ。ラインで合わせろ。<br>
+    PUSH / BUILD / TEST / DEPLOY — 4本のパイプラインを流れる処理に、<br>
+    タイミングを<em>同期</em>させる。合えば音楽になり、外せば<em>音が消える</em>。<br>
+    判定は PERFECT ±50ms ／ GOOD ±120ms。曲は約75秒、一本勝負。
+  </p>
+  <button class="btn" id="btn-start">同期開始</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">PIPELINE REPORT</div>
+  <div class="cause" id="cause">同期完了</div>
+  <div class="dist-line">SCORE <b id="r-score">0</b></div>
+  <div class="dist-line" id="r-combo">MAX COMBO 0</div>
+  <div class="dist-line" id="r-counts">PERFECT 0 ／ GOOD 0 ／ MISS 0</div>
+  <div class="dist-line" id="r-acc">ACCURACY 0%</div>
+  <div class="dist-line" id="r-best">BEST 0</div>
+  <div class="rank-label">同期格付け</div>
+  <div class="rank" id="rank">C</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">もう一度同期する</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP / SPACE でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   同期 / DOUKI — 4レーン・リズムゲーム
+   PUSH / BUILD / TEST / DEPLOY のパイプラインに、音を同期させる。
+   譜面は固定（決定的）。時刻は AudioContext の時計で進む。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8", slate: "#3a3a3a", green: "#2ecc71",
+};
+const LANE_COLOR = [COLOR.ember, COLOR.cyan, COLOR.magenta, COLOR.green];
+const LANE_RGB   = ["224,164,90", "105,191,255", "255,105,191", "46,204,113"];
+const LANE_NAME  = ["PUSH", "BUILD", "TEST", "DEPLOY"];
+const LANE_KEY   = ["D", "F", "J", "K"];
+const PENTA      = [440.00, 523.25, 587.33, 659.25]; // A C D E — ペンタトニック
+
+const PERFECT_WIN = 0.050, GOOD_WIN = 0.120;
+const APPROACH = 1.6; // ノーツ落下時間（秒）
+
+const RANKS = [
+  ["S", 95, "完全同期。本番は静寂のまま、世界が更新された。"],
+  ["A", 85, "ほぼ同期。たまに鳴る警報も、ご愛嬌の範囲。"],
+  ["B", 70, "概ね同期。リリースノートに「軽微な乱れ」と書いておこう。"],
+  ["C", 0,  "同期失敗。パイプラインは沈黙した。リトライは無料だ。"],
+];
+
+/* ---------- 譜面（固定パターン・決定的） ---------- */
+const CHART = (() => {
+  const notes = [], beats = [], sections = [];
+  let t = 2.0; // リードイン
+  const N = (tt, l) => notes.push({ t: tt, lane: l, judged: false, result: null });
+
+  // カウントイン（メトロノームのみ）
+  beats.push({ t: 0.2, strong: false }, { t: 0.8, strong: false }, { t: 1.4, strong: false });
+
+  // INTRO — BPM100 / 16拍 / 表拍の単音
+  sections.push({ t, name: "INTRO", bpm: 100 });
+  const bA = 60 / 100;
+  const IA = [0,1,2,3, 0,2,1,3, 0,1,2,3, 3,2,1,0];
+  for (let i = 0; i < 16; i++) {
+    beats.push({ t, strong: i % 4 === 0 });
+    N(t, IA[i]);
+    if (i >= 12) N(t + bA / 2, (IA[i] + 2) % 4); // 終盤は裏も
+    t += bA;
+  }
+
+  // BUILD — BPM115 / 32拍 / 裏拍が混ざる
+  sections.push({ t, name: "BUILD", bpm: 115 });
+  const bB = 60 / 115;
+  const BA = [0,1,2,3, 1,0,3,2, 0,2,1,3, 2,3,0,1];
+  const BO = [2,3,0,1, 3,2,1,0];
+  for (let i = 0; i < 32; i++) {
+    beats.push({ t, strong: i % 4 === 0 });
+    N(t, BA[i % 16]);
+    if (i % 8 !== 7) N(t + bB / 2, BO[i % 8]);
+    t += bB;
+  }
+
+  // CHORUS — BPM130 / 80拍 / 時々2レーン同時
+  sections.push({ t, name: "CHORUS", bpm: 130 });
+  const bC = 60 / 130;
+  const CA = [0,2,1,3, 2,0,3,1, 0,1,2,3, 1,3,0,2];
+  const CO = [1,3,2,0, 3,1,0,2];
+  for (let i = 0; i < 80; i++) {
+    beats.push({ t, strong: i % 4 === 0 });
+    N(t, CA[i % 16]);
+    if (i % 8 === 0) N(t, (CA[i % 16] + 2) % 4); // コード
+    if (i % 4 !== 0) N(t + bC / 2, CO[i % 8]);
+    t += bC;
+  }
+
+  // OUTRO — BPM100 / 16拍 / 収束
+  sections.push({ t, name: "OUTRO", bpm: 100 });
+  const bD = 60 / 100;
+  const OA = [3,2,1,0, 2,1,0,1, 0,1,2,3, 1,2,3,0];
+  for (let i = 0; i < 16; i++) {
+    beats.push({ t, strong: i % 4 === 0 });
+    N(t, OA[i]);
+    if (i < 8 && i % 2 === 1) N(t + bD / 2, (OA[i] + 1) % 4);
+    if (i === 15) N(t, 3); // 最後はコードで締める
+    t += bD;
+  }
+
+  notes.sort((a, b) => a.t - b.t || a.lane - b.lane);
+  return { notes, beats, sections, end: t };
+})();
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+resize();
+window.addEventListener("resize", resize);
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.16;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx || this.ctx.state !== "running") return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  // メトロノーム／ベースパルス（絶対時刻で予約）
+  pulse(at, strong) {
+    if (!this.ctx || this.ctx.state !== "running") return;
+    at = Math.max(at, this.ctx.currentTime + 0.001);
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = "sine"; o.frequency.setValueAtTime(strong ? 110 : 82.41, at);
+    g.gain.setValueAtTime(strong ? 0.16 : 0.09, at);
+    g.gain.exponentialRampToValueAtTime(0.001, at + 0.13);
+    o.connect(g); g.connect(this.gain);
+    o.start(at); o.stop(at + 0.16);
+  },
+  // レーン音（ペンタトニック）— ヒット時のみ鳴る
+  hit(lane, perfect) {
+    this.blip(PENTA[lane], perfect ? 0.22 : 0.15, "sine", perfect ? 0.6 : 0.42);
+    if (perfect) this.blip(PENTA[lane] * 2, 0.26, "sine", 0.22);
+  },
+  milestone() { this.blip(880, 0.18, "sine", 0.4, 160); this.blip(1318.5, 0.3, "sine", 0.3, 180); },
+  finish()    { this.blip(440, 0.5, "sine", 0.4); this.blip(659.25, 0.6, "sine", 0.3); this.blip(880, 0.8, "sine", 0.25); },
+};
+
+/* ---------- 時計（AudioContext 基準・停止時は performance にフォールバック） ---------- */
+const Clock = {
+  audio: false,
+  pick() { this.audio = !!(AudioFX.ctx && AudioFX.ctx.state === "running"); },
+  now() {
+    return this.audio && AudioFX.ctx ? AudioFX.ctx.currentTime : performance.now() / 1000;
+  },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",          // title | play | result
+  notes: CHART.notes,
+  beats: CHART.beats,
+  songStart: 0,           // Clock.now() 基準の曲開始時刻
+  noteI: 0, beatI: 0,     // 未処理ポインタ
+  score: 0, combo: 0, maxCombo: 0,
+  perfect: 0, good: 0, miss: 0,
+  laneFlash: [0, 0, 0, 0], laneDim: [0, 0, 0, 0],
+  judges: [],             // {lane, text, color, age}
+  fx: [],                 // {x, y, r, age, life, color}
+  particles: [],
+  glowT: 0, overT: 0,
+  phase: "",
+  best: Number(localStorage.getItem("douki-best") || 0),
+  now() { return this.mode === "play" || this.mode === "result" ? Clock.now() - this.songStart : 0; },
+};
+
+function burst(x, y, color, n, speed = 180) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.3, 0.7), age: 0, color, r: rand(1, 3) });
+  }
+}
+
+/* ---------- レイアウト ---------- */
+const laneW = () => W / 4;
+const hitY  = () => H - Math.max(120, H * 0.20);
+const laneX = l => (l + 0.5) * laneW();
+
+/* ---------- 入力・判定 ---------- */
+function tap(lane) {
+  lane = clamp(lane | 0, 0, 3);
+  if (S.mode !== "play") return;
+  S.laneFlash[lane] = 1;
+  const gt = S.now();
+  let best = null, bestD = Infinity;
+  for (let i = S.noteI; i < S.notes.length; i++) {
+    const n = S.notes[i];
+    if (n.t - gt > GOOD_WIN + 0.001) break;
+    if (n.judged || n.lane !== lane) continue;
+    const d = Math.abs(n.t - gt);
+    if (d < bestD) { bestD = d; best = n; }
+  }
+  if (!best || bestD > GOOD_WIN) return; // 空打ちはノーペナルティ。ただし音も鳴らない。
+  best.judged = true;
+  const perfect = bestD <= PERFECT_WIN;
+  best.result = perfect ? "perfect" : "good";
+  if (perfect) { S.perfect++; S.score += 100; } else { S.good++; S.score += 50; }
+  S.combo++;
+  if (S.combo > S.maxCombo) S.maxCombo = S.combo;
+  if (S.combo > 0 && S.combo % 50 === 0) { S.glowT = 1; AudioFX.milestone(); }
+  AudioFX.hit(lane, perfect);
+  const x = laneX(lane), y = hitY();
+  S.fx.push({ x, y, r: 8, age: 0, life: perfect ? 0.4 : 0.3, color: perfect ? COLOR.emberBright : COLOR.cyan });
+  burst(x, y, perfect ? COLOR.emberBright : COLOR.cyan, perfect ? 14 : 8, perfect ? 220 : 150);
+  S.judges.push({ lane, text: perfect ? "PERFECT" : "GOOD", color: perfect ? COLOR.emberBright : COLOR.cyan, age: 0 });
+  updateHUD();
+}
+
+canvas.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  if (S.mode !== "play") return;
+  tap(Math.floor(e.clientX / laneW()));
+});
+const KEYMAP = { KeyD: 0, KeyF: 1, KeyJ: 2, KeyK: 3 };
+window.addEventListener("keydown", e => {
+  if (e.code in KEYMAP) { e.preventDefault(); if (!e.repeat) tap(KEYMAP[e.code]); return; }
+  if (e.code === "Space") {
+    e.preventDefault();
+    if (!e.repeat && S.mode === "result" && S.overT > 0.6) startGame();
+  }
+}, { passive: false });
+
+function updateHUD() {
+  document.getElementById("score").textContent = String(S.score);
+}
+
+/* ---------- 終了 ---------- */
+function finish() {
+  if (S.mode !== "play") return;
+  S.mode = "result"; S.overT = 0;
+  AudioFX.finish();
+  // 未判定ノーツはミス扱いで精算
+  for (const n of S.notes) if (!n.judged) { n.judged = true; n.result = "miss"; S.miss++; }
+  const total = S.notes.length;
+  const acc = total ? (S.perfect * 100 + S.good * 50) / (total * 100) * 100 : 0;
+  const accR = Math.round(acc * 10) / 10;
+  if (S.score > S.best) { S.best = S.score; localStorage.setItem("douki-best", String(S.score)); }
+  const r = RANKS.find(r => acc >= r[1]);
+  document.getElementById("cause").textContent =
+    S.miss === 0 ? "全ノーツ同期 — フルコンボ" : S.miss <= 10 ? "同期完了" : "ところどころ、音が消えた";
+  document.getElementById("r-score").textContent = S.score;
+  document.getElementById("r-combo").textContent = "MAX COMBO " + S.maxCombo;
+  document.getElementById("r-counts").textContent = `PERFECT ${S.perfect} ／ GOOD ${S.good} ／ MISS ${S.miss}`;
+  document.getElementById("r-acc").textContent = "ACCURACY " + accR + "%";
+  document.getElementById("r-best").textContent = "BEST " + S.best;
+  document.getElementById("rank").textContent = r[0];
+  document.getElementById("rank-sub").textContent = r[2];
+  document.getElementById("hud").classList.remove("on");
+  document.getElementById("screen-result").classList.remove("hidden");
+}
+
+/* ---------- 開始 ---------- */
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") {
+    const p = AudioFX.ctx.resume();
+    if (p && p.catch) p.catch(() => {});
+  }
+  Clock.pick(); // 再生不可ならゲーム時計は performance.now にフォールバック
+  for (const n of S.notes) { n.judged = false; n.result = null; }
+  S.noteI = 0; S.beatI = 0;
+  S.score = 0; S.combo = 0; S.maxCombo = 0;
+  S.perfect = 0; S.good = 0; S.miss = 0;
+  S.laneFlash = [0, 0, 0, 0]; S.laneDim = [0, 0, 0, 0];
+  S.judges = []; S.fx = []; S.particles = [];
+  S.glowT = 0; S.overT = 0; S.phase = "";
+  S.songStart = Clock.now();
+  S.mode = "play";
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  document.getElementById("best").textContent = "BEST " + S.best;
+  updateHUD();
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.6) startGame();
+});
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+let hiddenAt = 0;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (paused) { hiddenAt = Clock.now(); }
+  else {
+    last = performance.now();
+    if (S.mode === "play") S.songStart += Clock.now() - hiddenAt; // 譜面を一時停止扱いに
+  }
+});
+
+function update(dt) {
+  for (let l = 0; l < 4; l++) {
+    if (S.laneFlash[l] > 0) S.laneFlash[l] = Math.max(0, S.laneFlash[l] - dt * 5);
+    if (S.laneDim[l] > 0)   S.laneDim[l]   = Math.max(0, S.laneDim[l] - dt * 1.6);
+  }
+  if (S.glowT > 0) S.glowT -= dt * 0.8;
+  for (let i = S.judges.length - 1; i >= 0; i--) {
+    if ((S.judges[i].age += dt) >= 0.7) S.judges.splice(i, 1);
+  }
+  for (let i = S.fx.length - 1; i >= 0; i--) {
+    const e = S.fx[i];
+    e.age += dt;
+    if (e.age >= e.life) { S.fx.splice(i, 1); continue; }
+    e.r += dt * 220;
+  }
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 300 * dt;
+  }
+
+  if (S.mode === "play") {
+    const gt = S.now();
+
+    // メトロノーム予約（音声時刻ベース）
+    while (S.beatI < S.beats.length && S.beats[S.beatI].t - gt < 0.25) {
+      const b = S.beats[S.beatI++];
+      if (b.t - gt > -0.05 && AudioFX.ctx && AudioFX.ctx.state === "running") {
+        AudioFX.pulse(AudioFX.ctx.currentTime + Math.max(0, b.t - gt), b.strong);
+      }
+    }
+
+    // 取り逃しミス
+    while (S.noteI < S.notes.length) {
+      const n = S.notes[S.noteI];
+      if (n.judged) { S.noteI++; continue; }
+      if (n.t < gt - GOOD_WIN) {
+        n.judged = true; n.result = "miss";
+        S.miss++; S.combo = 0;
+        S.laneDim[n.lane] = 1;
+        S.judges.push({ lane: n.lane, text: "MISS", color: COLOR.risk, age: 0 });
+        S.noteI++;
+        continue;
+      }
+      break;
+    }
+
+    // セクション表示
+    let ph = "";
+    for (const sec of CHART.sections) if (gt >= sec.t - APPROACH) ph = sec.name + " " + sec.bpm + " BPM";
+    if (ph && ph !== S.phase) { S.phase = ph; document.getElementById("phase").textContent = ph; }
+
+    // 曲の終わり
+    const lastNote = S.notes[S.notes.length - 1];
+    if (gt > lastNote.t + 1.8) finish();
+  }
+  if (S.mode === "result") S.overT += dt;
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  if (S.mode === "title") return;
+
+  const lw = laneW(), hy = hitY();
+  const gt = S.now();
+  const mono = getComputedStyle(document.body).getPropertyValue("--font-mono");
+
+  // レーン背景・区切り
+  for (let l = 0; l < 4; l++) {
+    const x0 = l * lw;
+    if (S.laneFlash[l] > 0) {
+      const grd = ctx.createLinearGradient(0, hy - 220, 0, hy + 30);
+      grd.addColorStop(0, `rgba(${LANE_RGB[l]},0)`);
+      grd.addColorStop(1, `rgba(${LANE_RGB[l]},${0.20 * S.laneFlash[l]})`);
+      ctx.fillStyle = grd;
+      ctx.fillRect(x0, hy - 220, lw, 250);
+    }
+    if (S.laneDim[l] > 0) {
+      ctx.fillStyle = `rgba(0,0,0,${0.4 * S.laneDim[l]})`;
+      ctx.fillRect(x0, 0, lw, H);
+    }
+    ctx.strokeStyle = "rgba(243,236,220,.08)";
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0, 0); ctx.lineTo(x0, H); ctx.stroke();
+  }
+
+  // ヒットライン
+  ctx.strokeStyle = "rgba(243,236,220,.55)";
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(0, hy); ctx.lineTo(W, hy); ctx.stroke();
+  ctx.strokeStyle = "rgba(243,236,220,.12)";
+  ctx.lineWidth = 6;
+  ctx.beginPath(); ctx.moveTo(0, hy); ctx.lineTo(W, hy); ctx.stroke();
+  ctx.lineWidth = 1;
+
+  // タッチゾーン（下部 1/4 ストリップ）
+  for (let l = 0; l < 4; l++) {
+    const x0 = l * lw;
+    ctx.fillStyle = `rgba(${LANE_RGB[l]},${0.05 + 0.18 * S.laneFlash[l]})`;
+    ctx.fillRect(x0 + 2, hy + 2, lw - 4, H - hy - 4);
+    ctx.strokeStyle = `rgba(${LANE_RGB[l]},${0.35 + 0.4 * S.laneFlash[l]})`;
+    ctx.strokeRect(x0 + 2, hy + 2, lw - 4, H - hy - 4);
+    ctx.textAlign = "center";
+    ctx.fillStyle = `rgba(${LANE_RGB[l]},.9)`;
+    ctx.font = "600 20px " + mono;
+    ctx.fillText(LANE_KEY[l], x0 + lw / 2, hy + 38);
+    ctx.fillStyle = "rgba(184,184,184,.6)";
+    ctx.font = "10px " + mono;
+    ctx.fillText(LANE_NAME[l], x0 + lw / 2, hy + 56);
+  }
+
+  // ノーツ
+  const span = hy + 40;
+  for (const n of S.notes) {
+    if (n.t - gt > APPROACH) break;            // ソート済みなので以降は画面外
+    if (n.judged && n.result !== "miss") continue;
+    const k = (n.t - gt) / APPROACH;           // 1 → 0 でヒットライン
+    const y = hy - k * span;
+    if (y < -30) continue;
+    let alpha = 1;
+    if (n.result === "miss") {
+      const over = gt - n.t;
+      if (over > 0.35) continue;
+      alpha = Math.max(0, 1 - over / 0.35) * 0.35;
+    }
+    const x = laneX(n.lane);
+    const w = lw * 0.58, h = 12;
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = LANE_COLOR[n.lane];
+    ctx.fillRect(x - w / 2, y - h / 2, w, h);
+    ctx.fillStyle = "rgba(243,236,220,.35)";
+    ctx.fillRect(x - w / 2, y - h / 2, w, 2);
+    ctx.globalAlpha = 1;
+  }
+
+  // ヒットリング
+  for (const e of S.fx) {
+    ctx.globalAlpha = Math.max(0, 1 - e.age / e.life);
+    ctx.strokeStyle = e.color;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, TAU); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  ctx.lineWidth = 1;
+
+  // 判定文字
+  for (const j of S.judges) {
+    const k = j.age / 0.7;
+    ctx.globalAlpha = k < 0.15 ? k / 0.15 : Math.max(0, 1 - (k - 0.15) / 0.85);
+    ctx.fillStyle = j.color;
+    ctx.font = "600 13px " + mono;
+    ctx.textAlign = "center";
+    ctx.fillText(j.text, laneX(j.lane), hy - 64 - k * 26);
+  }
+  ctx.globalAlpha = 1;
+
+  // コンボ
+  if (S.combo >= 2) {
+    const glow = Math.max(0, S.glowT);
+    ctx.textAlign = "center";
+    ctx.save();
+    if (glow > 0) { ctx.shadowColor = COLOR.emberBright; ctx.shadowBlur = 40 * glow; }
+    ctx.fillStyle = glow > 0 ? COLOR.emberBright : "rgba(243,236,220,.85)";
+    ctx.font = `700 ${Math.round(Math.min(64, W * 0.1))}px 'Shippori Mincho', serif`;
+    ctx.fillText(String(S.combo), W / 2, H * 0.30);
+    ctx.restore();
+    ctx.fillStyle = "rgba(184,184,184,.6)";
+    ctx.font = "10px " + mono;
+    ctx.fillText("C O M B O", W / 2, H * 0.30 + 22);
+  }
+
+  // パーティクル
+  for (const p of S.particles) {
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  update(dt);
+  draw();
+}
+requestAnimationFrame(loop);
+
+window.__G = { S, startGame, tap, finish, CHART, Clock, AudioFX };
+</script>
+</body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>折衝 | GAME — 坂江 俊輔</title>
+<meta name="description" content="飛んでくる要求を打ち返す、交渉ポン。先に7点で受注。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a; --green: #2ecc71;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 440px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(30px, 7vw, 46px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #score { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 16px; letter-spacing: .15em; color: var(--cream); white-space: nowrap; }
+  #best { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #rally { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 11px; letter-spacing: .2em; color: var(--magenta); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">通算受注 0</div>
+  <div id="score">顧客 0 — 0 あなた</div>
+  <div id="rally">RALLY 0</div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Negotiation Pong — First to 7</div>
+  <h1 class="title">折衝</h1>
+  <div class="title-en">S E S S H O U</div>
+  <p class="tagline">無理な要求は、打ち返せる。</p>
+  <p class="hint">
+    ドラッグでパドル。<em>要求</em>を打ち返せ。先に<em>7点</em>で受注。
+  </p>
+  <button class="btn" id="btn-start">交渉開始</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">CLOSING REPORT</div>
+  <div class="cause" id="cause">受注、成立。</div>
+  <div class="dist-line">顧客 <b id="r-cpu">0</b> — <b id="r-you">0</b> あなた</div>
+  <div class="dist-line" id="r-rally">最長ラリー 0 往復</div>
+  <div class="dist-line" id="r-best">通算受注 0 件</div>
+  <div class="rank-label">議事録より</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">次の交渉へ</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP / SPACE でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   折衝 / SESSHOU — 交渉ポン
+   顧客の打ち込む「要求」を打ち返す。先に7点で受注。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8", slate: "#3a3a3a", green: "#2ecc71",
+};
+
+const WIN_PT = 7;
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+const L = { margin: 14, speed0: 380, speedCap: 900, padW: 110, padH: 13 };
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  L.margin = Math.max(12, W * 0.03);
+  L.speed0 = Math.max(320, H * 0.5);
+  L.speedCap = Math.max(760, H * 1.25);
+  L.padW = clamp(W * 0.24, 78, 132);
+  L.padH = 13;
+  S.P.w = S.C.w = L.padW; S.P.h = S.C.h = L.padH;
+  S.P.y = H - Math.max(62, H * 0.09);
+  S.C.y = Math.max(76, H * 0.11);
+  S.P.x = clamp(S.P.x || W / 2, L.margin + S.P.w / 2, W - L.margin - S.P.w / 2);
+  S.C.x = clamp(S.C.x || W / 2, L.margin + S.C.w / 2, W - L.margin - S.C.w / 2);
+  S.P.target = clamp(S.P.target || W / 2, L.margin + S.P.w / 2, W - L.margin - S.P.w / 2);
+  S.C.target = S.C.target || W / 2;
+}
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.16;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  hit(n)   { this.blip(392 * Math.pow(1.045, Math.min(n, 18)), 0.07, "square", 0.42, 30); },
+  wall()   { this.blip(262, 0.05, "triangle", 0.3); },
+  serve()  { this.blip(523, 0.1, "sine", 0.4, 120); },
+  point()  { this.blip(659, 0.14, "sine", 0.5, 160); this.blip(988, 0.22, "sine", 0.35, 180); },
+  concede(){ this.blip(165, 0.4, "sawtooth", 0.5, -70); },
+  win()    { this.blip(523, 0.18, "sine", 0.5); this.blip(659, 0.26, "sine", 0.45); this.blip(784, 0.42, "sine", 0.4, 120); },
+  over()   { this.blip(220, 0.7, "sawtooth", 0.5, -170); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",     // title | serve | play | point | over
+  pScore: 0,         // あなた
+  cScore: 0,         // 顧客
+  server: "cpu",     // 次のサーブ権（交互）
+  serveT: 0,
+  rally: 0, maxRally: 0,
+  finalNego: false,
+  flash: 0, shake: 0, overT: 0,
+  msg: null,         // {text, sub, color, age, life}
+  particles: [], trail: [],
+  keyL: false, keyR: false,
+  wins: Number(localStorage.getItem("sesshou-best") || 0),
+  P: { x: 0, target: 0, vx: 0, w: 110, h: 13, y: 0, flash: 0 },                       // あなた（下）
+  C: { x: 0, target: 0, vx: 0, w: 110, h: 13, y: 0, flash: 0, cap: 250, react: 0 },   // 顧客（上）
+  B: { x: 0, y: 0, vx: 0, vy: 0, speed: 0, r: 13, squash: 0 },                        // 要求チップ
+};
+resize();
+window.addEventListener("resize", resize);
+
+function msg(text, sub, color, life = 1.3) {
+  S.msg = { text, sub, color, age: 0, life };
+}
+
+function burst(x, y, color, n, speed = 180) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.3, 0.7), age: 0, color, r: rand(1, 3) });
+  }
+}
+
+/* ---------- サーブ ---------- */
+function setupServe() {
+  S.mode = "serve";
+  S.serveT = 0.9;
+  S.rally = 0;
+  S.trail.length = 0;
+  S.B.vx = 0; S.B.vy = 0; S.B.squash = 0;
+  updateHUD();
+}
+
+function launchServe() {
+  const B = S.B;
+  const dir = S.server === "you" ? -1 : 1;       // -1: 上へ（あなた→顧客）
+  const a = rand(-0.38, 0.38);
+  B.speed = L.speed0;
+  B.vx = Math.sin(a) * B.speed;
+  B.vy = dir * Math.cos(a) * B.speed;
+  S.mode = "play";
+  AudioFX.serve();
+}
+
+/* ---------- 反射 ---------- */
+function paddleBounce(pad, dir) {                // dir -1: プレイヤーが打った（上へ）
+  const B = S.B;
+  S.rally++;
+  if (S.rally > S.maxRally) S.maxRally = S.rally;
+  B.speed = Math.min(B.speed * 1.04, L.speedCap);
+  const off = clamp((B.x - pad.x) / (pad.w / 2 + B.r), -1, 1);
+  let a = off * 0.95 + clamp(pad.vx * 0.0012, -0.3, 0.3);    // パドル速度でスピン
+  a = clamp(a, -1.1, 1.1);
+  B.vx = Math.sin(a) * B.speed;
+  B.vy = dir * Math.cos(a) * B.speed;
+  B.y = pad.y + dir * (pad.h / 2 + B.r + 1);
+  B.squash = 1;
+  pad.flash = 0.28;
+  burst(B.x, pad.y, dir < 0 ? COLOR.ember : COLOR.magenta, 8, 150);
+  AudioFX.hit(S.rally);
+  updateHUD();
+}
+
+/* ---------- 得点 ---------- */
+function scorePoint(who) {                       // "you" | "cpu"
+  if (S.mode === "over") return;
+  if (who === "you") { S.pScore++; S.C.cap += 24; AudioFX.point(); }
+  else { S.cScore++; AudioFX.concede(); }
+  S.flash = 0.3; S.shake = 10;
+  burst(S.B.x, clamp(S.B.y, 40, H - 40), who === "you" ? COLOR.cyan : COLOR.risk, 22, 240);
+  updateHUD();
+  if (S.pScore >= WIN_PT || S.cScore >= WIN_PT) {
+    S.mode = "point";                            // 演出待ち（ボール停止）
+    return void setTimeout(() => endMatch(S.pScore >= WIN_PT), 700);
+  }
+  if (S.pScore === 6 && S.cScore === 6 && !S.finalNego) {
+    S.finalNego = true;
+    msg("最終交渉", "次の一本で、すべてが決まる", COLOR.emberBright, 2.0);
+  } else if (who === "you") {
+    msg("要求、却下。", "「それは次フェーズで」", COLOR.cyan, 1.0);
+  } else {
+    msg("要求、通る。", "持ち帰り検討となりました", COLOR.risk, 1.0);
+  }
+  S.server = S.server === "you" ? "cpu" : "you";
+  setupServe();
+}
+
+function updateHUD() {
+  document.getElementById("score").textContent = `顧客 ${S.cScore} — ${S.pScore} あなた`;
+  document.getElementById("best").textContent = "通算受注 " + S.wins;
+  document.getElementById("rally").textContent = "RALLY " + S.rally;
+}
+
+function endMatch(won) {
+  if (S.mode === "over") return;
+  S.mode = "over"; S.overT = 0;
+  if (won) {
+    S.wins++;
+    localStorage.setItem("sesshou-best", String(S.wins));
+    AudioFX.win();
+  } else {
+    AudioFX.over();
+  }
+  document.getElementById("cause").textContent = won ? "受注、成立。" : "今回は、持ち帰りで。";
+  document.getElementById("r-cpu").textContent = S.cScore;
+  document.getElementById("r-you").textContent = S.pScore;
+  document.getElementById("r-rally").textContent = `最長ラリー ${S.maxRally} 打`;
+  document.getElementById("r-best").textContent = `通算受注 ${S.wins} 件`;
+  document.getElementById("rank-sub").textContent = won
+    ? "無理な要求は、すべて角度をつけて返した。良い折衝だった。"
+    : "顧客の球は速かった。次回打ち合わせの日程を調整中…";
+  document.getElementById("hud").classList.remove("on");
+  document.getElementById("screen-result").classList.remove("hidden");
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  S.pScore = 0; S.cScore = 0;
+  S.rally = 0; S.maxRally = 0;
+  S.finalNego = false;
+  S.flash = 0; S.shake = 0; S.overT = 0;
+  S.msg = null; S.particles = []; S.trail = [];
+  S.server = Math.random() < 0.5 ? "you" : "cpu";
+  S.P.x = S.P.target = W / 2; S.P.vx = 0;
+  S.C.x = S.C.target = W / 2; S.C.vx = 0; S.C.cap = 250; S.C.react = 0;
+  setupServe();
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  updateHUD();
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.6) startGame();
+});
+
+/* ---------- 入力 ---------- */
+function setPaddleX(x) {
+  S.P.target = clamp(x, L.margin + S.P.w / 2, W - L.margin - S.P.w / 2);
+}
+canvas.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  AudioFX.init();
+  setPaddleX(e.clientX);
+});
+canvas.addEventListener("pointermove", e => {
+  if (S.mode === "serve" || S.mode === "play") setPaddleX(e.clientX);
+});
+window.addEventListener("keydown", e => {
+  if (e.code === "ArrowLeft")  { e.preventDefault(); S.keyL = true; }
+  if (e.code === "ArrowRight") { e.preventDefault(); S.keyR = true; }
+  if (e.code === "Space" && S.mode === "over" && S.overT > 0.6) { e.preventDefault(); if (!e.repeat) startGame(); }
+}, { passive: false });
+window.addEventListener("keyup", e => {
+  if (e.code === "ArrowLeft")  S.keyL = false;
+  if (e.code === "ArrowRight") S.keyR = false;
+});
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+
+function update(dt) {
+  const { P, C, B } = S;
+
+  if (S.mode === "serve" || S.mode === "play") {
+    // プレイヤー：キー → ターゲット移動、ポインタ → setPaddleX
+    if (S.keyL) S.P.target -= 640 * dt;
+    if (S.keyR) S.P.target += 640 * dt;
+    P.target = clamp(P.target, L.margin + P.w / 2, W - L.margin - P.w / 2);
+    const k = 1 - Math.exp(-16 * dt);
+    const nx = clamp(P.x + (P.target - P.x) * k, L.margin + P.w / 2, W - L.margin - P.w / 2);
+    P.vx = (nx - P.x) / Math.max(dt, 1e-4);
+    P.x = nx;
+
+    // CPU：反応遅延つき追従、速度上限あり
+    C.react -= dt;
+    if (C.react <= 0) {
+      C.react = rand(0.09, 0.17);
+      if (S.mode === "play" && B.vy < 0) C.target = B.x + rand(-14, 14);
+      else C.target = W / 2 + (B.x - W / 2) * 0.25;
+    }
+    const want = clamp(C.target, L.margin + C.w / 2, W - L.margin - C.w / 2);
+    const step = clamp(want - C.x, -C.cap * dt, C.cap * dt);
+    C.vx = step / Math.max(dt, 1e-4);
+    C.x += step;
+  }
+
+  if (S.mode === "serve") {
+    const pad = S.server === "you" ? P : C;
+    B.x = pad.x;
+    B.y = pad.y + (S.server === "you" ? -1 : 1) * (pad.h / 2 + B.r + 6);
+    S.serveT -= dt;
+    if (S.serveT <= 0) launchServe();
+  }
+
+  if (S.mode === "play") {
+    B.x += B.vx * dt;
+    B.y += B.vy * dt;
+
+    // 壁
+    if (B.x < L.margin + B.r && B.vx < 0) { B.x = L.margin + B.r; B.vx = -B.vx; B.squash = 0.5; AudioFX.wall(); }
+    if (B.x > W - L.margin - B.r && B.vx > 0) { B.x = W - L.margin - B.r; B.vx = -B.vx; B.squash = 0.5; AudioFX.wall(); }
+
+    // パドル
+    if (B.vy > 0 && B.y + B.r >= P.y - P.h / 2 && B.y - B.r <= P.y + P.h / 2 && Math.abs(B.x - P.x) <= P.w / 2 + B.r) {
+      paddleBounce(P, -1);
+    }
+    if (B.vy < 0 && B.y - B.r <= C.y + C.h / 2 && B.y + B.r >= C.y - C.h / 2 && Math.abs(B.x - C.x) <= C.w / 2 + B.r) {
+      paddleBounce(C, 1);
+    }
+
+    // 得点
+    if (B.y < -60) scorePoint("you");
+    else if (B.y > H + 60) scorePoint("cpu");
+
+    // 軌跡
+    S.trail.push({ x: B.x, y: B.y, age: 0, life: 0.22 });
+    if (S.trail.length > 30) S.trail.shift();
+  }
+
+  for (let i = S.trail.length - 1; i >= 0; i--) {
+    const tr = S.trail[i];
+    tr.age += dt;
+    if (tr.age >= tr.life) S.trail.splice(i, 1);
+  }
+
+  if (B.squash > 0) B.squash = Math.max(0, B.squash - dt * 5);
+  if (P.flash > 0) P.flash -= dt;
+  if (C.flash > 0) C.flash -= dt;
+  if (S.flash > 0) S.flash -= dt;
+  if (S.shake > 0) S.shake = Math.max(0, S.shake - dt * 26);
+  if (S.msg && (S.msg.age += dt) >= S.msg.life) S.msg = null;
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 300 * dt;
+  }
+  if (S.mode === "over") S.overT += dt;
+}
+
+function drawPaddle(pad, color, glow) {
+  const f = Math.max(0, pad.flash) / 0.28;
+  ctx.save();
+  if (f > 0) {
+    const g = ctx.createRadialGradient(pad.x, pad.y, 0, pad.x, pad.y, pad.w * 0.7);
+    g.addColorStop(0, glow.replace("A)", (0.35 * f) + ")"));
+    g.addColorStop(1, glow.replace("A)", "0)"));
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.w * 0.7, 0, TAU); ctx.fill();
+  }
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.roundRect(pad.x - pad.w / 2, pad.y - pad.h / 2, pad.w, pad.h, pad.h / 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawBall() {
+  const B = S.B;
+  // 軌跡
+  for (const tr of S.trail) {
+    const a = 1 - tr.age / tr.life;
+    ctx.globalAlpha = a * 0.18;
+    ctx.fillStyle = COLOR.emberBright;
+    ctx.beginPath(); ctx.arc(tr.x, tr.y, B.r * 0.55 * a, 0, TAU); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.save();
+  ctx.translate(B.x, B.y);
+  if (B.squash > 0 && (B.vx || B.vy)) {
+    const ang = Math.atan2(B.vy, B.vx);
+    ctx.rotate(ang);
+    ctx.scale(1 + B.squash * 0.3, 1 - B.squash * 0.3);
+    ctx.rotate(-ang);
+  }
+  ctx.rotate(clamp(B.vx * 0.0004, -0.28, 0.28));
+  // 書類チップ「要求」
+  ctx.fillStyle = COLOR.cream;
+  ctx.beginPath(); ctx.roundRect(-11, -14, 22, 28, 3); ctx.fill();
+  ctx.fillStyle = COLOR.ember;
+  ctx.beginPath(); ctx.moveTo(4, -14); ctx.lineTo(11, -14); ctx.lineTo(11, -7); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = COLOR.smoke || "#2a2a2a";
+  ctx.font = "600 9px 'Noto Sans JP', sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("要", 0, -4);
+  ctx.fillText("求", 0, 6);
+  ctx.textBaseline = "alphabetic";
+  ctx.restore();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (S.shake > 0.3) ctx.translate(rand(-S.shake, S.shake) * 0.5, rand(-S.shake, S.shake) * 0.5);
+
+  const mono = getComputedStyle(document.body).getPropertyValue("--font-mono");
+  const body = getComputedStyle(document.body).getPropertyValue("--font-body");
+
+  if (S.mode !== "title") {
+    // コート：側壁
+    ctx.strokeStyle = "rgba(243,236,220,.2)";
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(L.margin, 0); ctx.lineTo(L.margin, H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(W - L.margin, 0); ctx.lineTo(W - L.margin, H); ctx.stroke();
+    // センターライン（交渉テーブル）
+    ctx.strokeStyle = "rgba(243,236,220,.12)";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([6, 10]);
+    ctx.beginPath(); ctx.moveTo(L.margin, H / 2); ctx.lineTo(W - L.margin, H / 2); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "rgba(184,184,184,.35)";
+    ctx.font = "9px " + mono;
+    ctx.textAlign = "center";
+    ctx.fillText("NEGOTIATION TABLE", W / 2, H / 2 - 8);
+
+    // ラベル
+    ctx.font = "10px " + mono;
+    ctx.textAlign = "left";
+    ctx.fillStyle = "rgba(255,105,191,.5)";
+    ctx.fillText("顧客", L.margin + 8, S.C.y - 18);
+    ctx.fillStyle = "rgba(224,164,90,.6)";
+    ctx.fillText("あなた", L.margin + 8, S.P.y + 26);
+
+    drawPaddle(S.C, COLOR.magenta, "rgba(255,105,191,A)");
+    drawPaddle(S.P, COLOR.ember, "rgba(224,164,90,A)");
+    drawBall();
+
+    if (S.mode === "serve") {
+      ctx.fillStyle = "rgba(216,205,182,.6)";
+      ctx.font = "12px " + body;
+      ctx.textAlign = "center";
+      ctx.fillText(S.server === "you" ? "あなたのサーブ — 要求を突き返せ" : "顧客が要求を準備している…", W / 2, H / 2 + 30);
+    }
+  }
+
+  // フラッシュ
+  if (S.flash > 0) {
+    ctx.fillStyle = `rgba(243,236,220,${S.flash * 0.25})`;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // メッセージ
+  if (S.msg) {
+    const k = S.msg.age / S.msg.life;
+    const a = k < 0.12 ? k / 0.12 : k > 0.6 ? Math.max(0, 1 - (k - 0.6) / 0.4) : 1;
+    ctx.globalAlpha = a;
+    ctx.textAlign = "center";
+    ctx.fillStyle = S.msg.color;
+    ctx.font = `700 ${Math.round(Math.min(38, W * 0.06))}px 'Shippori Mincho', serif`;
+    ctx.fillText(S.msg.text, W / 2, H * 0.32);
+    ctx.fillStyle = "rgba(216,205,182,.85)";
+    ctx.font = "12px " + body;
+    ctx.fillText(S.msg.sub, W / 2, H * 0.32 + 28);
+    ctx.globalAlpha = 1;
+  }
+
+  // パーティクル
+  for (const p of S.particles) {
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  update(dt);
+  draw();
+}
+requestAnimationFrame(loop);
+window.__G = { S, startGame, setPaddleX, scorePoint, endMatch, setupServe, launchServe };
+</script>
+</body>
+</html>

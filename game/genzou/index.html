@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>現像 — GENZOU | 街はすべて、被写体だ。</title>
+<meta name="description" content="ノワールの街をポルシェで走り、トイカメラでITを撮るゲーム。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a;
+    --black: #100b05;
+    --smoke: #2a2a2a;
+    --slate: #3a3a3a;
+    --silver: #b8b8b8;
+    --cream: #f3ecdc;
+    --cream-dim: #d8cdb6;
+    --ember: #e0a45a;
+    --ember-bright: #f6cf86;
+    --cyan: #69bfff;
+    --green: #2ecc71;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    height: 100%; overflow: hidden;
+    background: var(--noir); color: var(--cream);
+    font-family: var(--font-body);
+    overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  }
+  #stage { position: fixed; inset: 0; touch-action: none; display: block; }
+  .grain {
+    position: fixed; inset: 0; pointer-events: none; opacity: .06; z-index: 5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  }
+  .vignette {
+    position: fixed; inset: 0; pointer-events: none; z-index: 4;
+    background: radial-gradient(120% 95% at 50% 45%, transparent 60%, rgba(0,0,0,.5) 100%);
+  }
+
+  .screen {
+    position: fixed; inset: 0; z-index: 20;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px;
+    background: rgba(10,10,10,.82);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    transition: opacity .35s ease;
+    overflow-y: auto;
+  }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em;
+    color: var(--ember); text-transform: uppercase;
+  }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1;
+    color: var(--cream); letter-spacing: .08em; margin: 18px 0 4px;
+    text-shadow: 0 0 50px rgba(224,164,90,.25);
+  }
+  .title-en {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em;
+    color: var(--silver); margin-bottom: 22px; text-indent: .6em;
+  }
+  .tagline {
+    font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px);
+    color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 26px;
+  }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 28px; max-width: 480px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn {
+    font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em;
+    color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px;
+    cursor: pointer; transition: background .2s, transform .15s;
+  }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost {
+    background: transparent; color: var(--cream-dim);
+    border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px;
+  }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link {
+    position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 21;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em;
+    color: var(--silver); text-decoration: none;
+  }
+  .back-link:hover { color: var(--ember); }
+  .loading {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em;
+    color: var(--silver); margin-top: 18px;
+  }
+
+  /* ---- HUD ---- */
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; }
+  #hud.on { opacity: 1; }
+  #speed {
+    position: absolute; bottom: max(18px, env(safe-area-inset-bottom)); left: 20px;
+    font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--cream-dim);
+  }
+  #quests {
+    position: absolute; top: max(14px, env(safe-area-inset-top)); right: 16px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em;
+    color: var(--silver); text-align: right; line-height: 1.9;
+    background: rgba(10,10,10,.45); padding: 10px 14px; border-radius: 8px;
+  }
+  #quests .done { color: var(--ember-bright); }
+  #quests .done::after { content: " ✓"; }
+  #likes {
+    position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--ember-bright);
+  }
+  #album {
+    position: absolute; bottom: max(14px, env(safe-area-inset-bottom)); right: 16px;
+    display: flex; gap: 6px; flex-direction: row-reverse;
+  }
+  #album img {
+    width: 64px; height: 50px; object-fit: cover;
+    border: 2px solid var(--cream); border-radius: 2px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.6);
+    transform: rotate(-2deg);
+  }
+  #album img:nth-child(even) { transform: rotate(2deg); }
+  #toast {
+    position: absolute; left: 50%; top: 22%; transform: translateX(-50%);
+    font-family: var(--font-display); font-size: clamp(16px, 4vw, 24px);
+    letter-spacing: .15em; color: var(--cream); text-align: center;
+    opacity: 0; transition: opacity .3s; white-space: nowrap;
+    text-shadow: 0 2px 24px rgba(0,0,0,.9);
+  }
+  #toast small {
+    display: block; font-family: var(--font-mono); font-size: 12px;
+    color: var(--cyan); margin-top: 6px; letter-spacing: .1em;
+  }
+
+  /* ---- ファインダー ---- */
+  #finder { position: fixed; inset: 0; z-index: 7; pointer-events: none; opacity: 0; transition: opacity .25s; }
+  #finder.on { opacity: 1; }
+  #finder .frame {
+    position: absolute; inset: 6%;
+    border: 1px solid rgba(243,236,220,.25);
+  }
+  #finder .corner { position: absolute; width: 26px; height: 26px; border-color: var(--cream); border-style: solid; border-width: 0; }
+  #finder .c1 { top: -2px; left: -2px; border-top-width: 2px; border-left-width: 2px; }
+  #finder .c2 { top: -2px; right: -2px; border-top-width: 2px; border-right-width: 2px; }
+  #finder .c3 { bottom: -2px; left: -2px; border-bottom-width: 2px; border-left-width: 2px; }
+  #finder .c4 { bottom: -2px; right: -2px; border-bottom-width: 2px; border-right-width: 2px; }
+  #finder .cross {
+    position: absolute; left: 50%; top: 50%; width: 18px; height: 18px;
+    transform: translate(-50%,-50%);
+  }
+  #finder .cross::before, #finder .cross::after {
+    content: ""; position: absolute; background: rgba(243,236,220,.6);
+  }
+  #finder .cross::before { left: 50%; top: 0; width: 1px; height: 100%; }
+  #finder .cross::after { top: 50%; left: 0; height: 1px; width: 100%; }
+  #finder .meta {
+    position: absolute; bottom: 10px; left: 14px;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em;
+    color: rgba(243,236,220,.7);
+  }
+  #flash { position: fixed; inset: 0; z-index: 9; background: #fff; opacity: 0; pointer-events: none; }
+
+  /* ---- 操作ボタン ---- */
+  .ctl {
+    position: fixed; z-index: 8; pointer-events: auto;
+    border-radius: 50%; border: 1px solid rgba(224,164,90,.45);
+    background: rgba(224,164,90,.10); color: var(--ember-bright);
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent; user-select: none; cursor: pointer;
+    opacity: 0; transition: opacity .4s; pointer-events: none;
+  }
+  .ctl.show { opacity: 1; pointer-events: auto; }
+  #btn-cam { right: 18px; bottom: calc(max(18px, env(safe-area-inset-bottom)) + 70px); width: 64px; height: 64px; font-size: 22px; }
+  #btn-shutter {
+    left: 50%; transform: translateX(-50%);
+    bottom: calc(max(18px, env(safe-area-inset-bottom)) + 14px);
+    width: 78px; height: 78px;
+    border: 3px solid var(--cream); background: rgba(243,236,220,.12);
+  }
+  #btn-shutter::after { content: ""; width: 54px; height: 54px; border-radius: 50%; background: var(--cream); opacity: .85; }
+  .touch-only { display: none; }
+  body.touch .touch-only { display: flex; }
+  #pad-l { left: 16px; bottom: max(90px, env(safe-area-inset-bottom)); width: 64px; height: 64px; font-size: 20px; }
+  #pad-r { left: 92px; bottom: max(90px, env(safe-area-inset-bottom)); width: 64px; height: 64px; font-size: 20px; }
+  #pad-go { left: 16px; bottom: calc(max(90px, env(safe-area-inset-bottom)) + 76px); width: 64px; height: 64px; font-size: 18px; }
+  #pad-bk { left: 92px; bottom: calc(max(90px, env(safe-area-inset-bottom)) + 76px); width: 64px; height: 64px; font-size: 16px; }
+
+  /* ---- 完成画面 ---- */
+  .pub-title {
+    font-family: var(--font-display); font-size: clamp(28px, 7vw, 44px);
+    color: var(--cream); letter-spacing: .14em; margin: 12px 0 4px;
+  }
+  .pub-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .08em; margin-bottom: 22px; line-height: 1.9; }
+  .photo-grid {
+    display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+    max-width: 640px; margin-bottom: 24px;
+  }
+  .photo-grid img {
+    width: 150px; height: 116px; object-fit: cover;
+    border: 4px solid var(--cream); border-radius: 2px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.6);
+    transform: rotate(-2deg);
+  }
+  .photo-grid img:nth-child(even) { transform: rotate(2.5deg); }
+  .likes-line {
+    font-family: var(--font-mono); font-size: 14px; letter-spacing: .25em;
+    color: var(--ember-bright); margin-bottom: 18px;
+  }
+</style>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="vignette"></div>
+<div class="grain"></div>
+<div id="flash"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="speed">0 km/h</div>
+  <div id="likes">♥ 0</div>
+  <div id="quests"></div>
+  <div id="album"></div>
+  <div id="toast"></div>
+</div>
+
+<div id="finder">
+  <div class="frame">
+    <span class="corner c1"></span><span class="corner c2"></span>
+    <span class="corner c3"></span><span class="corner c4"></span>
+    <div class="cross"></div>
+    <div class="meta">TOY CAM — ISO AUTO ・ 35mm ・ NOIR</div>
+  </div>
+</div>
+
+<button class="ctl" id="btn-cam">📷</button>
+<button class="ctl" id="btn-shutter" aria-label="シャッター"></button>
+<button class="ctl touch-only" id="pad-l">◀</button>
+<button class="ctl touch-only" id="pad-r">▶</button>
+<button class="ctl touch-only" id="pad-go">▲</button>
+<button class="ctl touch-only" id="pad-bk">▼</button>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Open World Photo Drive — TPS</div>
+  <h1 class="title">現像</h1>
+  <div class="title-en">G E N Z O U</div>
+  <p class="tagline">街はすべて、被写体だ。</p>
+  <p class="hint">
+    霧の街をポルシェで流し、<em>トイカメラ</em>で「IT」を撮る。<br>
+    走る: WASD / 矢印（スマホは左下のパッド）<br>
+    カメラ: <em>C</em> か 📷 で構える。ドラッグで構図、ホイールでズーム、<em>SPACE</em> か白いボタンでシャッター。<br>
+    お題は5つ。全部撮れたら、特集記事が公開される。
+  </p>
+  <button class="btn" id="btn-start">エンジン始動</button>
+  <div class="loading" id="loading">LOADING CITY…</div>
+</div>
+
+<div class="screen hidden" id="screen-done">
+  <div class="bracket">All Subjects Captured</div>
+  <div class="pub-title">特集記事、公開。</div>
+  <div class="pub-sub">「ノワールの街とIT — トイカメラと911で巡る5つの被写体」<br>記事はバズり、いいねが止まらない。</div>
+  <div class="photo-grid" id="done-photos"></div>
+  <div class="likes-line" id="done-likes">♥ 0</div>
+  <button class="btn" id="btn-again">もう一周する</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+</div>
+
+<script type="module">
+import * as THREE from "three";
+
+/* ============================================================
+   現像 / GENZOU — ノワールの街をポルシェで走り、トイカメラでITを撮る
+   ============================================================ */
+
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+const lerp = (a, b, t) => a + (b - a) * t;
+
+const IS_TOUCH = "ontouchstart" in window;
+if (IS_TOUCH) document.body.classList.add("touch");
+
+/* ---------------- 被写体（お題 = IT） ---------------- */
+const SUBJECTS = [
+  { id: "cloud",  name: "クラウド",       tag: "#クラウド移行 完了",        maxDist: 800, done: false },
+  { id: "dc",     name: "データセンター", tag: "#オンプレも好き",           maxDist: 260, done: false },
+  { id: "legacy", name: "レガシービル",   tag: "#レガシー改修 が捗る",      maxDist: 260, done: false },
+  { id: "tower",  name: "電波塔",         tag: "#ネットワークは物理層から", maxDist: 500, done: false },
+  { id: "prod",   name: "本番環境ビル",   tag: "#本番環境を見守る会",       maxDist: 260, done: false },
+];
+
+/* ---------------- audio ---------------- */
+const AudioFX = {
+  ctx: null, gain: null, engine: null, engineGain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.14;
+      this.gain.connect(this.ctx.destination);
+      // エンジン: ノコギリ波 + ローパス
+      this.engine = this.ctx.createOscillator();
+      this.engine.type = "sawtooth";
+      this.engine.frequency.value = 50;
+      const filt = this.ctx.createBiquadFilter();
+      filt.type = "lowpass"; filt.frequency.value = 240;
+      this.engineGain = this.ctx.createGain();
+      this.engineGain.gain.value = 0;
+      this.engine.connect(filt); filt.connect(this.engineGain);
+      this.engineGain.connect(this.gain);
+      this.engine.start();
+    } catch (e) {}
+  },
+  setEngine(speedRatio, on) {
+    if (!this.engine) return;
+    this.engine.frequency.value = 46 + speedRatio * 130;
+    this.engineGain.gain.value = on ? 0.16 + speedRatio * 0.2 : 0;
+  },
+  blip(freq, dur, type = "sine", vol = 1, slide = 0) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(40, freq + slide), t + dur);
+    g.gain.setValueAtTime(vol * 0.5, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(this.gain);
+    o.start(t); o.stop(t + dur + 0.02);
+  },
+  shutter() { this.blip(1800, 0.03, "square", 0.5, -600); this.blip(700, 0.05, "square", 0.3, -300); },
+  found()   { this.blip(660, 0.16, "sine", 0.5, 220); this.blip(990, 0.25, "sine", 0.35, 240); },
+  publish() { this.blip(523, 0.4, "sine", 0.5); this.blip(659, 0.5, "sine", 0.4); this.blip(784, 0.7, "sine", 0.4); },
+};
+
+/* ---------------- three.js セットアップ ---------------- */
+const canvas = document.getElementById("stage");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x1a1410);
+scene.fog = new THREE.Fog(0x1a1410, 140, 780);
+
+const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.5, 2000);
+
+window.addEventListener("resize", () => {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+});
+
+// 光: 琥珀色の薄暮
+scene.add(new THREE.HemisphereLight(0x8a7456, 0x241d16, 1.7));
+const sun = new THREE.DirectionalLight(0xe0a45a, 1.5);
+sun.position.set(-220, 180, -120);
+scene.add(sun);
+
+/* ---------------- 道路つきの地面 ---------------- */
+const MAP = 1240;             // 地面サイズ
+const ROAD_EVERY = 140, ROAD_W = 34;
+function makeGround() {
+  const cv = document.createElement("canvas");
+  cv.width = cv.height = 1024;
+  const c = cv.getContext("2d");
+  c.fillStyle = "#1d1813";
+  c.fillRect(0, 0, 1024, 1024);
+  const k = 1024 / MAP;
+  c.fillStyle = "#2b241d";
+  for (let r = -MAP / 2; r <= MAP / 2; r += ROAD_EVERY) {
+    const p = (r + MAP / 2) * k;
+    c.fillRect(p - ROAD_W * k / 2, 0, ROAD_W * k, 1024);
+    c.fillRect(0, p - ROAD_W * k / 2, 1024, ROAD_W * k);
+  }
+  // センターライン
+  c.strokeStyle = "rgba(243,236,220,.30)";
+  c.lineWidth = 1.6;
+  c.setLineDash([10, 12]);
+  for (let r = -MAP / 2; r <= MAP / 2; r += ROAD_EVERY) {
+    const p = (r + MAP / 2) * k;
+    c.beginPath(); c.moveTo(p, 0); c.lineTo(p, 1024); c.stroke();
+    c.beginPath(); c.moveTo(0, p); c.lineTo(1024, p); c.stroke();
+  }
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const g = new THREE.Mesh(
+    new THREE.PlaneGeometry(MAP, MAP),
+    new THREE.MeshLambertMaterial({ map: tex })
+  );
+  g.rotation.x = -Math.PI / 2;
+  scene.add(g);
+}
+makeGround();
+
+/* ---------------- 窓テクスチャ ---------------- */
+function windowTexture(base, lit) {
+  const cv = document.createElement("canvas");
+  cv.width = 64; cv.height = 128;
+  const c = cv.getContext("2d");
+  c.fillStyle = base; c.fillRect(0, 0, 64, 128);
+  for (let y = 6; y < 122; y += 12) {
+    for (let x = 6; x < 58; x += 12) {
+      c.fillStyle = Math.random() < 0.42 ? lit : "rgba(14,11,8,.85)";
+      c.fillRect(x, y, 7, 8);
+    }
+  }
+  const t = new THREE.CanvasTexture(cv);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+function labelSprite(text, color = "#f3ecdc", w = 46) {
+  const cv = document.createElement("canvas");
+  cv.width = 512; cv.height = 128;
+  const c = cv.getContext("2d");
+  c.font = "700 54px 'Shippori Mincho', serif";
+  c.textAlign = "center"; c.textBaseline = "middle";
+  c.fillStyle = color;
+  c.shadowColor = "rgba(0,0,0,.8)"; c.shadowBlur = 14;
+  c.fillText(text, 256, 64);
+  const t = new THREE.CanvasTexture(cv);
+  t.colorSpace = THREE.SRGBColorSpace;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false }));
+  sp.scale.set(w, w / 4, 1);
+  return sp;
+}
+
+/* ---------------- 街 ---------------- */
+const colliders = [];      // {minX,maxX,minZ,maxZ}
+const buildingMeshes = []; // 遮蔽判定用
+const subjectsAnchor = {}; // id -> THREE.Vector3
+
+const winTexA = windowTexture("#241e18", "rgba(246,207,134,.9)");
+const winTexB = windowTexture("#1d1a1f", "rgba(105,191,255,.75)");
+const winTexC = windowTexture("#221a14", "rgba(224,164,90,.85)");
+
+function addBox(x, z, w, h, d, mat, collide = true) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  m.position.set(x, h / 2, z);
+  scene.add(m);
+  buildingMeshes.push(m);
+  if (collide) colliders.push({ minX: x - w / 2 - 2.4, maxX: x + w / 2 + 2.4, minZ: z - d / 2 - 2.4, maxZ: z + d / 2 + 2.4 });
+  return m;
+}
+
+function buildCity() {
+  const B = ROAD_EVERY;
+  const landmarkCells = {
+    "2,-2": "dc", "-2,2": "legacy", "3,1": "tower", "-1,-3": "prod",
+  };
+  for (let gx = -4; gx <= 4; gx++) {
+    for (let gz = -4; gz <= 4; gz++) {
+      if (gx === 0 && gz === 0) continue;            // スポーン周辺は広場
+      const cx = gx * B + B / 2 - (gx >= 0 ? 0 : B); // ブロック中心（道路の間）
+      const cz = gz * B + B / 2 - (gz >= 0 ? 0 : B);
+      const key = gx + "," + gz;
+      if (landmarkCells[key]) { buildLandmark(landmarkCells[key], cx, cz); continue; }
+      // 通常ビル 1〜3 棟
+      const n = 1 + Math.floor(Math.random() * 3);
+      for (let i = 0; i < n; i++) {
+        const w = rand(22, 44), d = rand(22, 44), h = rand(16, 72);
+        const ox = rand(-26, 26), oz = rand(-26, 26);
+        const tex = [winTexA, winTexB, winTexC][Math.floor(Math.random() * 3)];
+        const t2 = tex.clone();
+        t2.needsUpdate = true;
+        t2.repeat.set(Math.max(1, Math.round(w / 16)), Math.max(1, Math.round(h / 22)));
+        t2.wrapS = t2.wrapT = THREE.RepeatWrapping;
+        addBox(cx + ox, cz + oz, w, h, d, new THREE.MeshLambertMaterial({ map: t2 }));
+      }
+    }
+  }
+}
+
+function buildLandmark(id, cx, cz) {
+  if (id === "dc") {
+    // データセンター: 低くて長い、緑のLEDストライプ
+    const body = addBox(cx, cz, 92, 22, 60, new THREE.MeshLambertMaterial({ color: 0x2a2a2e }));
+    const led = new THREE.Mesh(
+      new THREE.BoxGeometry(92.6, 1.6, 60.6),
+      new THREE.MeshBasicMaterial({ color: 0x2ecc71 })
+    );
+    led.position.set(cx, 16, cz);
+    scene.add(led);
+    led.userData.blink = true;
+    blinkers.push(led);
+    const lab = labelSprite("DATA CENTER", "#2ecc71", 60);
+    lab.position.set(cx, 34, cz);
+    scene.add(lab);
+    subjectsAnchor.dc = new THREE.Vector3(cx, 12, cz);
+  } else if (id === "legacy") {
+    // レガシービル: 茶色く古く、少し傾いている
+    const m = addBox(cx, cz, 40, 58, 40, new THREE.MeshLambertMaterial({ map: winTexC.clone() }));
+    m.rotation.z = 0.035;
+    m.material.map.repeat.set(2, 3);
+    m.material.map.wrapS = m.material.map.wrapT = THREE.RepeatWrapping;
+    m.material.map.needsUpdate = true;
+    m.material.color = new THREE.Color(0x8a6a4a);
+    const lab = labelSprite("レガシービル", "#d8cdb6", 50);
+    lab.position.set(cx, 70, cz);
+    scene.add(lab);
+    subjectsAnchor.legacy = new THREE.Vector3(cx, 30, cz);
+  } else if (id === "tower") {
+    // 電波塔: 紅白
+    const seg = 5;
+    for (let i = 0; i < seg; i++) {
+      const r1 = 9 - i * 1.5;
+      const m = new THREE.Mesh(
+        new THREE.CylinderGeometry(r1 - 1.2, r1, 26, 8, 1, true),
+        new THREE.MeshLambertMaterial({ color: i % 2 ? 0xf3ecdc : 0xe06a4a, side: THREE.DoubleSide })
+      );
+      m.position.set(cx, 13 + i * 26, cz);
+      scene.add(m);
+      buildingMeshes.push(m);
+    }
+    colliders.push({ minX: cx - 11, maxX: cx + 11, minZ: cz - 11, maxZ: cz + 11 });
+    const beacon = new THREE.Mesh(new THREE.SphereGeometry(2.4, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff4040 }));
+    beacon.position.set(cx, 13 + seg * 26 + 4, cz);
+    scene.add(beacon);
+    blinkers.push(beacon);
+    subjectsAnchor.tower = new THREE.Vector3(cx, 80, cz);
+  } else if (id === "prod") {
+    // 本番環境ビル: 赤く光る。触るな。
+    addBox(cx, cz, 46, 64, 46, new THREE.MeshLambertMaterial({ color: 0x33201c, emissive: 0x4a1410 }));
+    const sign = labelSprite("PROD — 触るな", "#e06a4a", 56);
+    sign.position.set(cx, 76, cz);
+    scene.add(sign);
+    const glow = new THREE.PointLight(0xe06a4a, 120, 130);
+    glow.position.set(cx, 70, cz);
+    scene.add(glow);
+    subjectsAnchor.prod = new THREE.Vector3(cx, 32, cz);
+  }
+}
+
+const blinkers = [];
+buildCity();
+
+/* ---------------- クラウド（雲） ---------------- */
+const clouds = [];
+{
+  const mat = new THREE.MeshLambertMaterial({ color: 0xd8cdb6, emissive: 0x3a3228 });
+  for (let i = 0; i < 5; i++) {
+    const g = new THREE.Group();
+    const n = 4 + Math.floor(Math.random() * 3);
+    for (let j = 0; j < n; j++) {
+      const s = new THREE.Mesh(new THREE.SphereGeometry(rand(12, 22), 10, 8), mat);
+      s.position.set(rand(-24, 24), rand(-6, 8), rand(-12, 12));
+      s.scale.y = 0.6;
+      g.add(s);
+    }
+    g.position.set(rand(-500, 500), rand(170, 240), rand(-500, 500));
+    g.userData.vx = rand(2, 5) * (Math.random() < 0.5 ? -1 : 1);
+    scene.add(g);
+    clouds.push(g);
+  }
+  subjectsAnchor.cloud = clouds[0].position; // 一番近い雲を毎フレーム指す（後で更新）
+}
+
+/* ---------------- ポルシェ（ローポリ 911） ---------------- */
+const car = new THREE.Group();
+{
+  const cream = new THREE.MeshLambertMaterial({ color: 0xf3ecdc });
+  const dark = new THREE.MeshLambertMaterial({ color: 0x16130f });
+  // ボディ
+  const body = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.62, 4.6), cream);
+  body.position.y = 0.62;
+  car.add(body);
+  // ノーズ（前下がり）
+  const nose = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.4, 1.1), cream);
+  nose.position.set(0, 0.5, 2.35);
+  nose.rotation.x = 0.1;
+  car.add(nose);
+  // キャビン（911 の丸い背中）
+  const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.55, 2.3), new THREE.MeshLambertMaterial({ color: 0x241f18 }));
+  cabin.position.set(0, 1.18, -0.25);
+  cabin.rotation.x = -0.06;
+  car.add(cabin);
+  const slope = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.5, 1.4), cream);
+  slope.position.set(0, 0.98, -1.6);
+  slope.rotation.x = -0.34;
+  car.add(slope);
+  // ダックテール
+  const tail = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.1, 0.5), cream);
+  tail.position.set(0, 1.02, -2.2);
+  tail.rotation.x = 0.3;
+  car.add(tail);
+  // ホイール
+  const wg = new THREE.CylinderGeometry(0.42, 0.42, 0.3, 12);
+  for (const [wx, wz] of [[-1.0, 1.55], [1.0, 1.55], [-1.0, -1.5], [1.0, -1.5]]) {
+    const w = new THREE.Mesh(wg, dark);
+    w.rotation.z = Math.PI / 2;
+    w.position.set(wx, 0.42, wz);
+    car.add(w);
+  }
+  // ヘッドライト / テール
+  const hl = new THREE.MeshBasicMaterial({ color: 0xf6cf86 });
+  for (const hx of [-0.7, 0.7]) {
+    const l = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 8), hl);
+    l.position.set(hx, 0.78, 2.9);
+    car.add(l);
+  }
+  const tl = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.12, 0.06), new THREE.MeshBasicMaterial({ color: 0xe06a4a }));
+  tl.position.set(0, 0.85, -2.32);
+  car.add(tl);
+  // ヘッドライトの光
+  const spot = new THREE.SpotLight(0xf6cf86, 260, 90, 0.5, 0.5);
+  spot.position.set(0, 1.2, 2.4);
+  spot.target.position.set(0, 0, 30);
+  car.add(spot); car.add(spot.target);
+  car.position.set(0, 0, 0);
+  scene.add(car);
+}
+
+/* ---------------- 状態 ---------------- */
+const S = {
+  mode: "title",        // title | drive | photo | done
+  speed: 0, heading: 0,
+  camYaw: 0, camPitch: 0, fov: 58,
+  likes: 0, photos: [],
+  keys: {},
+  pad: { l: false, r: false, go: false, bk: false },
+  toastT: 0,
+};
+
+/* ---------------- 入力 ---------------- */
+window.addEventListener("keydown", e => {
+  S.keys[e.key.toLowerCase()] = true;
+  if (e.code === "Space") {
+    e.preventDefault();
+    if (S.mode === "photo") takePhoto();
+  }
+  if (e.key.toLowerCase() === "c") togglePhoto();
+}, { passive: false });
+window.addEventListener("keyup", e => { S.keys[e.key.toLowerCase()] = false; });
+
+// パッド
+for (const [id, k] of [["pad-l", "l"], ["pad-r", "r"], ["pad-go", "go"], ["pad-bk", "bk"]]) {
+  const el = document.getElementById(id);
+  el.addEventListener("pointerdown", e => { e.preventDefault(); S.pad[k] = true; });
+  el.addEventListener("pointerup", () => { S.pad[k] = false; });
+  el.addEventListener("pointercancel", () => { S.pad[k] = false; });
+  el.addEventListener("pointerleave", () => { S.pad[k] = false; });
+}
+document.getElementById("btn-cam").addEventListener("click", togglePhoto);
+document.getElementById("btn-shutter").addEventListener("click", () => takePhoto());
+
+// 撮影モードのドラッグ視点
+let dragging = false, lastPX = 0, lastPY = 0;
+canvas.addEventListener("pointerdown", e => {
+  if (S.mode !== "photo") return;
+  dragging = true; lastPX = e.clientX; lastPY = e.clientY;
+});
+window.addEventListener("pointermove", e => {
+  if (!dragging || S.mode !== "photo") return;
+  S.camYaw -= (e.clientX - lastPX) * 0.0035;
+  S.camPitch = clamp(S.camPitch - (e.clientY - lastPY) * 0.003, -0.5, 0.9);
+  lastPX = e.clientX; lastPY = e.clientY;
+});
+window.addEventListener("pointerup", () => { dragging = false; });
+window.addEventListener("wheel", e => {
+  if (S.mode !== "photo") return;
+  S.fov = clamp(S.fov + e.deltaY * 0.03, 26, 70);
+}, { passive: true });
+
+/* ---------------- HUD ---------------- */
+const hud = document.getElementById("hud");
+const questsEl = document.getElementById("quests");
+const likesEl = document.getElementById("likes");
+const speedEl = document.getElementById("speed");
+const finder = document.getElementById("finder");
+const toastEl = document.getElementById("toast");
+const btnCam = document.getElementById("btn-cam");
+const btnShutter = document.getElementById("btn-shutter");
+const padEls = ["pad-l", "pad-r", "pad-go", "pad-bk"].map(id => document.getElementById(id));
+
+function renderQuests() {
+  questsEl.innerHTML = "お題<br>" + SUBJECTS.map(s =>
+    `<span class="${s.done ? "done" : ""}">${s.name}</span>`
+  ).join("<br>");
+}
+renderQuests();
+
+let toastTimer = null;
+function toast(html) {
+  toastEl.innerHTML = html;
+  toastEl.style.opacity = 1;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { toastEl.style.opacity = 0; }, 2400);
+}
+
+/* ---------------- 撮影 ---------------- */
+function togglePhoto() {
+  if (S.mode === "drive") {
+    S.mode = "photo";
+    // 現在の進行方向から構える
+    S.camYaw = S.heading;
+    S.camPitch = 0.08;
+    S.fov = 50;
+    finder.classList.add("on");
+    btnShutter.classList.add("show");
+    padEls.forEach(p => p.classList.remove("show"));
+    btnCam.textContent = "🏎";
+  } else if (S.mode === "photo") {
+    S.mode = "drive";
+    S.fov = 58;
+    finder.classList.remove("on");
+    btnShutter.classList.remove("show");
+    padEls.forEach(p => p.classList.add("show"));
+    btnCam.textContent = "📷";
+  }
+}
+
+const raycaster = new THREE.Raycaster();
+const projV = new THREE.Vector3();
+
+function takePhoto() {
+  if (S.mode !== "photo") return;
+  AudioFX.shutter();
+  const flash = document.getElementById("flash");
+  flash.style.transition = "none"; flash.style.opacity = 0.85;
+  requestAnimationFrame(() => {
+    flash.style.transition = "opacity .35s"; flash.style.opacity = 0;
+  });
+
+  // いま近い雲を cloud アンカーに
+  let nearest = clouds[0], nd = Infinity;
+  for (const cl of clouds) {
+    const d = cl.position.distanceTo(car.position);
+    if (d < nd) { nd = d; nearest = cl; }
+  }
+  subjectsAnchor.cloud = nearest.position;
+
+  // 被写体判定
+  const hits = [];
+  for (const sub of SUBJECTS) {
+    const anchor = subjectsAnchor[sub.id];
+    if (!anchor) continue;
+    const dist = anchor.distanceTo(camera.position);
+    if (dist > sub.maxDist) continue;
+    projV.copy(anchor).project(camera);
+    if (projV.z > 1 || Math.abs(projV.x) > 0.72 || Math.abs(projV.y) > 0.72) continue;
+    // 遮蔽（雲と塔は空にあるので省略）
+    if (sub.id === "dc" || sub.id === "legacy" || sub.id === "prod") {
+      const dir = anchor.clone().sub(camera.position).normalize();
+      raycaster.set(camera.position, dir);
+      raycaster.far = dist - 6;
+      const blocked = raycaster.intersectObjects(buildingMeshes, false)
+        .some(h => h.distance < dist - 60);   // 自分の壁ぶんは除外
+      if (blocked) continue;
+    }
+    hits.push(sub);
+  }
+
+  // 現像（トイカメラ加工）
+  renderer.render(scene, camera);
+  const ph = developPhoto();
+  S.photos.push(ph);
+  const album = document.getElementById("album");
+  const img = document.createElement("img");
+  img.src = ph;
+  album.prepend(img);
+  while (album.children.length > 6) album.removeChild(album.lastChild);
+
+  // お題チェック
+  let newHits = hits.filter(h => !h.done);
+  if (newHits.length) {
+    for (const h of newHits) {
+      h.done = true;
+      const like = 80 + Math.floor(Math.random() * 220);
+      S.likes += like;
+      toast(`「${h.name}」を撮影した<small>${h.tag} ＋♥${like}</small>`);
+      AudioFX.found();
+    }
+    renderQuests();
+    likesEl.textContent = "♥ " + S.likes;
+    if (SUBJECTS.every(s => s.done)) setTimeout(publish, 1600);
+  } else if (hits.length) {
+    const like = 5 + Math.floor(Math.random() * 20);
+    S.likes += like;
+    likesEl.textContent = "♥ " + S.likes;
+    toast(`いい構図だ<small>＋♥${like}</small>`);
+  }
+}
+
+function developPhoto() {
+  const src = renderer.domElement;
+  const cv = document.createElement("canvas");
+  cv.width = 480; cv.height = 372;
+  const c = cv.getContext("2d");
+  // 中央クロップ
+  const ar = cv.width / cv.height;
+  let sw = src.width, sh = src.width / ar;
+  if (sh > src.height) { sh = src.height; sw = sh * ar; }
+  c.drawImage(src, (src.width - sw) / 2, (src.height - sh) / 2, sw, sh, 0, 0, cv.width, cv.height);
+  // 色: ほんのり退色
+  c.globalCompositeOperation = "overlay";
+  c.fillStyle = "rgba(224,164,90,.14)";
+  c.fillRect(0, 0, cv.width, cv.height);
+  c.globalCompositeOperation = "source-over";
+  // ライトリーク
+  const leak = c.createRadialGradient(40, 40, 0, 40, 40, 300);
+  leak.addColorStop(0, "rgba(255,170,90,.30)");
+  leak.addColorStop(1, "rgba(255,170,90,0)");
+  c.fillStyle = leak; c.fillRect(0, 0, cv.width, cv.height);
+  // ビネット
+  const vg = c.createRadialGradient(240, 186, 90, 240, 186, 330);
+  vg.addColorStop(0, "rgba(0,0,0,0)");
+  vg.addColorStop(1, "rgba(0,0,0,.5)");
+  c.fillStyle = vg; c.fillRect(0, 0, cv.width, cv.height);
+  // 粒子
+  for (let i = 0; i < 900; i++) {
+    c.fillStyle = `rgba(255,255,255,${Math.random() * 0.05})`;
+    c.fillRect(Math.random() * cv.width, Math.random() * cv.height, 1, 1);
+  }
+  return cv.toDataURL("image/jpeg", 0.85);
+}
+
+/* ---------------- 公開（クリア） ---------------- */
+function publish() {
+  if (S.mode === "done") return;
+  S.mode = "done";
+  AudioFX.publish();
+  AudioFX.setEngine(0, false);
+  const grid = document.getElementById("done-photos");
+  grid.innerHTML = "";
+  for (const p of S.photos.slice(-6)) {
+    const img = document.createElement("img");
+    img.src = p;
+    grid.appendChild(img);
+  }
+  const bonus = 500 + Math.floor(Math.random() * 500);
+  S.likes += bonus;
+  document.getElementById("done-likes").textContent = `♥ ${S.likes}（特集ボーナス +${bonus}）`;
+  document.getElementById("screen-done").classList.remove("hidden");
+  hud.classList.remove("on");
+  finder.classList.remove("on");
+  btnShutter.classList.remove("show");
+  btnCam.classList.remove("show");
+  padEls.forEach(p => p.classList.remove("show"));
+}
+
+/* ---------------- 開始 / リセット ---------------- */
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  for (const s of SUBJECTS) s.done = false;
+  S.likes = 0; S.photos = [];
+  S.speed = 0; S.heading = 0;
+  car.position.set(0, 0, 0);
+  S.mode = "drive";
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-done").classList.add("hidden");
+  document.getElementById("album").innerHTML = "";
+  likesEl.textContent = "♥ 0";
+  renderQuests();
+  hud.classList.add("on");
+  btnCam.classList.add("show");
+  padEls.forEach(p => p.classList.add("show"));
+  btnCam.textContent = "📷";
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-again").addEventListener("click", startGame);
+document.getElementById("loading").style.display = "none";
+
+/* ---------------- 走行 ---------------- */
+const MAX_SPD = 64;
+function updateDrive(dt) {
+  const fwd = (S.keys.w || S.keys.arrowup || S.pad.go) ? 1 : 0;
+  const back = (S.keys.s || S.keys.arrowdown || S.pad.bk) ? 1 : 0;
+  const left = (S.keys.a || S.keys.arrowleft || S.pad.l) ? 1 : 0;
+  const right = (S.keys.d || S.keys.arrowright || S.pad.r) ? 1 : 0;
+
+  if (fwd) S.speed += 38 * dt;
+  else if (back) S.speed -= (S.speed > 2 ? 60 : 26) * dt;
+  else S.speed *= 1 - Math.min(1, dt * 0.9);
+  S.speed = clamp(S.speed, -16, MAX_SPD);
+
+  const steer = (right - left) * 1.7 * dt * clamp(Math.abs(S.speed) / 16, 0, 1);
+  S.heading -= steer * Math.sign(S.speed || 1);
+
+  car.rotation.y = S.heading;
+  car.rotation.z = lerp(car.rotation.z, (right - left) * -0.05 * clamp(S.speed / MAX_SPD, 0, 1), dt * 6);
+  const vx = Math.sin(S.heading) * S.speed * dt;
+  const vz = Math.cos(S.heading) * S.speed * dt;
+  let nx = car.position.x + vx;
+  let nz = car.position.z + vz;
+
+  // 境界
+  const LIM = MAP / 2 - 30;
+  nx = clamp(nx, -LIM, LIM);
+  nz = clamp(nz, -LIM, LIM);
+  // ビル衝突: 押し戻し
+  for (const b of colliders) {
+    if (nx > b.minX && nx < b.maxX && nz > b.minZ && nz < b.maxZ) {
+      const dxl = nx - b.minX, dxr = b.maxX - nx;
+      const dzl = nz - b.minZ, dzr = b.maxZ - nz;
+      const m = Math.min(dxl, dxr, dzl, dzr);
+      if (m === dxl) nx = b.minX; else if (m === dxr) nx = b.maxX;
+      else if (m === dzl) nz = b.minZ; else nz = b.maxZ;
+      S.speed *= 0.4;
+    }
+  }
+  car.position.x = nx;
+  car.position.z = nz;
+
+  AudioFX.setEngine(clamp(Math.abs(S.speed) / MAX_SPD, 0, 1), true);
+  speedEl.textContent = Math.round(Math.abs(S.speed) * 3.2) + " km/h";
+}
+
+/* ---------------- カメラ ---------------- */
+const camPos = new THREE.Vector3(0, 7, -14);
+function updateCamera(dt) {
+  if (S.mode === "photo") {
+    // 車の屋根あたりから構える
+    const eye = new THREE.Vector3(
+      car.position.x - Math.sin(S.camYaw) * 0.5,
+      car.position.y + 2.4,
+      car.position.z - Math.cos(S.camYaw) * 0.5
+    );
+    camera.position.copy(eye);
+    const dir = new THREE.Vector3(
+      Math.sin(S.camYaw) * Math.cos(S.camPitch),
+      Math.sin(S.camPitch),
+      Math.cos(S.camYaw) * Math.cos(S.camPitch)
+    );
+    camera.lookAt(eye.clone().add(dir));
+    camera.fov = lerp(camera.fov, S.fov, Math.min(1, dt * 8));
+    camera.updateProjectionMatrix();
+    AudioFX.setEngine(0, S.mode === "drive");
+    return;
+  }
+  const behind = new THREE.Vector3(
+    car.position.x - Math.sin(S.heading) * 10.5,
+    car.position.y + 4.4,
+    car.position.z - Math.cos(S.heading) * 10.5
+  );
+  camPos.lerp(behind, Math.min(1, dt * 3.2));
+  camera.position.copy(camPos);
+  camera.lookAt(car.position.x + Math.sin(S.heading) * 6, car.position.y + 1.6, car.position.z + Math.cos(S.heading) * 6);
+  camera.fov = lerp(camera.fov, 58 + clamp(S.speed / MAX_SPD, 0, 1) * 8, Math.min(1, dt * 5));
+  camera.updateProjectionMatrix();
+}
+
+/* ---------------- ループ ---------------- */
+let last = performance.now();
+let blinkT = 0;
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) last = performance.now();
+  if (document.hidden) AudioFX.setEngine(0, false);
+});
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+
+  blinkT += dt;
+  const on = Math.sin(blinkT * 5) > 0;
+  for (const b of blinkers) b.visible = on;
+
+  for (const cl of clouds) {
+    cl.position.x += cl.userData.vx * dt;
+    if (cl.position.x > 560) cl.position.x = -560;
+    if (cl.position.x < -560) cl.position.x = 560;
+  }
+
+  if (S.mode === "drive") updateDrive(dt);
+  if (S.mode === "title") {
+    // タイトル: 街をゆっくり旋回
+    const t = now / 1000;
+    camera.position.set(Math.sin(t * 0.08) * 220, 90, Math.cos(t * 0.08) * 220);
+    camera.lookAt(0, 20, 0);
+    camera.fov = 58;
+    camera.updateProjectionMatrix();
+  } else if (S.mode !== "done") {
+    updateCamera(dt);
+  }
+
+  renderer.render(scene, camera);
+}
+requestAnimationFrame(loop);
+
+// デバッグ用フック（検証スクリプトから触る）
+window.__G = { S, car, SUBJECTS, clouds, subjectsAnchor, takePhoto, togglePhoto, startGame, camera };
+</script>
+</body>
+</html>

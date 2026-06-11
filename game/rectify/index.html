@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>整流 — RECTIFY | 混沌を、構造に。</title>
+<meta name="description" content="降り注ぐ未整理なものを撃ち分け、自分なりの秩序に変えるシューティング。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a;
+    --black: #100b05;
+    --smoke: #2a2a2a;
+    --slate: #3a3a3a;
+    --silver: #b8b8b8;
+    --cream: #f3ecdc;
+    --cream-dim: #d8cdb6;
+    --ember: #e0a45a;
+    --ember-bright: #f6cf86;
+    --cyan: #69bfff;
+    --magenta: #ff69bf;
+    --risk: #e06a4a;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--noir);
+    color: var(--cream);
+    font-family: var(--font-body);
+    overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  }
+  #stage {
+    position: fixed;
+    inset: 0;
+    touch-action: none;
+    cursor: crosshair;
+  }
+  /* ---- film grain + vignette + light leaks ---- */
+  .leaks, .vignette, .grain {
+    position: fixed; inset: 0; pointer-events: none;
+  }
+  .leaks {
+    background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.13), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.08), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.06), transparent 70%);
+  }
+  .vignette {
+    background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%);
+  }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before {
+    content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite;
+  }
+  @keyframes grain {
+    0%,100% { transform: translate(0,0); } 20% { transform: translate(-6%,4%); }
+    40% { transform: translate(4%,-7%); } 60% { transform: translate(-3%,-3%); } 80% { transform: translate(6%,5%); }
+  }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  /* ---- overlay screens ---- */
+  .screen {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px;
+    background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    transition: opacity .45s ease;
+  }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em;
+    color: var(--ember); text-transform: uppercase;
+  }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1;
+    color: var(--cream); letter-spacing: .08em; margin: 18px 0 4px;
+    text-shadow: 0 0 50px rgba(224,164,90,.25);
+  }
+  .title-en {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em;
+    color: var(--silver); margin-bottom: 22px; text-indent: .6em;
+  }
+  .tagline {
+    font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px);
+    color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 30px;
+  }
+  .legend {
+    display: grid; grid-template-columns: auto auto; gap: 10px 14px;
+    align-items: center; justify-content: center;
+    font-size: 13px; color: var(--silver); text-align: left;
+    margin-bottom: 14px; line-height: 1.5;
+  }
+  .legend .glyph { width: 30px; height: 30px; display: block; }
+  .legend b { color: var(--cream); font-weight: 600; }
+  .hint {
+    font-size: 12px; color: var(--silver); line-height: 1.9; margin-bottom: 28px;
+    max-width: 480px;
+  }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn {
+    font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em;
+    color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px;
+    cursor: pointer; transition: background .2s, transform .15s;
+  }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn:active { transform: translateY(1px); }
+  .btn.ghost {
+    background: transparent; color: var(--cream-dim);
+    border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px;
+  }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link {
+    position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em;
+    color: var(--silver); text-decoration: none;
+  }
+  .back-link:hover { color: var(--ember); }
+
+  /* ---- result ---- */
+  .verdict {
+    font-family: var(--font-display); font-size: clamp(24px, 6vw, 38px);
+    color: var(--cream); letter-spacing: .1em; margin: 10px 0 6px;
+  }
+  .verdict-sub {
+    font-size: 14px; color: var(--cream-dim); letter-spacing: .08em; margin-bottom: 26px;
+    line-height: 1.8;
+  }
+  .result-bars { width: min(420px, 86vw); margin-bottom: 22px; }
+  .rbar { display: grid; grid-template-columns: 4.5em 1fr 3em; gap: 10px; align-items: center; margin: 9px 0; }
+  .rbar .lab { font-size: 12px; color: var(--silver); letter-spacing: .2em; text-align: left; }
+  .rbar .val { font-family: var(--font-mono); font-size: 12px; color: var(--cream-dim); text-align: right; }
+  .rbar .track { display: block; height: 4px; background: var(--smoke); border-radius: 2px; overflow: hidden; }
+  .rbar .fill { display: block; height: 100%; width: 0; border-radius: 2px; transition: width 1s cubic-bezier(.2,.7,.2,1); }
+  .stats {
+    display: flex; flex-wrap: wrap; gap: 8px 22px; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; color: var(--silver);
+    letter-spacing: .08em; margin-bottom: 26px; max-width: 480px;
+  }
+  .stats b { color: var(--ember-bright); font-weight: 400; }
+  .score-line {
+    font-family: var(--font-mono); font-size: 13px; letter-spacing: .3em;
+    color: var(--ember); margin-bottom: 4px;
+  }
+  .score-num {
+    font-family: var(--font-display); font-size: clamp(44px, 10vw, 72px);
+    color: var(--cream); line-height: 1; margin-bottom: 20px;
+  }
+
+  /* ---- HUD ---- */
+  #hud {
+    position: fixed; inset: 0; z-index: 6; pointer-events: none;
+    opacity: 0; transition: opacity .4s;
+  }
+  #hud.on { opacity: 1; }
+  .meters {
+    position: absolute; top: max(14px, env(safe-area-inset-top)); left: 16px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .meter { display: grid; grid-template-columns: 2.6em 84px; gap: 8px; align-items: center; }
+  .meter .lab { font-size: 10px; letter-spacing: .25em; color: var(--silver); }
+  .meter .track { display: block; height: 3px; background: rgba(255,255,255,.12); border-radius: 2px; overflow: hidden; }
+  .meter .fill { display: block; height: 100%; width: 50%; border-radius: 2px; transition: width .25s linear; }
+  #m-order  .fill { background: var(--cream); }
+  #m-create .fill { background: var(--cyan); }
+  #m-trust  .fill { background: var(--ember); }
+  #m-margin .fill { background: var(--magenta); }
+  #timer {
+    position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em;
+    color: var(--cream-dim);
+  }
+  #fire-state {
+    position: absolute; right: 16px; top: max(14px, env(safe-area-inset-top));
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em;
+    color: var(--ember); border: 1px solid rgba(224,164,90,.4);
+    border-radius: 999px; padding: 5px 12px;
+  }
+  #fire-state.holding { color: var(--cyan); border-color: rgba(105,191,255,.4); }
+  #fire-btn {
+    position: absolute; right: 18px; bottom: max(22px, env(safe-area-inset-bottom));
+    width: 76px; height: 76px; border-radius: 50%;
+    border: 1px solid rgba(224,164,90,.5); background: rgba(224,164,90,.12);
+    color: var(--ember-bright); font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: .12em; pointer-events: auto; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #fire-btn.holding { border-color: rgba(105,191,255,.5); background: rgba(105,191,255,.10); color: var(--cyan); }
+  @media (hover: hover) and (pointer: fine) { #fire-btn { display: none; } }
+  #toast {
+    position: absolute; left: 50%; bottom: 24%; transform: translateX(-50%);
+    font-family: var(--font-display); font-size: 16px; letter-spacing: .2em;
+    color: var(--cream); opacity: 0; transition: opacity .3s; white-space: nowrap;
+    text-shadow: 0 0 24px rgba(0,0,0,.8);
+  }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/" id="back-link">← ゲーム一覧</a>
+
+<div id="hud">
+  <div class="meters">
+    <div class="meter" id="m-order"><span class="lab">秩序</span><span class="track"><span class="fill"></span></span></div>
+    <div class="meter" id="m-create"><span class="lab">創造</span><span class="track"><span class="fill"></span></span></div>
+    <div class="meter" id="m-trust"><span class="lab">信頼</span><span class="track"><span class="fill"></span></span></div>
+    <div class="meter" id="m-margin"><span class="lab">余白</span><span class="track"><span class="fill"></span></span></div>
+  </div>
+  <div id="timer">90.0</div>
+  <div id="fire-state">射撃 ON</div>
+  <button id="fire-btn">射撃<br>ON</button>
+  <div id="toast"></div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Personal Project — Shooting</div>
+  <h1 class="title">整流</h1>
+  <div class="title-en">R E C T I F Y</div>
+  <p class="tagline">ノイズの宇宙で、仕組みを撃ち出す。</p>
+  <div class="legend" id="legend"></div>
+  <p class="hint">
+    すべてを撃ってはいけない。<br>
+    SPACE か画面のボタンで<em>射撃を止める</em>と、余白が回復し、アイデアが寄ってくる。<br>
+    移動はマウス / ドラッグ / WASD。画面下の灯を、守り切れ。
+  </p>
+  <button class="btn" id="btn-start">起動する</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket" id="result-reason">90秒の整流、完了</div>
+  <div class="verdict" id="verdict">進める人</div>
+  <div class="verdict-sub" id="verdict-sub"></div>
+  <div class="result-bars" id="result-bars"></div>
+  <div class="stats" id="stats"></div>
+  <div class="score-line">構造化指数</div>
+  <div class="score-num" id="score-num">0</div>
+  <button class="btn" id="btn-retry">もう一度</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   整流 / RECTIFY — 混沌を構造に変えるシューティング
+   倒すのではなく、撃ち分ける。
+   ノイズ   → 分解する
+   リスク   → 処理する（下の灯を守る）
+   アイデア → 撃たない。触れて回収する
+   期待     → 撃ち続けると「仕組み」になり、自分を守る
+   射撃を止めると余白が回復し、アイデアが引き寄せられる。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+const dist2 = (ax, ay, bx, by) => (ax - bx) ** 2 + (ay - by) ** 2;
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", noise: "#8a8a8a", silver: "#b8b8b8",
+};
+
+const GAME_LEN = 90;            // 秒
+const LIGHT_COUNT = 5;          // 守るべきもの
+const LIGHT_LABELS = ["家族", "チーム", "会社", "信用", "未来"];
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+window.addEventListener("resize", resize);
+resize();
+
+/* ---------------- audio: 最小限のシンセ ---------------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.16;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) { /* 無音でも遊べる */ }
+  },
+  blip(freq, dur, type = "sine", vol = 1, slide = 0) {
+    if (!this.ctx || this.ctx.state === "suspended") return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(40, freq + slide), t + dur);
+    g.gain.setValueAtTime(vol * 0.5, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(this.gain);
+    o.start(t); o.stop(t + dur + 0.02);
+  },
+  shoot()   { this.blip(820, 0.05, "triangle", 0.25, -300); },
+  breakN(m = 1)  { this.blip(300 * m, 0.08, "square", 0.2, -120); },
+  riskHit(m = 1) { this.blip(180 * m, 0.12, "sawtooth", 0.35, -80); },
+  wave()    { this.blip(160, 0.5, "sine", 0.5, -70); this.blip(320, 0.6, "sine", 0.3, -90); },
+  collect() { this.blip(660, 0.16, "sine", 0.5, 220); this.blip(990, 0.22, "sine", 0.3, 240); },
+  shatter() { this.blip(440, 0.2, "sawtooth", 0.35, -260); },
+  forge()   { this.blip(523, 0.3, "sine", 0.5, 0); this.blip(784, 0.4, "sine", 0.35, 0); },
+  damage()  { this.blip(110, 0.3, "sawtooth", 0.5, -50); },
+  lightOut(){ this.blip(220, 0.5, "sine", 0.5, -160); },
+};
+
+/* ---------------- 状態 ---------------- */
+const S = {
+  mode: "title",            // title | play | result
+  t: 0, elapsed: 0,
+  meters: { order: 35, create: 35, trust: 70, margin: 70 },
+  firing: true,
+  player: { x: 0, y: 0, tx: 0, ty: 0, r: 8 },
+  bullets: [], entities: [], particles: [], shards: [], floats: [],
+  lights: [],
+  shake: 0,
+  spawnAcc: { noise: 0, risk: 0, idea: 0, expect: 0 },
+  fireAcc: 0,
+  combo: 0, comboTimer: 0, maxCombo: 0, comboPulse: 0,
+  freeze: 0, banner: null, waveIdx: 0, shotSide: 1, muzzle: 0,
+  stats: { noise: 0, risk: 0, idea: 0, ideaLost: 0, forged: 0 },
+  keys: {},
+  pointer: { x: null, y: null, active: false, touch: false },
+  endReason: "",
+};
+
+const playTop = () => H * 0.12;
+const lightY  = () => H - Math.max(46, H * 0.06);
+
+function resetGame() {
+  S.elapsed = 0;
+  S.meters = { order: 35, create: 35, trust: 70, margin: 70 };
+  S.firing = true;
+  S.bullets = []; S.entities = []; S.particles = []; S.shards = []; S.floats = [];
+  S.stats = { noise: 0, risk: 0, idea: 0, ideaLost: 0, forged: 0 };
+  S.spawnAcc = { noise: 0, risk: 0, idea: 0, expect: 0 };
+  S.player.x = S.player.tx = W / 2;
+  S.player.y = S.player.ty = H * 0.72;
+  S.shake = 0;
+  S.endReason = "";
+  S.combo = 0; S.comboTimer = 0; S.maxCombo = 0; S.comboPulse = 0;
+  S.freeze = 0; S.banner = null; S.waveIdx = 0; S.muzzle = 0;
+  S.lights = [];
+  const m = Math.min(W * 0.8, 520);
+  for (let i = 0; i < LIGHT_COUNT; i++) {
+    S.lights.push({
+      x: W / 2 - m / 2 + m * (i / (LIGHT_COUNT - 1)),
+      y: lightY(), alive: true, label: LIGHT_LABELS[i], flicker: Math.random() * TAU,
+    });
+  }
+  setFiring(true);
+  // 開始直後から手応えがあるように、少し先まで世界を進めておく
+  for (let i = 0; i < 7; i++) {
+    spawn("noise");
+    S.entities[S.entities.length - 1].y = rand(-320, -16);
+  }
+  for (let i = 0; i < 2; i++) {
+    spawn("idea");
+    S.entities[S.entities.length - 1].y = rand(-220, -30);
+  }
+}
+
+/* ---------------- ウェーブイベント ---------------- */
+function waveNoiseStorm(n) {
+  for (let i = 0; i < n; i++) { spawn("noise"); S.entities[S.entities.length - 1].y = rand(-280, -14); }
+}
+function waveAudit(n) {
+  for (let i = 0; i < n; i++) {
+    spawn("risk");
+    const e = S.entities[S.entities.length - 1];
+    e.x = W * (i + 1) / (n + 1); e.vx = 0; e.y = -16 - i * 44;
+  }
+}
+const WAVES = [
+  { t: 8, text: "ノイズの嵐", run() { waveNoiseStorm(12); } },
+  { t: 20, text: "監査が来た", run() { waveAudit(5); } },
+  { t: 32, text: "想定外の障害", run() {
+    for (let i = 0; i < 9; i++) {
+      spawn(i % 3 === 2 ? "risk" : "noise");
+      S.entities[S.entities.length - 1].y = rand(-300, -14);
+    }
+    spawn("expect");
+  } },
+  { t: 46, text: "ノイズの嵐・再来", run() { waveNoiseStorm(16); } },
+  { t: 58, text: "二度目の監査", run() { waveAudit(6); } },
+  { t: 72, text: "最後の混沌", run() {
+    const mix = ["noise", "noise", "risk", "idea"];
+    for (let i = 0; i < 16; i++) {
+      spawn(mix[i % 4]);
+      S.entities[S.entities.length - 1].y = rand(-360, -14);
+    }
+  } },
+];
+
+/* ---------------- 入力 ---------------- */
+window.addEventListener("keydown", e => {
+  if (e.repeat) return;
+  S.keys[e.key.toLowerCase()] = true;
+  if (e.code === "Space" || e.key.toLowerCase() === "x") {
+    e.preventDefault();
+    if (S.mode === "play") setFiring(!S.firing);
+  }
+}, { passive: false });
+window.addEventListener("keyup", e => { S.keys[e.key.toLowerCase()] = false; });
+
+canvas.addEventListener("pointermove", e => {
+  S.pointer.x = e.clientX; S.pointer.y = e.clientY;
+  S.pointer.touch = e.pointerType === "touch";
+  if (e.pointerType === "mouse") S.pointer.active = true;
+});
+canvas.addEventListener("pointerdown", e => {
+  S.pointer.x = e.clientX; S.pointer.y = e.clientY;
+  S.pointer.touch = e.pointerType === "touch";
+  S.pointer.active = true;
+});
+
+const fireBtn = document.getElementById("fire-btn");
+fireBtn.addEventListener("pointerdown", e => {
+  e.stopPropagation();
+  if (S.mode === "play") setFiring(!S.firing);
+});
+
+function setFiring(on) {
+  S.firing = on;
+  const pill = document.getElementById("fire-state");
+  pill.textContent = on ? "射撃 ON — SPACE で静観" : "静観中 — 余白が回復する";
+  pill.classList.toggle("holding", !on);
+  fireBtn.innerHTML = on ? "射撃<br>ON" : "静観<br>中";
+  fireBtn.classList.toggle("holding", !on);
+}
+
+/* ---------------- 生成 ---------------- */
+function difficulty() { return clamp(S.elapsed / GAME_LEN, 0, 1); }
+
+function spawn(kind) {
+  const d = difficulty();
+  const x = rand(24, W - 24);
+  if (kind === "noise") {
+    S.entities.push({
+      kind, x, y: -14, r: 6.5, hp: 1,
+      vx: rand(-14, 14), vy: rand(48, 84) * (1 + d * 0.9),
+      wob: Math.random() * TAU, label: "ノイズ",
+    });
+  } else if (kind === "risk") {
+    // リスクは守るべき灯のどれかを狙って降りてくる
+    const vy = rand(86, 128) * (1 + d * 0.8);
+    const alive = S.lights.filter(l => l.alive);
+    const tgt = alive.length ? alive[Math.floor(Math.random() * alive.length)] : null;
+    const vx = tgt ? clamp((tgt.x - x) / Math.max(0.8, (lightY() + 16) / vy), -60, 60) : 0;
+    S.entities.push({
+      kind, x, y: -16, r: 11, hp: 2,
+      vx, vy,
+      wob: Math.random() * TAU, label: "リスク", flash: 0,
+    });
+  } else if (kind === "idea") {
+    S.entities.push({
+      kind, x, y: -14, r: 9, hp: 1,
+      vx: rand(-10, 10), vy: rand(26, 44),
+      wob: Math.random() * TAU, label: "アイデア",
+    });
+  } else if (kind === "expect") {
+    S.entities.push({
+      kind, x, y: -16, r: 11, hp: 3, hpMax: 3,
+      vx: rand(-6, 6), vy: rand(30, 44),
+      wob: Math.random() * TAU, label: "期待", flash: 0,
+    });
+  }
+}
+
+function spawnNoiseAt(x, y, n) {
+  for (let i = 0; i < n; i++) {
+    S.entities.push({
+      kind: "noise", x: x + rand(-18, 18), y: y + rand(-10, 10), r: 6.5, hp: 1,
+      vx: rand(-22, 22), vy: rand(30, 55),
+      wob: Math.random() * TAU, label: "ノイズ",
+    });
+  }
+}
+
+function burst(x, y, color, n, speed = 130) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({
+      x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+      life: rand(0.3, 0.7), age: 0, color, r: rand(1, 2.6),
+    });
+  }
+}
+
+function floatText(x, y, text, color) {
+  S.floats.push({ x, y, text, color, age: 0, life: 0.9 });
+}
+
+function ring(x, y, color, r1 = 44) {
+  S.particles.push({ ring: true, x, y, vx: 0, vy: 0, r0: 5, r1, life: 0.35, age: 0, color, r: 0 });
+}
+
+function comboUp() {
+  S.combo++; S.comboTimer = 2.5; S.comboPulse = 0.25;
+  if (S.combo > S.maxCombo) S.maxCombo = S.combo;
+}
+
+function comboBreak(x, y) {
+  if (S.combo >= 6) floatText(x, y, "整流が乱れた", COLOR.magenta);
+  S.combo = 0; S.comboTimer = 0;
+}
+
+function addMeter(key, v) { S.meters[key] = clamp(S.meters[key] + v, 0, 100); }
+
+/* ---------------- 更新 ---------------- */
+function update(dt) {
+  const d = difficulty();
+  S.elapsed += dt;
+  const P = S.player;
+
+  // --- ウェーブ / コンボ / タイマー類 ---
+  while (S.waveIdx < WAVES.length && S.elapsed >= WAVES[S.waveIdx].t) {
+    const w = WAVES[S.waveIdx++];
+    w.run();
+    S.banner = { text: w.text, age: 0, life: 2.2 };
+    AudioFX.wave();
+    S.shake = Math.max(S.shake, 5);
+  }
+  if (S.banner && (S.banner.age += dt) >= S.banner.life) S.banner = null;
+  if (S.comboTimer > 0) { S.comboTimer -= dt; if (S.comboTimer <= 0) S.combo = 0; }
+  if (S.comboPulse > 0) S.comboPulse -= dt;
+  if (S.muzzle > 0) S.muzzle -= dt;
+
+  // --- 移動 ---
+  let kx = 0, ky = 0;
+  if (S.keys.a || S.keys.arrowleft) kx -= 1;
+  if (S.keys.d || S.keys.arrowright) kx += 1;
+  if (S.keys.w || S.keys.arrowup) ky -= 1;
+  if (S.keys.s || S.keys.arrowdown) ky += 1;
+  if (kx || ky) {
+    const n = Math.hypot(kx, ky);
+    P.tx = P.x + (kx / n) * 340 * dt * 8;
+    P.ty = P.y + (ky / n) * 340 * dt * 8;
+    S.pointer.active = false;
+  } else if (S.pointer.active && S.pointer.x != null) {
+    P.tx = S.pointer.x;
+    P.ty = S.pointer.y - (S.pointer.touch ? 84 : 0); // 指で機体が隠れないように
+  }
+  P.tx = clamp(P.tx, 18, W - 18);
+  P.ty = clamp(P.ty, playTop(), lightY() - 26);
+  P.x += (P.tx - P.x) * Math.min(1, dt * 11);
+  P.y += (P.ty - P.y) * Math.min(1, dt * 11);
+
+  // --- 余白の回復 / 秩序のエントロピー ---
+  addMeter("margin", (S.firing ? 0.3 : 2.4) * dt);
+  addMeter("order", -0.5 * dt);
+
+  // --- 射撃 ---
+  if (S.firing) {
+    S.fireAcc += dt;
+    // コンボが乗るほど連射が速くなる
+    const interval = 1 / (11 + Math.min(S.combo, 25) * 0.12);
+    while (S.fireAcc >= interval) {
+      S.fireAcc -= interval;
+      S.shotSide *= -1;
+      if (S.combo >= 10) {
+        S.bullets.push({ x: P.x - 5, y: P.y - 12, vy: -760 });
+        S.bullets.push({ x: P.x + 5, y: P.y - 12, vy: -760 });
+      } else {
+        S.bullets.push({ x: P.x + S.shotSide * 2.5, y: P.y - 12, vy: -760 });
+      }
+      S.muzzle = 0.06;
+      AudioFX.shoot();
+    }
+  } else {
+    S.fireAcc = 0;
+  }
+
+  // --- スポーン ---
+  const rates = {
+    noise: 1.3 + d * 1.9,
+    risk: 0.3 + d * 0.95,
+    idea: 0.26 + d * 0.1,
+    expect: 0.12 + d * 0.1,
+  };
+  for (const k in rates) {
+    S.spawnAcc[k] += rates[k] * dt;
+    while (S.spawnAcc[k] >= 1) { S.spawnAcc[k] -= 1; spawn(k); }
+  }
+
+  // --- 弾 ---
+  for (let i = S.bullets.length - 1; i >= 0; i--) {
+    const b = S.bullets[i];
+    b.y += b.vy * dt;
+    if (b.y < -20) { S.bullets.splice(i, 1); continue; }
+    for (let j = S.entities.length - 1; j >= 0; j--) {
+      const e = S.entities[j];
+      if (dist2(b.x, b.y, e.x, e.y) < (e.r + 4) ** 2) {
+        S.bullets.splice(i, 1);
+        hitEntity(e, j);
+        break;
+      }
+    }
+  }
+
+  // --- 仕組みシャード（軌道・自動化） ---
+  for (const sh of S.shards) {
+    sh.angle += dt * 2.2;
+    sh.x = P.x + Math.cos(sh.angle) * 34;
+    sh.y = P.y + Math.sin(sh.angle) * 34;
+    sh.zap -= dt;
+    if (sh.zap <= 0) {
+      sh.zap = 2.5;
+      // 自動化: 近くのノイズをひとつ静かに処理する
+      let best = -1, bd = 130 ** 2;
+      for (let j = 0; j < S.entities.length; j++) {
+        const e = S.entities[j];
+        if (e.kind !== "noise") continue;
+        const dd = dist2(sh.x, sh.y, e.x, e.y);
+        if (dd < bd) { bd = dd; best = j; }
+      }
+      if (best >= 0) {
+        const e = S.entities[best];
+        burst(e.x, e.y, COLOR.cream, 6, 90);
+        S.entities.splice(best, 1);
+        S.stats.noise++;
+        addMeter("order", 0.6);
+        sh.flash = 0.25;
+      }
+    }
+    if (sh.flash > 0) sh.flash -= dt;
+  }
+
+  // --- エンティティ ---
+  for (let i = S.entities.length - 1; i >= 0; i--) {
+    const e = S.entities[i];
+    e.wob += dt * 3;
+    if (e.flash > 0) e.flash -= dt;
+    e.x += e.vx * dt + Math.sin(e.wob) * (e.kind === "idea" ? 22 : 8) * dt;
+    e.y += e.vy * dt;
+    e.x = clamp(e.x, 10, W - 10);
+
+    // アイデアは引き寄せられる（静観中は強く・遠くから）
+    if (e.kind === "idea") {
+      const range = S.firing ? 90 : 220;
+      const pull = S.firing ? 60 : 160;
+      const dd = dist2(e.x, e.y, P.x, P.y);
+      if (dd < range ** 2 && dd > 1) {
+        const dl = Math.sqrt(dd);
+        e.x += ((P.x - e.x) / dl) * pull * dt;
+        e.y += ((P.y - e.y) / dl) * pull * dt;
+      }
+    }
+
+    // プレイヤー接触
+    const dd = dist2(e.x, e.y, P.x, P.y);
+    if (e.kind === "idea") {
+      if (dd < (e.r + 16) ** 2) {
+        S.entities.splice(i, 1);
+        S.stats.idea++;
+        addMeter("create", 4.5); addMeter("margin", 2);
+        comboUp();
+        burst(e.x, e.y, COLOR.cyan, 14, 150);
+        ring(e.x, e.y, COLOR.cyan, 42);
+        floatText(e.x, e.y - 14, "回収 +創造", COLOR.cyan);
+        AudioFX.collect();
+        continue;
+      }
+    } else if (dd < (e.r + P.r) ** 2) {
+      S.entities.splice(i, 1);
+      if (S.shards.length > 0) {
+        const sh = S.shards.pop();
+        burst(sh.x, sh.y, COLOR.emberBright, 16, 170);
+        floatText(P.x, P.y - 22, "仕組みが守った", COLOR.emberBright);
+        AudioFX.breakN();
+      } else {
+        const dmg = e.kind === "risk" ? 16 : e.kind === "expect" ? 10 : 5;
+        addMeter("margin", -dmg);
+        comboBreak(P.x, P.y - 40);
+        S.freeze = Math.max(S.freeze, 0.07);
+        S.shake = Math.max(S.shake, e.kind === "risk" ? 9 : 5);
+        burst(P.x, P.y, COLOR.magenta, 14, 170);
+        ring(P.x, P.y, COLOR.magenta, 60);
+        floatText(P.x, P.y - 22, "−余白", COLOR.magenta);
+        AudioFX.damage();
+      }
+      continue;
+    }
+
+    // 下端到達
+    if (e.y > lightY() + 8) {
+      S.entities.splice(i, 1);
+      if (e.kind === "noise") {
+        addMeter("order", -1.4);
+      } else if (e.kind === "risk") {
+        // もっとも近い灯が消える
+        let best = -1, bd = Infinity;
+        for (let j = 0; j < S.lights.length; j++) {
+          if (!S.lights[j].alive) continue;
+          const dl = Math.abs(S.lights[j].x - e.x);
+          if (dl < bd) { bd = dl; best = j; }
+        }
+        if (best >= 0) {
+          S.lights[best].alive = false;
+          addMeter("trust", -9);
+          comboBreak(S.lights[best].x, S.lights[best].y - 50);
+          S.freeze = Math.max(S.freeze, 0.09);
+          S.shake = Math.max(S.shake, 12);
+          burst(S.lights[best].x, S.lights[best].y, COLOR.risk, 22, 190);
+          ring(S.lights[best].x, S.lights[best].y, COLOR.risk, 80);
+          floatText(S.lights[best].x, S.lights[best].y - 26, S.lights[best].label + "の灯が消えた", COLOR.risk);
+          AudioFX.lightOut();
+        } else {
+          addMeter("trust", -5);
+        }
+      } else if (e.kind === "idea") {
+        S.stats.ideaLost++;
+        addMeter("create", -0.6);
+      } else if (e.kind === "expect") {
+        // 放置された期待は、ノイズに変わる
+        spawnNoiseAt(e.x, lightY() - 30, 3);
+        addMeter("trust", -2);
+        floatText(e.x, lightY() - 40, "期待が負債になった", COLOR.noise);
+      }
+    }
+  }
+
+  // --- パーティクル / フロート ---
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt;
+    p.vx *= 1 - dt * 2; p.vy *= 1 - dt * 2;
+  }
+  for (let i = S.floats.length - 1; i >= 0; i--) {
+    const f = S.floats[i];
+    f.age += dt; f.y -= 26 * dt;
+    if (f.age >= f.life) S.floats.splice(i, 1);
+  }
+
+  if (S.shake > 0) S.shake = Math.max(0, S.shake - dt * 30);
+
+  // --- 終了判定 ---
+  const aliveLights = S.lights.filter(l => l.alive).length;
+  if (S.meters.margin <= 0) endGame("余白が尽きた — 捌き続けるには、止まる時間も要る");
+  else if (aliveLights === 0) endGame("灯がすべて消えた — 守るものを失えば、前進に意味はない");
+  else if (S.elapsed >= GAME_LEN) endGame("90秒の整流、完了");
+}
+
+function hitEntity(e, idx) {
+  const pitch = 1 + Math.min(S.combo, 24) * 0.03;
+  if (e.kind === "noise") {
+    S.entities.splice(idx, 1);
+    S.stats.noise++;
+    addMeter("order", 0.9);
+    comboUp();
+    burst(e.x, e.y, COLOR.noise, 8, 110);
+    AudioFX.breakN(pitch);
+  } else if (e.kind === "risk") {
+    e.hp--; e.flash = 0.12;
+    if (e.hp <= 0) {
+      S.entities.splice(idx, 1);
+      S.stats.risk++;
+      addMeter("trust", 2.4); addMeter("order", 0.3);
+      comboUp();
+      S.freeze = Math.max(S.freeze, 0.045);
+      burst(e.x, e.y, COLOR.risk, 14, 160);
+      ring(e.x, e.y, COLOR.risk, 52);
+      floatText(e.x, e.y - 14, "処理 +信頼", COLOR.ember);
+      AudioFX.riskHit(pitch);
+    } else {
+      burst(e.x, e.y, COLOR.risk, 4, 80);
+    }
+  } else if (e.kind === "idea") {
+    // 撃ってしまった — アイデアは壊れるとノイズになる
+    S.entities.splice(idx, 1);
+    addMeter("create", -5);
+    comboBreak(e.x, e.y - 26);
+    spawnNoiseAt(e.x, e.y, 2);
+    burst(e.x, e.y, COLOR.cyan, 10, 140);
+    floatText(e.x, e.y - 14, "アイデアを壊した −創造", COLOR.cyan);
+    AudioFX.shatter();
+  } else if (e.kind === "expect") {
+    e.hp--; e.flash = 0.12;
+    burst(e.x, e.y, COLOR.emberBright, 5, 90);
+    if (e.hp <= 0) {
+      S.entities.splice(idx, 1);
+      S.stats.forged++;
+      comboUp();
+      S.freeze = Math.max(S.freeze, 0.06);
+      ring(e.x, e.y, COLOR.emberBright, 70);
+      if (S.shards.length < 3) {
+        S.shards.push({ angle: Math.random() * TAU, x: e.x, y: e.y, zap: 1.2, flash: 0.3 });
+        floatText(e.x, e.y - 14, "仕組み化した", COLOR.emberBright);
+      } else {
+        addMeter("order", 4);
+        floatText(e.x, e.y - 14, "仕組み化 +秩序", COLOR.emberBright);
+      }
+      burst(e.x, e.y, COLOR.emberBright, 18, 170);
+      AudioFX.forge();
+    }
+  }
+}
+
+/* ---------------- 描画 ---------------- */
+function drawGlyph(kind, x, y, r, t, flash, hp, hpMax) {
+  ctx.save();
+  ctx.translate(x, y);
+  if (kind === "noise") {
+    ctx.globalAlpha = 0.55 + 0.35 * Math.sin(t * 9 + x);
+    ctx.fillStyle = COLOR.noise;
+    for (let i = 0; i < 4; i++) {
+      const a = t * 2 + i * TAU / 4;
+      ctx.fillRect(Math.cos(a) * r * 0.7 - 1.6, Math.sin(a) * r * 0.7 - 1.6, 3.2, 3.2);
+    }
+    ctx.fillRect(-1.6, -1.6, 3.2, 3.2);
+  } else if (kind === "risk") {
+    ctx.rotate(Math.sin(t * 2) * 0.15);
+    ctx.strokeStyle = flash > 0 ? "#fff" : COLOR.risk;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -r); ctx.lineTo(r * 0.9, r * 0.7); ctx.lineTo(-r * 0.9, r * 0.7);
+    ctx.closePath(); ctx.stroke();
+    ctx.fillStyle = COLOR.risk;
+    ctx.beginPath(); ctx.arc(0, r * 0.12, 1.8, 0, TAU); ctx.fill();
+  } else if (kind === "idea") {
+    const pulse = 1 + Math.sin(t * 4) * 0.12;
+    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 2.4 * pulse);
+    g.addColorStop(0, "rgba(105,191,255,.65)");
+    g.addColorStop(1, "rgba(105,191,255,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(0, 0, r * 2.4 * pulse, 0, TAU); ctx.fill();
+    ctx.fillStyle = COLOR.cyan;
+    ctx.beginPath(); ctx.arc(0, 0, r * 0.45 * pulse, 0, TAU); ctx.fill();
+  } else if (kind === "expect") {
+    ctx.rotate(t * 0.8);
+    const ratio = hpMax ? hp / hpMax : 1;
+    ctx.strokeStyle = flash > 0 ? "#fff" : COLOR.ember;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -r); ctx.lineTo(r, 0); ctx.lineTo(0, r); ctx.lineTo(-r, 0);
+    ctx.closePath(); ctx.stroke();
+    // 撃たれるほど中身が結晶化していく
+    ctx.fillStyle = COLOR.emberBright;
+    ctx.globalAlpha = 0.35 + 0.65 * (1 - ratio);
+    const ir = r * (0.35 + 0.45 * (1 - ratio));
+    ctx.beginPath();
+    ctx.moveTo(0, -ir); ctx.lineTo(ir, 0); ctx.lineTo(0, ir); ctx.lineTo(-ir, 0);
+    ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function draw(time) {
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (S.shake > 0.3) ctx.translate(rand(-S.shake, S.shake) * 0.4, rand(-S.shake, S.shake) * 0.4);
+
+  const t = time / 1000;
+  const P = S.player;
+
+  // 守るべきものの灯
+  ctx.save();
+  ctx.font = "10px " + getComputedStyle(document.body).getPropertyValue("--font-mono");
+  ctx.textAlign = "center";
+  for (const l of S.lights) {
+    l.flicker += 0.05;
+    if (l.alive) {
+      const fl = 0.8 + Math.sin(l.flicker) * 0.2;
+      const g = ctx.createRadialGradient(l.x, l.y, 0, l.x, l.y, 26 * fl);
+      g.addColorStop(0, "rgba(246,207,134,.7)");
+      g.addColorStop(1, "rgba(246,207,134,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(l.x, l.y, 26 * fl, 0, TAU); ctx.fill();
+      ctx.fillStyle = COLOR.emberBright;
+      ctx.beginPath(); ctx.arc(l.x, l.y, 3, 0, TAU); ctx.fill();
+      ctx.fillStyle = "rgba(216,205,182,.55)";
+      ctx.fillText(l.label, l.x, l.y + 18);
+    } else {
+      ctx.strokeStyle = "rgba(120,120,120,.4)";
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(l.x, l.y, 3, 0, TAU); ctx.stroke();
+      ctx.fillStyle = "rgba(120,120,120,.35)";
+      ctx.fillText(l.label, l.x, l.y + 18);
+    }
+  }
+  // 灯のライン
+  ctx.strokeStyle = "rgba(243,236,220,.08)";
+  ctx.setLineDash([2, 6]);
+  ctx.beginPath(); ctx.moveTo(0, lightY() - 14); ctx.lineTo(W, lightY() - 14); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+
+  // 弾
+  ctx.fillStyle = COLOR.cream;
+  for (const b of S.bullets) {
+    ctx.globalAlpha = 0.9;
+    ctx.fillRect(b.x - 1, b.y - 7, 2, 11);
+  }
+  ctx.globalAlpha = 1;
+
+  // エンティティ + ラベル
+  ctx.font = "9px " + getComputedStyle(document.body).getPropertyValue("--font-mono");
+  ctx.textAlign = "center";
+  for (const e of S.entities) {
+    drawGlyph(e.kind, e.x, e.y, e.r, t + e.wob, e.flash || 0, e.hp, e.hpMax);
+    ctx.globalAlpha = 0.4;
+    ctx.fillStyle = COLOR.silver;
+    ctx.fillText(e.label, e.x, e.y + e.r + 13);
+    ctx.globalAlpha = 1;
+  }
+
+  // 仕組みシャード
+  for (const sh of S.shards) {
+    ctx.save();
+    ctx.translate(sh.x, sh.y);
+    ctx.rotate(sh.angle * 2);
+    ctx.strokeStyle = sh.flash > 0 ? "#fff" : COLOR.emberBright;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(-4, -4, 8, 8);
+    ctx.restore();
+  }
+
+  // プレイヤー: 意思決定する点 — ビューファインダーの括弧で囲まれた光
+  if (S.mode === "play") {
+    const glow = ctx.createRadialGradient(P.x, P.y, 0, P.x, P.y, 30);
+    const c = S.firing ? "224,164,90" : "105,191,255";
+    glow.addColorStop(0, `rgba(${c},.5)`);
+    glow.addColorStop(1, `rgba(${c},0)`);
+    ctx.fillStyle = glow;
+    ctx.beginPath(); ctx.arc(P.x, P.y, 30, 0, TAU); ctx.fill();
+    ctx.fillStyle = COLOR.cream;
+    ctx.beginPath(); ctx.arc(P.x, P.y, 3.5, 0, TAU); ctx.fill();
+    // マズルフラッシュ
+    if (S.muzzle > 0 && S.firing) {
+      ctx.globalAlpha = S.muzzle / 0.06;
+      ctx.fillStyle = COLOR.emberBright;
+      ctx.beginPath(); ctx.arc(P.x, P.y - 15, 4.5, 0, TAU); ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    // viewfinder brackets
+    ctx.strokeStyle = S.firing ? COLOR.ember : COLOR.cyan;
+    ctx.lineWidth = 1.5;
+    const s = 11, l = 5;
+    for (const [sx, sy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+      ctx.beginPath();
+      ctx.moveTo(P.x + sx * s, P.y + sy * s - sy * l);
+      ctx.lineTo(P.x + sx * s, P.y + sy * s);
+      ctx.lineTo(P.x + sx * s - sx * l, P.y + sy * s);
+      ctx.stroke();
+    }
+  }
+
+  // パーティクル（破片 + 衝撃波リング）
+  for (const p of S.particles) {
+    const k = p.age / p.life;
+    ctx.globalAlpha = 1 - k;
+    if (p.ring) {
+      ctx.strokeStyle = p.color;
+      ctx.lineWidth = 2.5 * (1 - k) + 0.5;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r0 + (p.r1 - p.r0) * k, 0, TAU);
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  // フロートテキスト
+  ctx.font = "11px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+  ctx.textAlign = "center";
+  for (const f of S.floats) {
+    ctx.globalAlpha = 1 - f.age / f.life;
+    ctx.fillStyle = f.color;
+    ctx.fillText(f.text, f.x, f.y);
+  }
+  ctx.globalAlpha = 1;
+
+  // コンボ（整流）
+  if (S.mode === "play" && S.combo >= 3) {
+    const pulse = 1 + Math.max(0, S.comboPulse) * 1.6;
+    ctx.textAlign = "center";
+    ctx.fillStyle = S.combo >= 10 ? COLOR.emberBright : COLOR.creamDim;
+    ctx.font = `${Math.round(17 * pulse)}px ${getComputedStyle(document.body).getPropertyValue("--font-mono")}`;
+    ctx.fillText(`×${S.combo}`, W / 2, 62);
+    ctx.globalAlpha = 0.55;
+    ctx.font = "9px " + getComputedStyle(document.body).getPropertyValue("--font-mono");
+    ctx.fillText(S.combo >= 10 ? "整流 — 双発" : "整流", W / 2, 76);
+    ctx.globalAlpha = 1;
+  }
+
+  // ウェーブバナー
+  if (S.banner) {
+    const k = S.banner.age / S.banner.life;
+    const a = k < 0.12 ? k / 0.12 : k > 0.6 ? Math.max(0, 1 - (k - 0.6) / 0.4) : 1;
+    ctx.globalAlpha = a;
+    ctx.textAlign = "center";
+    ctx.fillStyle = COLOR.cream;
+    ctx.font = `700 ${Math.round(Math.min(44, W * 0.07))}px 'Shippori Mincho', serif`;
+    ctx.fillText(S.banner.text, W / 2, H * 0.3);
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.restore();
+}
+
+/* ---------------- HUD ---------------- */
+const hudFills = {
+  order: document.querySelector("#m-order .fill"),
+  create: document.querySelector("#m-create .fill"),
+  trust: document.querySelector("#m-trust .fill"),
+  margin: document.querySelector("#m-margin .fill"),
+};
+const timerEl = document.getElementById("timer");
+
+function updateHUD() {
+  for (const k in hudFills) hudFills[k].style.width = S.meters[k].toFixed(1) + "%";
+  timerEl.textContent = Math.max(0, GAME_LEN - S.elapsed).toFixed(1);
+}
+
+/* ---------------- 画面遷移 ---------------- */
+const screenTitle = document.getElementById("screen-title");
+const screenResult = document.getElementById("screen-result");
+const hud = document.getElementById("hud");
+
+function buildLegend() {
+  const defs = [
+    ["noise", "<b>ノイズ</b> — 撃って、分解する"],
+    ["risk", "<b>リスク</b> — 撃って、処理する。下の灯に届かせるな"],
+    ["idea", "<b>アイデア</b> — 撃つな。機体で触れて、回収する"],
+    ["expect", "<b>期待</b> — 撃ち続けると「仕組み」になり、君を守る"],
+  ];
+  const wrap = document.getElementById("legend");
+  for (const [kind, html] of defs) {
+    const cv = document.createElement("canvas");
+    cv.className = "glyph";
+    cv.width = 60; cv.height = 60;
+    const c = cv.getContext("2d");
+    c.scale(2, 2);
+    drawGlyphTo(c, kind, 15, 15, kind === "noise" ? 6 : 9);
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    wrap.appendChild(cv);
+    wrap.appendChild(div);
+  }
+}
+function drawGlyphTo(c, kind, x, y, r) {
+  c.save(); c.translate(x, y);
+  if (kind === "noise") {
+    c.fillStyle = COLOR.noise;
+    for (let i = 0; i < 4; i++) {
+      const a = i * TAU / 4 + 0.5;
+      c.fillRect(Math.cos(a) * r * 0.7 - 1.6, Math.sin(a) * r * 0.7 - 1.6, 3.2, 3.2);
+    }
+    c.fillRect(-1.6, -1.6, 3.2, 3.2);
+  } else if (kind === "risk") {
+    c.strokeStyle = COLOR.risk; c.lineWidth = 2;
+    c.beginPath(); c.moveTo(0, -r); c.lineTo(r * 0.9, r * 0.7); c.lineTo(-r * 0.9, r * 0.7);
+    c.closePath(); c.stroke();
+  } else if (kind === "idea") {
+    const g = c.createRadialGradient(0, 0, 0, 0, 0, r * 1.6);
+    g.addColorStop(0, "rgba(105,191,255,.7)"); g.addColorStop(1, "rgba(105,191,255,0)");
+    c.fillStyle = g; c.beginPath(); c.arc(0, 0, r * 1.6, 0, TAU); c.fill();
+    c.fillStyle = COLOR.cyan; c.beginPath(); c.arc(0, 0, r * 0.45, 0, TAU); c.fill();
+  } else if (kind === "expect") {
+    c.strokeStyle = COLOR.ember; c.lineWidth = 2;
+    c.beginPath(); c.moveTo(0, -r); c.lineTo(r, 0); c.lineTo(0, r); c.lineTo(-r, 0);
+    c.closePath(); c.stroke();
+  }
+  c.restore();
+}
+buildLegend();
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  resetGame();
+  S.mode = "play";
+  screenTitle.classList.add("hidden");
+  screenResult.classList.add("hidden");
+  hud.classList.add("on");
+}
+
+function endGame(reason) {
+  if (S.mode !== "play") return;
+  S.mode = "result";
+  S.endReason = reason;
+  hud.classList.remove("on");
+  showResult();
+}
+
+const VERDICTS = {
+  order:  ["整える人", "混沌は、あなたの素材だ。<br>散らかった世界に、線を引ける人。"],
+  create: ["拾う人", "ノイズの中の微かな光を、見逃さない。<br>撃たずに待つことを知っている人。"],
+  trust:  ["守る人", "攻めの裏で、最後の一線は譲らない。<br>灯を消さないことが、信頼になる。"],
+  margin: ["待てる人", "撃たない勇気が、次の一手を生む。<br>余白は怠惰ではなく、戦略である。"],
+  balance:["進める人", "すべては最大化できない。<br>それでも、バランスを取りながら前へ進む人。"],
+};
+
+function showResult() {
+  const m = S.meters;
+  const aliveLights = S.lights.filter(l => l.alive).length;
+
+  // 評価
+  const entries = Object.entries(m);
+  const max = entries.reduce((a, b) => b[1] > a[1] ? b : a);
+  const min = entries.reduce((a, b) => b[1] < a[1] ? b : a);
+  const key = (max[1] - min[1] < 18) ? "balance" : max[0];
+  const [v, sub] = VERDICTS[key];
+
+  const score = Math.round(
+    m.order * 0.9 + m.create * 0.9 + m.trust * 0.7 + m.margin * 0.5 +
+    S.stats.forged * 6 + aliveLights * 8 + S.stats.idea * 3 + S.maxCombo * 2
+  );
+
+  document.getElementById("result-reason").textContent = S.endReason;
+  document.getElementById("verdict").textContent = v;
+  document.getElementById("verdict-sub").innerHTML = sub;
+  document.getElementById("score-num").textContent = score;
+
+  const bars = document.getElementById("result-bars");
+  bars.innerHTML = "";
+  const colors = { order: COLOR.cream, create: COLOR.cyan, trust: COLOR.ember, margin: COLOR.magenta };
+  const labels = { order: "秩序", create: "創造", trust: "信頼", margin: "余白" };
+  for (const k of ["order", "create", "trust", "margin"]) {
+    const row = document.createElement("div");
+    row.className = "rbar";
+    row.innerHTML = `<span class="lab">${labels[k]}</span><span class="track"><span class="fill" style="background:${colors[k]}"></span></span><span class="val">${Math.round(m[k])}</span>`;
+    bars.appendChild(row);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      row.querySelector(".fill").style.width = m[k] + "%";
+    }));
+  }
+
+  document.getElementById("stats").innerHTML =
+    `分解したノイズ <b>${S.stats.noise}</b>` +
+    `<span>処理したリスク <b>${S.stats.risk}</b></span>` +
+    `<span>回収したアイデア <b>${S.stats.idea}</b></span>` +
+    `<span>仕組みにした期待 <b>${S.stats.forged}</b></span>` +
+    `<span>最大整流 <b>×${S.maxCombo}</b></span>` +
+    `<span>守れた灯 <b>${aliveLights} / ${LIGHT_COUNT}</b></span>`;
+
+  screenResult.classList.remove("hidden");
+}
+
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+
+/* ---------------- メインループ ---------------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (S.mode === "play") {
+    if (S.freeze > 0) S.freeze -= dt; // ヒットストップ: 一瞬だけ世界が止まる
+    else update(dt);
+    updateHUD();
+  } else {
+    // タイトル/リザルト裏でも、世界は静かに流れ続ける
+    S.elapsed += 0;
+    for (const k of ["noise", "idea"]) {
+      S.spawnAcc[k] += (k === "noise" ? 0.5 : 0.12) * dt;
+      while (S.spawnAcc[k] >= 1) { S.spawnAcc[k] -= 1; spawn(k); }
+    }
+    for (let i = S.entities.length - 1; i >= 0; i--) {
+      const e = S.entities[i];
+      e.wob += dt * 3;
+      e.x += e.vx * dt; e.y += e.vy * dt;
+      if (e.y > H + 20) S.entities.splice(i, 1);
+    }
+    for (let i = S.particles.length - 1; i >= 0; i--) {
+      const p = S.particles[i];
+      p.age += dt;
+      if (p.age >= p.life) S.particles.splice(i, 1);
+      else { p.x += p.vx * dt; p.y += p.vy * dt; }
+    }
+  }
+  draw(now);
+}
+// タイトル画面用に灯を仮配置
+resetGame();
+S.mode = "title";
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

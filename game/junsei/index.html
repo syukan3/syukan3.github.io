@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>巡星 — JUNSEI | 太陽系を、巡る。</title>
+<meta name="description" content="探査機SYUKAN-3で太陽系8惑星を巡るグランドツアー。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: #05060a; color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 58%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .06; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(5,6,10,.8);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(105,191,255,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 460px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(28px, 6.6vw, 44px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #au { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 18px; letter-spacing: .15em; color: var(--cream); }
+  #au small { font-size: 11px; color: var(--silver); }
+  #hp { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 12px; letter-spacing: .2em; color: var(--magenta); }
+  #obs { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--cyan); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="obs">観測 0 / 16</div>
+  <div id="au">0.0 <small>AU</small></div>
+  <div id="hp">機体 ●●●</div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Grand Tour — Solar System</div>
+  <h1 class="title">巡星</h1>
+  <div class="title-en">J U N S E I</div>
+  <p class="tagline">太陽系を、巡る。</p>
+  <p class="hint">
+    探査機 <em>SYUKAN-3</em>、打ち上げ。太陽を背に、8つの惑星を巡る旅へ。<br>
+    操作は左右だけ — ドラッグ / A・D / ←→。<br>
+    青い<em>観測データ</em>を集めながら、デブリと小惑星帯をくぐり抜けろ。<br>
+    機体がもてば、<em>海王星</em>の先でグランドツアー完了。<br>
+    急がなくていい。宇宙は逃げない。
+  </p>
+  <button class="btn" id="btn-start">打ち上げ</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket" id="r-bracket">MISSION REPORT</div>
+  <div class="cause" id="cause">機体損傷 — 通信途絶</div>
+  <div class="dist-line">到達 <b id="r-au">0.0</b> AU</div>
+  <div class="dist-line" id="r-obs">観測データ 0 / 16</div>
+  <div class="dist-line" id="r-best">BEST 0.0 AU</div>
+  <div class="rank-label">ミッション評価</div>
+  <div class="rank" id="rank">大気圏は出た</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">次の探査機を打ち上げる</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP / SPACE でも再打ち上げできる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   巡星 / JUNSEI — 太陽系グランドツアー
+   探査機 SYUKAN-3 で、太陽から海王星までを巡る。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8", slate: "#3a3a3a",
+};
+
+/* ---------- 惑星カタログ ---------- */
+const PLANETS = [
+  { y: 1500,  name: "水星", en: "MERCURY", au: 0.39, r: 38,  side: -1,
+    fact: "昼は430℃、夜は−170℃。<br>太陽系でいちばん極端な星。" },
+  { y: 3000,  name: "金星", en: "VENUS",   au: 0.72, r: 58,  side: 1,
+    fact: "自転が逆向き。<br>この星では、太陽が西から昇る。" },
+  { y: 4500,  name: "地球", en: "EARTH",   au: 1.00, r: 62,  side: -1,
+    fact: "いまのところ、会議が行われている<br>ことが確認された唯一の星。" },
+  { y: 6000,  name: "火星", en: "MARS",    au: 1.52, r: 48,  side: 1,
+    fact: "夕焼けが青い。<br>朝焼けも青い。" },
+  { y: 9500,  name: "木星", en: "JUPITER", au: 5.20, r: 150, side: -1,
+    fact: "太陽系の掃除屋。<br>その重力が、地球を隕石から守っている。" },
+  { y: 11500, name: "土星", en: "SATURN",  au: 9.58, r: 110, side: 1,
+    fact: "輪の正体はほぼ氷。<br>直径27万km、厚さはわずか数十m。" },
+  { y: 13500, name: "天王星", en: "URANUS", au: 19.2, r: 76, side: -1,
+    fact: "横倒しのまま公転している。<br>自由でいい。" },
+  { y: 15500, name: "海王星", en: "NEPTUNE", au: 30.1, r: 74, side: 1,
+    fact: "風速はおよそ2,000km/h。<br>太陽系最速の風が吹く、最果ての青。" },
+];
+const GOAL_Y = 16400;
+const AU_ANCHORS = [[0, 0], ...PLANETS.map(p => [p.y, p.au]), [GOAL_Y, 32]];
+
+function worldToAU(y) {
+  for (let i = 1; i < AU_ANCHORS.length; i++) {
+    if (y <= AU_ANCHORS[i][0]) {
+      const [y0, a0] = AU_ANCHORS[i - 1], [y1, a1] = AU_ANCHORS[i];
+      return a0 + (a1 - a0) * ((y - y0) / (y1 - y0));
+    }
+  }
+  return 32;
+}
+
+function judge(died, passedIdx, obs) {
+  if (!died) return ["グランドツアー完了", "探査機は太陽系の外へ。<br>データはすべて、地球に届いた。"];
+  if (passedIdx < 0) return ["大気圏は出た", "それだけでも、たいしたことだ。"];
+  if (passedIdx < 3) return ["内惑星ツアー", "太陽の近所を見てきた。次はもっと遠くへ。"];
+  if (passedIdx < 4) return ["小惑星帯の藻屑", "岩だらけの海で散った。よくある話だ。"];
+  if (passedIdx < 6) return ["ガスジャイアント見物", "木星と土星を見た目は、もう戻れない。"];
+  return ["最果てまであと少し", "海王星の青は、見えていたのに。"];
+}
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+resize();
+window.addEventListener("resize", resize);
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null, pad: [],
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.13;
+      this.gain.connect(this.ctx.destination);
+      // 宇宙の通奏低音
+      for (const [f, v] of [[55, 0.06], [82.4, 0.035], [110, 0.02]]) {
+        const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+        o.type = "sine"; o.frequency.value = f;
+        g.gain.value = 0;
+        o.connect(g); g.connect(this.ctx.destination);
+        o.start();
+        this.pad.push({ o, g, v });
+      }
+    } catch (e) {}
+  },
+  padOn(on) { for (const p of this.pad) p.g.gain.value = on ? p.v : 0; },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  collect(n) { this.blip(740 * Math.pow(1.04, n % 12), 0.18, "sine", 0.5, 200); },
+  planet()   { this.blip(392, 0.6, "sine", 0.4, 0); this.blip(587, 0.8, "sine", 0.3, 0); },
+  hit()      { this.blip(140, 0.4, "sawtooth", 0.55, -70); },
+  done()     { this.blip(523, 0.5, "sine", 0.5); this.blip(659, 0.7, "sine", 0.4); this.blip(784, 0.9, "sine", 0.4); this.blip(1047, 1.1, "sine", 0.3); },
+  over()     { this.blip(220, 0.8, "sawtooth", 0.45, -160); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",            // title | play | over
+  ship: { x: 0, tx: 0, y: 0, vyBase: 120, tilt: 0 },
+  hp: 3, inv: 0,
+  obs: 0, obsTotal: 16,
+  orbs: [], rocks: [],
+  banner: null, card: null, cardQueue: [],
+  particles: [], stars: [],
+  passed: new Set(),
+  shake: 0, overT: 0, died: false, endFade: 0,
+  best: Number(localStorage.getItem("junsei-best") || 0),
+  pointer: { active: false, x: 0 },
+  keys: {},
+};
+
+const shipScreenY = () => H * 0.74;
+
+function resetGame() {
+  S.ship = { x: W / 2, tx: W / 2, y: 0, vyBase: 120, tilt: 0 };
+  S.hp = 3; S.inv = 0;
+  S.obs = 0;
+  S.banner = null; S.card = null; S.cardQueue = [];
+  S.particles = [];
+  S.passed = new Set();
+  S.shake = 0; S.overT = 0; S.died = false; S.endFade = 0;
+
+  // 星空（3層パララックス）
+  S.stars = [];
+  for (let i = 0; i < 130; i++) {
+    S.stars.push({ x: Math.random() * W, y: Math.random() * H, depth: rand(0.1, 0.5), r: rand(0.5, 1.8) });
+  }
+  // 観測データ: 各惑星に2つ
+  S.orbs = [];
+  for (const p of PLANETS) {
+    const px = planetX(p);
+    for (let i = 0; i < 2; i++) {
+      S.orbs.push({
+        x: clamp(px + rand(-1, 1) * (p.r + rand(70, 130)), 40, W - 40),
+        y: p.y + rand(-220, 160),
+        planet: p, got: false, ph: Math.random() * TAU,
+      });
+    }
+  }
+  S.obsTotal = S.orbs.length;
+  // 小惑星帯（火星〜木星）と地球近傍のデブリ
+  S.rocks = [];
+  for (let i = 0; i < 30; i++) {
+    S.rocks.push({
+      x: rand(30, W - 30), y: rand(6800, 8600),
+      r: rand(10, 24), rot: Math.random() * TAU, vr: rand(-1, 1),
+      kind: "rock", verts: makeRockShape(),
+    });
+  }
+  for (let i = 0; i < 7; i++) {
+    S.rocks.push({
+      x: rand(30, W - 30), y: rand(4150, 4850),
+      r: rand(7, 11), rot: Math.random() * TAU, vr: rand(-2.4, 2.4),
+      kind: "debris", verts: null,
+    });
+  }
+}
+
+function makeRockShape() {
+  const v = [];
+  const n = 8;
+  for (let i = 0; i < n; i++) v.push(rand(0.7, 1.15));
+  return v;
+}
+
+function planetX(p) {
+  return W / 2 + p.side * Math.min(W * 0.3, 230);
+}
+
+/* ---------- 入力 ---------- */
+canvas.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  if (S.mode === "over") { if (S.overT > 0.8) startGame(); return; }
+  S.pointer.active = true; S.pointer.x = e.clientX;
+});
+window.addEventListener("pointermove", e => {
+  if (S.pointer.active) S.pointer.x = e.clientX;
+});
+window.addEventListener("pointerup", () => { S.pointer.active = false; });
+window.addEventListener("keydown", e => {
+  S.keys[e.key.toLowerCase()] = true;
+  if (e.code === "Space" && S.mode === "over" && S.overT > 0.8) { e.preventDefault(); startGame(); }
+}, { passive: false });
+window.addEventListener("keyup", e => { S.keys[e.key.toLowerCase()] = false; });
+
+/* ---------- エフェクト ---------- */
+function burst(x, y, color, n, speed = 150) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.3, 0.8), age: 0, color, r: rand(1, 2.6) });
+  }
+}
+
+/* ---------- 進行 ---------- */
+function update(dt) {
+  const sh = S.ship;
+  // 速度: ゆっくり上がる
+  sh.vyBase = Math.min(265, sh.vyBase + dt * 1.9);
+  sh.y += sh.vyBase * dt;
+
+  // 操舵
+  let steer = 0;
+  if (S.keys.a || S.keys.arrowleft) steer -= 1;
+  if (S.keys.d || S.keys.arrowright) steer += 1;
+  if (steer) sh.tx = clamp(sh.tx + steer * 420 * dt, 26, W - 26);
+  else if (S.pointer.active) sh.tx = clamp(S.pointer.x, 26, W - 26);
+  const dx = sh.tx - sh.x;
+  sh.x += dx * Math.min(1, dt * 7);
+  sh.tilt += ((dx * 0.0035) - sh.tilt) * Math.min(1, dt * 8);
+
+  if (S.inv > 0) S.inv -= dt;
+
+  // 惑星接近バナー & 通過
+  for (let i = 0; i < PLANETS.length; i++) {
+    const p = PLANETS[i];
+    if (!S.passed.has(i) && sh.y > p.y - 480 && sh.y < p.y) {
+      if (!S.banner || S.banner.planet !== p) {
+        S.banner = { planet: p, age: 0, life: 3 };
+        AudioFX.planet();
+      }
+    }
+    if (sh.y > p.y && !S.passed.has(i)) S.passed.add(i);
+  }
+  if (S.banner && (S.banner.age += dt) >= S.banner.life) S.banner = null;
+
+  // 観測カードのキュー
+  if (!S.card && S.cardQueue.length) {
+    S.card = S.cardQueue.shift();
+    S.card.age = 0;
+  }
+  if (S.card && (S.card.age += dt) >= 4) S.card = null;
+
+  // 観測データ回収
+  for (const o of S.orbs) {
+    if (o.got) continue;
+    const sy = shipScreenY() - (o.y - sh.y);
+    if (sy < -60 || sy > H + 60) continue;
+    const dd = (o.x - sh.x) ** 2 + (sy - shipScreenY()) ** 2;
+    if (dd < 42 ** 2) {
+      o.got = true;
+      S.obs++;
+      burst(o.x, sy, COLOR.cyan, 14, 160);
+      AudioFX.collect(S.obs);
+      const firstOfPlanet = !S.orbs.some(oo => oo !== o && oo.got && oo.planet === o.planet);
+      if (firstOfPlanet) S.cardQueue.push({ planet: o.planet, age: 0 });
+      document.getElementById("obs").textContent = `観測 ${S.obs} / ${S.obsTotal}`;
+    }
+  }
+
+  // 岩・デブリ
+  for (const r of S.rocks) {
+    r.rot += r.vr * dt;
+    const sy = shipScreenY() - (r.y - sh.y);
+    if (sy < -80 || sy > H + 80) continue;
+    if (S.inv <= 0) {
+      const dd = (r.x - sh.x) ** 2 + (sy - shipScreenY()) ** 2;
+      if (dd < (r.r + 13) ** 2) {
+        S.hp--;
+        S.inv = 1.6;
+        S.shake = 11;
+        burst(sh.x, shipScreenY(), COLOR.ember, 22, 220);
+        AudioFX.hit();
+        document.getElementById("hp").textContent = "機体 " + "●".repeat(Math.max(0, S.hp)) + "○".repeat(3 - Math.max(0, S.hp));
+        if (S.hp <= 0) return endMission(true);
+      }
+    }
+  }
+
+  // ゴール
+  if (sh.y >= GOAL_Y) return endMission(false);
+
+  // パーティクル
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt;
+  }
+  if (S.shake > 0) S.shake = Math.max(0, S.shake - dt * 24);
+
+  document.getElementById("au").innerHTML = worldToAU(sh.y).toFixed(2) + " <small>AU</small>";
+}
+
+function endMission(died) {
+  if (S.mode === "over") return;
+  S.mode = "over"; S.overT = 0; S.died = died;
+  AudioFX.padOn(false);
+  died ? AudioFX.over() : AudioFX.done();
+  const au = worldToAU(S.ship.y);
+  if (au > S.best) { S.best = au; localStorage.setItem("junsei-best", String(Math.round(au * 100) / 100)); }
+  const passedIdx = Math.max(...[...S.passed, -1]);
+  setTimeout(() => {
+    document.getElementById("r-bracket").textContent = died ? "MISSION REPORT" : "GRAND TOUR COMPLETE";
+    document.getElementById("cause").textContent = died ? "機体損傷 — 通信途絶" : "太陽系の端に、到達。";
+    document.getElementById("r-au").textContent = au.toFixed(2);
+    document.getElementById("r-obs").textContent = `観測データ ${S.obs} / ${S.obsTotal}`;
+    document.getElementById("r-best").textContent = "BEST " + Number(S.best).toFixed(2) + " AU";
+    const [rk, sub] = judge(died, passedIdx, S.obs);
+    document.getElementById("rank").textContent = rk;
+    document.getElementById("rank-sub").innerHTML = sub;
+    document.getElementById("hud").classList.remove("on");
+    document.getElementById("screen-result").classList.remove("hidden");
+  }, died ? 800 : 1600);
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  AudioFX.padOn(true);
+  resetGame();
+  S.mode = "play";
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  document.getElementById("hp").textContent = "機体 ●●●";
+  document.getElementById("obs").textContent = `観測 0 / ${S.obsTotal}`;
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.8) startGame();
+});
+
+/* ---------- 惑星の描画 ---------- */
+function drawPlanet(p, sx, sy) {
+  const r = p.r;
+  ctx.save();
+  ctx.translate(sx, sy);
+  // 共通: 球体グラデ
+  const sphere = (c1, c2, c3) => {
+    const g = ctx.createRadialGradient(-r * 0.35, -r * 0.35, r * 0.1, 0, 0, r);
+    g.addColorStop(0, c1); g.addColorStop(0.65, c2); g.addColorStop(1, c3);
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.fill();
+  };
+  if (p.en === "MERCURY") {
+    sphere("#b8b0a4", "#7a7268", "#3c3833");
+    ctx.fillStyle = "rgba(40,36,32,.5)";
+    for (const [cx, cy, cr] of [[-0.3, -0.1, 0.13], [0.25, 0.3, 0.1], [0.1, -0.4, 0.08], [-0.1, 0.42, 0.07]]) {
+      ctx.beginPath(); ctx.arc(cx * r, cy * r, cr * r, 0, TAU); ctx.fill();
+    }
+  } else if (p.en === "VENUS") {
+    sphere("#f3e2b8", "#d8b478", "#8a6a3a");
+    ctx.strokeStyle = "rgba(255,240,200,.25)";
+    ctx.lineWidth = r * 0.1;
+    for (const yy of [-0.35, 0.05, 0.45]) {
+      ctx.beginPath();
+      ctx.ellipse(0, yy * r, r * 0.85, r * 0.22, 0.18, 0, TAU);
+      ctx.stroke();
+    }
+  } else if (p.en === "EARTH") {
+    sphere("#8ec4ee", "#3a78c2", "#15335e");
+    ctx.fillStyle = "rgba(80,160,90,.8)";
+    ctx.beginPath(); ctx.ellipse(-r * 0.25, -r * 0.1, r * 0.34, r * 0.2, 0.5, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(r * 0.3, r * 0.32, r * 0.22, r * 0.14, -0.4, 0, TAU); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.5)";
+    ctx.beginPath(); ctx.ellipse(r * 0.1, -r * 0.42, r * 0.4, r * 0.1, 0.2, 0, TAU); ctx.fill();
+    ctx.strokeStyle = "rgba(150,210,255,.5)";
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0, 0, r + 4, 0, TAU); ctx.stroke();
+  } else if (p.en === "MARS") {
+    sphere("#e8a070", "#c2603a", "#5e2a18");
+    ctx.fillStyle = "rgba(255,255,255,.75)";
+    ctx.beginPath(); ctx.ellipse(0, -r * 0.82, r * 0.3, r * 0.12, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = "rgba(90,40,24,.5)";
+    ctx.beginPath(); ctx.ellipse(r * 0.2, r * 0.15, r * 0.4, r * 0.16, 0.4, 0, TAU); ctx.fill();
+  } else if (p.en === "JUPITER") {
+    sphere("#e8d4b0", "#c8a06a", "#6a4a2a");
+    ctx.save();
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.clip();
+    const bands = ["rgba(160,110,60,.5)", "rgba(240,220,180,.4)", "rgba(190,130,80,.45)", "rgba(235,210,170,.4)", "rgba(150,100,60,.5)"];
+    bands.forEach((b, i) => {
+      ctx.fillStyle = b;
+      ctx.fillRect(-r, -r + (i + 0.6) * (r * 2 / 6), r * 2, r * 0.22);
+    });
+    ctx.fillStyle = "rgba(200,80,50,.85)";
+    ctx.beginPath(); ctx.ellipse(r * 0.32, r * 0.3, r * 0.16, r * 0.1, 0, 0, TAU); ctx.fill();
+    ctx.restore();
+  } else if (p.en === "SATURN") {
+    // 環(奥)
+    ctx.strokeStyle = "rgba(216,190,140,.55)";
+    ctx.lineWidth = r * 0.16;
+    ctx.beginPath(); ctx.ellipse(0, 0, r * 1.7, r * 0.5, -0.3, Math.PI * 0.96, Math.PI * 2.04); ctx.stroke();
+    sphere("#efe0b8", "#d0b078", "#7a5c34");
+    // 環(手前)
+    ctx.strokeStyle = "rgba(230,205,160,.8)";
+    ctx.lineWidth = r * 0.16;
+    ctx.beginPath(); ctx.ellipse(0, 0, r * 1.7, r * 0.5, -0.3, -0.06, Math.PI * 1.04); ctx.stroke();
+    ctx.strokeStyle = "rgba(180,150,110,.5)";
+    ctx.lineWidth = r * 0.05;
+    ctx.beginPath(); ctx.ellipse(0, 0, r * 2.0, r * 0.6, -0.3, -0.06, Math.PI * 1.04); ctx.stroke();
+  } else if (p.en === "URANUS") {
+    sphere("#cdeef0", "#7ec4cc", "#2a6a74");
+    ctx.strokeStyle = "rgba(200,240,245,.4)";
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.ellipse(0, 0, r * 0.35, r * 1.5, 0.35, 0, TAU); ctx.stroke();
+  } else if (p.en === "NEPTUNE") {
+    sphere("#7aa8f0", "#3858c8", "#101e54");
+    ctx.fillStyle = "rgba(20,30,80,.6)";
+    ctx.beginPath(); ctx.ellipse(-r * 0.2, -r * 0.15, r * 0.22, r * 0.12, 0.3, 0, TAU); ctx.fill();
+    ctx.strokeStyle = "rgba(220,235,255,.45)";
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(0, r * 0.3, r * 0.7, r * 0.1, -0.1, 0, Math.PI); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/* ---------- 描画 ---------- */
+function draw(time) {
+  const t = time / 1000;
+  const sh = S.ship;
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (S.shake > 0.3) ctx.translate(rand(-S.shake, S.shake) * 0.5, rand(-S.shake, S.shake) * 0.5);
+
+  const mono = getComputedStyle(document.body).getPropertyValue("--font-mono");
+
+  // 星（パララックス）
+  for (const st of S.stars) {
+    const y = (st.y + sh.y * st.depth) % H;
+    ctx.globalAlpha = 0.35 + st.depth;
+    ctx.fillStyle = COLOR.cream;
+    ctx.fillRect(st.x, H - y, st.r, st.r);
+  }
+  ctx.globalAlpha = 1;
+
+  // 太陽（出発点の名残: 下方の光）
+  const sunSy = shipScreenY() + sh.y; // 太陽は world y=0 より下
+  if (sunSy < H + 900) {
+    const g = ctx.createRadialGradient(W / 2, sunSy + 500, 80, W / 2, sunSy + 500, 900);
+    g.addColorStop(0, "rgba(246,207,134,.85)");
+    g.addColorStop(0.4, "rgba(224,164,90,.25)");
+    g.addColorStop(1, "rgba(224,164,90,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // 惑星
+  for (const p of PLANETS) {
+    const sy = shipScreenY() - (p.y - sh.y);
+    if (sy < -p.r * 2.3 || sy > H + p.r * 2.3) continue;
+    drawPlanet(p, planetX(p), sy);
+    ctx.fillStyle = "rgba(184,184,184,.55)";
+    ctx.font = "10px " + mono;
+    ctx.textAlign = "center";
+    ctx.fillText(p.en + " — " + p.au + " AU", planetX(p), sy + p.r + (p.en === "SATURN" ? p.r * 0.65 : 0) + 22);
+  }
+
+  // 観測データ
+  for (const o of S.orbs) {
+    if (o.got) continue;
+    const sy = shipScreenY() - (o.y - sh.y);
+    if (sy < -40 || sy > H + 40) continue;
+    const pulse = 1 + Math.sin(t * 4 + o.ph) * 0.16;
+    const g = ctx.createRadialGradient(o.x, sy, 0, o.x, sy, 19 * pulse);
+    g.addColorStop(0, "rgba(105,191,255,.6)");
+    g.addColorStop(1, "rgba(105,191,255,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(o.x, sy, 19 * pulse, 0, TAU); ctx.fill();
+    ctx.strokeStyle = COLOR.cyan;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(o.x, sy, 6.5 * pulse, 0, TAU); ctx.stroke();
+    ctx.fillStyle = COLOR.cyan;
+    ctx.beginPath(); ctx.arc(o.x, sy, 2.2, 0, TAU); ctx.fill();
+  }
+
+  // 岩・デブリ
+  for (const r of S.rocks) {
+    const sy = shipScreenY() - (r.y - sh.y);
+    if (sy < -60 || sy > H + 60) continue;
+    ctx.save();
+    ctx.translate(r.x, sy);
+    ctx.rotate(r.rot);
+    if (r.kind === "rock") {
+      ctx.fillStyle = "#4a4138";
+      ctx.strokeStyle = "#6e6253";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      r.verts.forEach((v, i) => {
+        const a = (i / r.verts.length) * TAU;
+        const px = Math.cos(a) * r.r * v, py = Math.sin(a) * r.r * v;
+        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      });
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+    } else {
+      ctx.strokeStyle = COLOR.silver;
+      ctx.lineWidth = 1.6;
+      ctx.strokeRect(-r.r, -r.r * 0.45, r.r * 2, r.r * 0.9);
+      ctx.beginPath(); ctx.moveTo(-r.r, 0); ctx.lineTo(r.r, 0); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // 探査機 SYUKAN-3
+  if (S.mode !== "title") {
+    const sy = shipScreenY();
+    const blink = S.inv > 0 && Math.sin(t * 24) > 0;
+    if (!blink) {
+      ctx.save();
+      ctx.translate(sh.x, sy);
+      ctx.rotate(sh.tilt);
+      // スラスタ
+      const fl = rand(8, 15);
+      ctx.fillStyle = "rgba(246,207,134,.7)";
+      ctx.beginPath();
+      ctx.moveTo(-3, 14); ctx.lineTo(3, 14); ctx.lineTo(0, 14 + fl);
+      ctx.closePath(); ctx.fill();
+      // ソーラーパネル
+      ctx.fillStyle = "rgba(224,164,90,.85)";
+      ctx.strokeStyle = COLOR.emberBright;
+      ctx.lineWidth = 1;
+      for (const side of [-1, 1]) {
+        ctx.fillRect(side * 9 - (side < 0 ? 16 : 0), -5, 16, 10);
+        ctx.strokeRect(side * 9 - (side < 0 ? 16 : 0), -5, 16, 10);
+      }
+      // 本体
+      ctx.fillStyle = COLOR.cream;
+      ctx.strokeStyle = COLOR.creamDim;
+      ctx.beginPath();
+      ctx.moveTo(0, -14); ctx.lineTo(7, -4); ctx.lineTo(7, 10); ctx.lineTo(-7, 10); ctx.lineTo(-7, -4);
+      ctx.closePath(); ctx.fill();
+      // アンテナ皿
+      ctx.strokeStyle = COLOR.cream;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.arc(0, -17, 6, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, -14); ctx.lineTo(0, -19); ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  // パーティクル
+  for (const p of S.particles) {
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+
+  // 惑星接近バナー
+  if (S.banner) {
+    const k = S.banner.age / S.banner.life;
+    const a = k < 0.12 ? k / 0.12 : k > 0.65 ? Math.max(0, 1 - (k - 0.65) / 0.35) : 1;
+    ctx.globalAlpha = a;
+    ctx.textAlign = "center";
+    ctx.fillStyle = COLOR.cream;
+    ctx.font = `700 ${Math.round(Math.min(46, W * 0.085))}px 'Shippori Mincho', serif`;
+    ctx.fillText(S.banner.planet.name, W / 2, H * 0.24);
+    ctx.fillStyle = "rgba(184,184,184,.8)";
+    ctx.font = "11px " + mono;
+    ctx.fillText(S.banner.planet.en + "  /  " + S.banner.planet.au + " AU", W / 2, H * 0.24 + 24);
+    ctx.globalAlpha = 1;
+  }
+
+  // 観測カード
+  if (S.card) {
+    const k = S.card.age / 4;
+    const a = k < 0.08 ? k / 0.08 : k > 0.82 ? Math.max(0, 1 - (k - 0.82) / 0.18) : 1;
+    const p = S.card.planet;
+    const cw = Math.min(W * 0.86, 380), chh = 86;
+    const cx = (W - cw) / 2, cy = H - chh - Math.max(90, H * 0.13);
+    ctx.globalAlpha = a;
+    ctx.fillStyle = "rgba(10,12,18,.88)";
+    ctx.strokeStyle = "rgba(105,191,255,.5)";
+    ctx.lineWidth = 1;
+    ctx.fillRect(cx, cy, cw, chh);
+    ctx.strokeRect(cx, cy, cw, chh);
+    ctx.textAlign = "left";
+    ctx.fillStyle = COLOR.cyan;
+    ctx.font = "10px " + mono;
+    ctx.fillText("OBSERVATION LOG — 地球へ送信中…", cx + 14, cy + 20);
+    ctx.fillStyle = COLOR.cream;
+    ctx.font = `700 15px 'Shippori Mincho', serif`;
+    ctx.fillText(p.name, cx + 14, cy + 42);
+    ctx.fillStyle = "rgba(216,205,182,.9)";
+    ctx.font = "11px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+    const lines = p.fact.split("<br>");
+    lines.forEach((l, i) => ctx.fillText(l, cx + 14, cy + 60 + i * 15));
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.restore();
+}
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+  if (document.hidden) AudioFX.padOn(false);
+  else if (S.mode === "play") AudioFX.padOn(true);
+});
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (S.mode === "play") update(dt);
+  if (S.mode === "over") S.overT += dt;
+  if (S.mode === "title") S.ship.y += 14 * dt;   // タイトルでは星がゆっくり流れる
+  draw(now);
+}
+resetGame();
+S.mode = "title";
+requestAnimationFrame(loop);
+window.__G = { S, startGame, PLANETS, GOAL_Y, worldToAU, endMission };
+</script>
+</body>
+</html>

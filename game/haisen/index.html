@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>配線 — HAISEN | ループを組んだら、全停止。</title>
+<meta name="description" content="LANケーブルを伸ばしてパケットを拾うスネークゲーム。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 440px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(30px, 7vw, 46px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #score { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 18px; letter-spacing: .15em; color: var(--cream); }
+  #score small { font-size: 11px; color: var(--silver); }
+  #best { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">BEST 0 MB</div>
+  <div id="score">0 <small>MB</small></div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Network Snake — Classic</div>
+  <h1 class="title">配線</h1>
+  <div class="title-en">H A I S E N</div>
+  <p class="tagline">ループを組んだら、全停止。</p>
+  <p class="hint">
+    あなたは1本の<em>LANケーブル</em>。流れてくるパケットを拾って転送量を稼ぐ。<br>
+    操作はスワイプ / WASD / 矢印キー。<br>
+    壁に届かなければ断線。自分を踏めば<em>ループ構成</em>でネットワーク全停止。<br>
+    金色の<em>帯域パケット</em>は消える前に拾え。
+  </p>
+  <button class="btn" id="btn-start">リンクアップ</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">LINK DOWN</div>
+  <div class="cause" id="cause">ループ構成で全停止</div>
+  <div class="dist-line">転送量 <b id="r-score">0</b> MB</div>
+  <div class="dist-line" id="r-best">BEST 0 MB</div>
+  <div class="rank-label">回線格付け</div>
+  <div class="rank" id="rank">ダイヤルアップ</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">再リンクアップ</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP / SPACE でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   配線 / HAISEN — LANケーブル・スネーク
+   パケットを拾い、ループを組まず、どこまで転送できるか。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", silver: "#b8b8b8", slate: "#3a3a3a",
+};
+
+const GRID = 19;
+const RANKS = [
+  [200,  "ダイヤルアップ", "ピーガガガ……。懐かしさだけはある。"],
+  [500,  "ADSL",          "悪くない。だが雨の日に弱そうだ。"],
+  [1000, "光回線",         "快適。動画会議も怖くない。"],
+  [2000, "10ギガ",         "もはや家庭の域を超えている。"],
+  [Infinity, "基幹ネットワーク", "あなたは、社会インフラになった。"],
+];
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1, CELL = 20, OX = 0, OY = 0;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const avail = Math.min(W - 24, H - Math.max(120, H * 0.18));
+  CELL = Math.floor(avail / GRID);
+  OX = (W - CELL * GRID) / 2;
+  OY = (H - CELL * GRID) / 2 + 14;
+}
+window.addEventListener("resize", resize);
+resize();
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.15;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  eat(n)  { this.blip(520 * Math.pow(1.03, n % 16), 0.08, "square", 0.35, 140); },
+  gold()  { this.blip(880, 0.2, "sine", 0.5, 240); this.blip(1320, 0.26, "sine", 0.3, 220); },
+  turn()  { this.blip(240, 0.03, "square", 0.12, 0); },
+  over()  { this.blip(220, 0.7, "sawtooth", 0.5, -170); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",       // title | play | over
+  snake: [], dir: { x: 1, y: 0 }, queue: [],
+  grow: 0, packet: null, gold: null, goldT: 0,
+  score: 0, eaten: 0,
+  tick: 0, interval: 0.15,
+  particles: [], floats: [],
+  overT: 0, shake: 0,
+  best: Number(localStorage.getItem("haisen-best") || 0),
+};
+
+function cellFree(x, y) {
+  return !S.snake.some(s => s.x === x && s.y === y);
+}
+function placePacket() {
+  let x, y, tries = 0;
+  do {
+    x = Math.floor(rand(0, GRID)); y = Math.floor(rand(0, GRID));
+    tries++;
+  } while (!cellFree(x, y) && tries < 400);
+  return { x, y };
+}
+
+function resetGame() {
+  const c = Math.floor(GRID / 2);
+  S.snake = [{ x: c - 2, y: c }, { x: c - 3, y: c }, { x: c - 4, y: c }];
+  S.dir = { x: 1, y: 0 }; S.queue = [];
+  S.grow = 0;
+  S.packet = placePacket();
+  S.gold = null; S.goldT = 0;
+  S.score = 0; S.eaten = 0;
+  S.tick = 0; S.interval = 0.15;
+  S.particles = []; S.floats = [];
+  S.overT = 0; S.shake = 0;
+}
+
+/* ---------- 入力 ---------- */
+function pushDir(x, y) {
+  const lastQ = S.queue.length ? S.queue[S.queue.length - 1] : S.dir;
+  if (lastQ.x === x && lastQ.y === y) return;
+  if (lastQ.x === -x && lastQ.y === -y) return; // 逆走禁止
+  if (S.queue.length < 3) { S.queue.push({ x, y }); AudioFX.turn(); }
+}
+window.addEventListener("keydown", e => {
+  const k = e.key.toLowerCase();
+  if (["arrowup", "arrowdown", "arrowleft", "arrowright", " "].includes(e.key.toLowerCase()) || e.code === "Space") e.preventDefault();
+  if (S.mode === "over" && S.overT > 0.6 && (e.code === "Space" || e.key === "Enter")) return startGame();
+  if (S.mode !== "play") return;
+  if (k === "w" || k === "arrowup") pushDir(0, -1);
+  else if (k === "s" || k === "arrowdown") pushDir(0, 1);
+  else if (k === "a" || k === "arrowleft") pushDir(-1, 0);
+  else if (k === "d" || k === "arrowright") pushDir(1, 0);
+}, { passive: false });
+
+let swipeX = 0, swipeY = 0, swiping = false;
+canvas.addEventListener("pointerdown", e => {
+  if (S.mode === "over") { if (S.overT > 0.6) startGame(); return; }
+  swiping = true; swipeX = e.clientX; swipeY = e.clientY;
+});
+window.addEventListener("pointermove", e => {
+  if (!swiping || S.mode !== "play") return;
+  const dx = e.clientX - swipeX, dy = e.clientY - swipeY;
+  if (Math.hypot(dx, dy) < 24) return;
+  if (Math.abs(dx) > Math.abs(dy)) pushDir(Math.sign(dx), 0);
+  else pushDir(0, Math.sign(dy));
+  swipeX = e.clientX; swipeY = e.clientY;
+});
+window.addEventListener("pointerup", () => { swiping = false; });
+
+/* ---------- エフェクト ---------- */
+function burst(cx, cy, color, n, speed = 120) {
+  const px = OX + cx * CELL + CELL / 2, py = OY + cy * CELL + CELL / 2;
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x: px, y: py, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.25, 0.55), age: 0, color, r: rand(1, 2.4) });
+  }
+}
+function floatAdd(cx, cy, text, color, life = 1.0) {
+  S.floats.push({ x: OX + cx * CELL + CELL / 2, y: OY + cy * CELL, text, color, age: 0, life });
+}
+
+/* ---------- 進行 ---------- */
+function step() {
+  if (S.queue.length) S.dir = S.queue.shift();
+  const head = S.snake[0];
+  const nx = head.x + S.dir.x, ny = head.y + S.dir.y;
+
+  if (nx < 0 || nx >= GRID || ny < 0 || ny >= GRID) return gameOver("ケーブル長が足りなかった");
+  // 尻尾は今ターンで動くので、grow しない時は末尾を除いて判定
+  const body = S.grow > 0 ? S.snake : S.snake.slice(0, -1);
+  if (body.some(s => s.x === nx && s.y === ny)) return gameOver("ループ構成で全停止");
+
+  S.snake.unshift({ x: nx, y: ny });
+  if (S.grow > 0) S.grow--;
+  else S.snake.pop();
+
+  // パケット
+  if (S.packet && nx === S.packet.x && ny === S.packet.y) {
+    S.eaten++;
+    S.score += 10;
+    S.grow += 1;
+    burst(nx, ny, COLOR.cyan, 10, 130);
+    floatAdd(nx, ny, "+10MB", COLOR.cyan, 0.8);
+    AudioFX.eat(S.eaten);
+    S.packet = placePacket();
+    S.interval = Math.max(0.07, S.interval - 0.0018);
+    // たまに帯域パケット
+    if (!S.gold && S.eaten % 5 === 0) {
+      S.gold = placePacket();
+      S.goldT = 6;
+    }
+  }
+  // 帯域
+  if (S.gold && nx === S.gold.x && ny === S.gold.y) {
+    S.score += 50;
+    S.grow += 2;
+    burst(nx, ny, COLOR.emberBright, 18, 180);
+    floatAdd(nx, ny, "帯域確保 +50MB", COLOR.emberBright, 1.1);
+    AudioFX.gold();
+    S.gold = null;
+  }
+  document.getElementById("score").innerHTML = S.score + " <small>MB</small>";
+}
+
+function gameOver(cause) {
+  S.mode = "over"; S.overT = 0; S.shake = 8;
+  AudioFX.over();
+  burst(S.snake[0].x, S.snake[0].y, COLOR.magenta, 24, 200);
+  if (S.score > S.best) { S.best = S.score; localStorage.setItem("haisen-best", String(S.score)); }
+  setTimeout(() => {
+    document.getElementById("cause").textContent = cause;
+    document.getElementById("r-score").textContent = S.score;
+    document.getElementById("r-best").textContent = "BEST " + S.best + " MB";
+    const r = RANKS.find(r => S.score < r[0]);
+    document.getElementById("rank").textContent = r[1];
+    document.getElementById("rank-sub").innerHTML = r[2];
+    document.getElementById("hud").classList.remove("on");
+    document.getElementById("screen-result").classList.remove("hidden");
+  }, 700);
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  resetGame();
+  S.mode = "play";
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  document.getElementById("best").textContent = "BEST " + S.best + " MB";
+  document.getElementById("score").innerHTML = "0 <small>MB</small>";
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.6) startGame();
+});
+
+/* ---------- 描画 ---------- */
+function cellXY(c) { return [OX + c.x * CELL, OY + c.y * CELL]; }
+
+function draw(time) {
+  const t = time / 1000;
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (S.shake > 0.3) {
+    ctx.translate(rand(-S.shake, S.shake) * 0.5, rand(-S.shake, S.shake) * 0.5);
+    S.shake = Math.max(0, S.shake - 0.4);
+  }
+
+  // 盤面
+  ctx.strokeStyle = "rgba(243,236,220,.07)";
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= GRID; i++) {
+    ctx.beginPath(); ctx.moveTo(OX + i * CELL, OY); ctx.lineTo(OX + i * CELL, OY + GRID * CELL); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(OX, OY + i * CELL); ctx.lineTo(OX + GRID * CELL, OY + i * CELL); ctx.stroke();
+  }
+  ctx.strokeStyle = "rgba(243,236,220,.25)";
+  ctx.strokeRect(OX, OY, GRID * CELL, GRID * CELL);
+  // ラックの飾り
+  ctx.fillStyle = "rgba(184,184,184,.4)";
+  ctx.font = "9px " + getComputedStyle(document.body).getPropertyValue("--font-mono");
+  ctx.textAlign = "left";
+  ctx.fillText("SW-01 / VLAN 100", OX + 2, OY - 8);
+  ctx.textAlign = "right";
+  ctx.fillText("STP: DISABLED（漢気）", OX + GRID * CELL - 2, OY - 8);
+
+  // パケット
+  if (S.packet) {
+    const [px, py] = cellXY(S.packet);
+    const pulse = 1 + Math.sin(t * 5) * 0.15;
+    const g = ctx.createRadialGradient(px + CELL / 2, py + CELL / 2, 0, px + CELL / 2, py + CELL / 2, CELL * pulse);
+    g.addColorStop(0, "rgba(105,191,255,.55)");
+    g.addColorStop(1, "rgba(105,191,255,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(px + CELL / 2, py + CELL / 2, CELL * pulse, 0, TAU); ctx.fill();
+    ctx.fillStyle = COLOR.cyan;
+    ctx.fillRect(px + CELL * 0.3, py + CELL * 0.3, CELL * 0.4, CELL * 0.4);
+  }
+  // 帯域パケット
+  if (S.gold) {
+    const [px, py] = cellXY(S.gold);
+    const blink = S.goldT < 2 ? (Math.sin(t * 16) > 0 ? 1 : 0.25) : 1;
+    ctx.globalAlpha = blink;
+    ctx.save();
+    ctx.translate(px + CELL / 2, py + CELL / 2);
+    ctx.rotate(t * 2);
+    ctx.strokeStyle = COLOR.emberBright;
+    ctx.lineWidth = 2;
+    const r = CELL * 0.34;
+    ctx.beginPath();
+    ctx.moveTo(0, -r); ctx.lineTo(r, 0); ctx.lineTo(0, r); ctx.lineTo(-r, 0);
+    ctx.closePath(); ctx.stroke();
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  }
+
+  // ケーブル（蛇）
+  for (let i = S.snake.length - 1; i >= 0; i--) {
+    const s = S.snake[i];
+    const [px, py] = cellXY(s);
+    const k = i / Math.max(1, S.snake.length - 1);
+    if (i === 0) {
+      // RJ45 コネクタ頭
+      ctx.fillStyle = COLOR.emberBright;
+      ctx.fillRect(px + 1, py + 1, CELL - 2, CELL - 2);
+      ctx.fillStyle = "#100b05";
+      // コネクタの爪
+      const d = S.dir;
+      const nx = px + CELL / 2 + d.x * CELL * 0.28 - 2;
+      const ny = py + CELL / 2 + d.y * CELL * 0.28 - 2;
+      ctx.fillRect(nx, ny, 4, 4);
+    } else {
+      ctx.fillStyle = k < 0.5 ? COLOR.cream : COLOR.creamDim;
+      ctx.globalAlpha = 1 - k * 0.35;
+      ctx.fillRect(px + 2.5, py + 2.5, CELL - 5, CELL - 5);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // パーティクル / フロート
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += 1 / 60;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx / 60; p.y += p.vy / 60;
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x, p.y, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+  ctx.textAlign = "center";
+  ctx.font = "12px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+  for (let i = S.floats.length - 1; i >= 0; i--) {
+    const f = S.floats[i];
+    f.age += 1 / 60; f.y -= 0.4;
+    if (f.age >= f.life) { S.floats.splice(i, 1); continue; }
+    ctx.globalAlpha = 1 - f.age / f.life;
+    ctx.fillStyle = f.color;
+    ctx.fillText(f.text, f.x, f.y);
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.restore();
+}
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (S.mode === "play") {
+    S.tick += dt;
+    if (S.gold) { S.goldT -= dt; if (S.goldT <= 0) S.gold = null; }
+    while (S.tick >= S.interval && S.mode === "play") {
+      S.tick -= S.interval;
+      step();
+    }
+  }
+  if (S.mode === "over") S.overT += dt;
+  draw(now);
+}
+resetGame();
+S.mode = "title";
+requestAnimationFrame(loop);
+window.__G = { S, startGame, step, pushDir };
+</script>
+</body>
+</html>
