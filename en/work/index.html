@@ -117,35 +117,66 @@
           <div class="section-header" data-reveal>
             <span class="section-eyebrow">Case Studies</span>
             <h1 class="section-title">Work</h1>
-            <p class="section-subtitle">Case studies from problem through implementation to results — background, constraints, approach, results, and learnings.</p>
+            <p class="section-subtitle">Case studies from problem through implementation to results — each case study page covers background, constraints, approach, results, and learnings.</p>
           </div>
-          <div id="case-studies"></div>
+          <div id="case-studies" class="grid grid-2">
+      <!-- build:case-studies -->
+
+      <a href="/en/work/genai-governance/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/cover-genai.svg" alt="Company-Wide Generative-AI Adoption &amp; Governance" loading="lazy">
+          <span class="card-badge">2024–present</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Company-Wide Generative-AI Adoption &amp; Governance</h3>
+          <p class="card-description">Rolled out generative AI across a financial-services company under financial-grade controls, cutting operational workload and cost through automation</p>
+          <div class="tag-list"><span class="tag">Generative AI</span><span class="tag">Governance</span><span class="tag">J-SOX</span><span class="tag">FISC</span></div>
+        </div>
+      </a>
+
+      <a href="/en/work/hijojo-system/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/hero.webp" alt="HiJoJo.com — Online Fund-Distribution Platform" loading="lazy">
+          <span class="card-badge">2022–present</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">HiJoJo.com — Online Fund-Distribution Platform</h3>
+          <p class="card-description">Sustained the company&#39;s revenue-generating sales channel with a small team, and expanded the business with features such as a site for distribution partners</p>
+          <div class="tag-list"><span class="tag">Business platform</span><span class="tag">Ruby on Rails</span><span class="tag">AWS</span><span class="tag">Financial regulation</span></div>
+        </div>
+      </a>
+
+      <a href="/en/work/qiita-growth/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/blog_mosaicai.webp" alt="Growing a Tech Blog to 1.43M Views" loading="lazy">
+          <span class="card-badge">2019–present</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Growing a Tech Blog to 1.43M Views</h3>
+          <p class="card-description">Reached 1.43M cumulative views on Qiita through a deliberate growth strategy, growing daily views 7×</p>
+          <div class="tag-list"><span class="tag">Qiita</span><span class="tag">SEO</span><span class="tag">Analytics</span><span class="tag">Tech writing</span></div>
+        </div>
+      </a>
+
+      <a href="/en/work/iot-vision-system/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/blog_iot.webp" alt="IoT × AI Audience Measurement — A New Business from Zero" loading="lazy">
+          <span class="card-badge">2020–2022</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">IoT × AI Audience Measurement — A New Business from Zero</h3>
+          <p class="card-description">With zero in-house ML expertise, taught myself AI model development and launched a digital-signage ad-effectiveness measurement business from scratch</p>
+          <div class="tag-list"><span class="tag">New business</span><span class="tag">Zero to one</span><span class="tag">PyTorch</span><span class="tag">AWS IoT</span></div>
+        </div>
+      </a>
+      <!-- /build:case-studies -->
+          </div>
         </div>
       </section>
     </main>
     <div id="site-footer"></div>
   </div>
 
-  <script src="/js/main.js?v=20260614"></script>
-  <script src="/js/components.js?v=20260612"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      const container = document.getElementById('case-studies');
-      container.innerHTML = '<div class="case-study"><div class="case-media skeleton" style="height:280px;"></div></div>';
-
-      const works = await DataLoader.getWorks();
-      if (!works.length) {
-        container.innerHTML = '<p class="text-muted">No case studies yet.</p>';
-        return;
-      }
-      container.innerHTML = works.map(w => Components.createCaseStudy(w)).join('');
-      if (window.ScrollAnimation) ScrollAnimation.refresh();
-
-      if (window.location.hash) {
-        const target = document.querySelector(window.location.hash);
-        if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
-      }
-    });
-  </script>
+  <script src="/js/main.js?v=20260615"></script>
 </body>
 </html>

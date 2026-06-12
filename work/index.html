@@ -116,35 +116,66 @@
           <div class="section-header" data-reveal>
             <span class="section-eyebrow">Case Studies</span>
             <h1 class="section-title">Work</h1>
-            <p class="section-subtitle">課題解決から実装・成果までのケーススタディ。背景・制約・打ち手・成果・学びの順でまとめています。</p>
+            <p class="section-subtitle">課題解決から実装・成果までのケーススタディ。各事例の詳細ページで背景・制約・打ち手・成果・学びをまとめています。</p>
           </div>
-          <div id="case-studies"></div>
+          <div id="case-studies" class="grid grid-2">
+      <!-- build:case-studies -->
+
+      <a href="/work/genai-governance/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/cover-genai.svg" alt="生成AIの全社導入とガバナンス整備" loading="lazy">
+          <span class="card-badge">2024-現在</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">生成AIの全社導入とガバナンス整備</h3>
+          <p class="card-description">金融グレードの統制を効かせ、生成AIを全社へ安全に導入。業務自動化で運用工数とコストを削減</p>
+          <div class="tag-list"><span class="tag">生成AI</span><span class="tag">ガバナンス</span><span class="tag">J-SOX</span><span class="tag">FISC</span></div>
+        </div>
+      </a>
+
+      <a href="/work/hijojo-system/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/hero.webp" alt="オンラインファンド販売事業の基盤 HiJoJo.com" loading="lazy">
+          <span class="card-badge">2022-現在</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">オンラインファンド販売事業の基盤 HiJoJo.com</h3>
+          <p class="card-description">会社の収益を生む販売チャネルそのものを少人数で支え、パートナー連携など販路を広げる機能開発で事業拡大に貢献</p>
+          <div class="tag-list"><span class="tag">事業基盤</span><span class="tag">Ruby on Rails</span><span class="tag">AWS</span><span class="tag">金融規制</span></div>
+        </div>
+      </a>
+
+      <a href="/work/qiita-growth/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/blog_mosaicai.webp" alt="技術ブログ143万PV達成" loading="lazy">
+          <span class="card-badge">2019-現在</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">技術ブログ143万PV達成</h3>
+          <p class="card-description">戦略的アプローチで Qiita 累計143万PVを達成。日間PVを7倍に成長</p>
+          <div class="tag-list"><span class="tag">Qiita</span><span class="tag">SEO</span><span class="tag">Analytics</span><span class="tag">技術発信</span></div>
+        </div>
+      </a>
+
+      <a href="/work/iot-vision-system/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/blog_iot.webp" alt="IoT×AI 視聴者計測の新規事業立ち上げ" loading="lazy">
+          <span class="card-badge">2020-2022</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">IoT×AI 視聴者計測の新規事業立ち上げ</h3>
+          <p class="card-description">社内にML知見ゼロの状態から独学でAIモデル開発を立ち上げ、デジタルサイネージ広告効果測定の新規事業をゼロから事業化</p>
+          <div class="tag-list"><span class="tag">新規事業</span><span class="tag">ゼロイチ</span><span class="tag">PyTorch</span><span class="tag">AWS IoT</span></div>
+        </div>
+      </a>
+      <!-- /build:case-studies -->
+          </div>
         </div>
       </section>
     </main>
     <div id="site-footer"></div>
   </div>
 
-  <script src="/js/main.js?v=20260614"></script>
-  <script src="/js/components.js?v=20260612"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      const container = document.getElementById('case-studies');
-      container.innerHTML = '<div class="case-study"><div class="case-media skeleton" style="height:280px;"></div></div>';
-
-      const works = await DataLoader.getWorks();
-      if (!works.length) {
-        container.innerHTML = '<p class="text-muted">ケーススタディがありません</p>';
-        return;
-      }
-      container.innerHTML = works.map(w => Components.createCaseStudy(w)).join('');
-      if (window.ScrollAnimation) ScrollAnimation.refresh();
-
-      if (window.location.hash) {
-        const target = document.querySelector(window.location.hash);
-        if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
-      }
-    });
-  </script>
+  <script src="/js/main.js?v=20260615"></script>
 </body>
 </html>

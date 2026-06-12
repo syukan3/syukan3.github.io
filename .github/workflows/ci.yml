@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-sync:
+    name: 生成HTMLとJSONデータの同期チェック
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: build --check
+        run: node tools/build.mjs --check
+
+  links:
+    name: 内部リンクチェック
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: check-links
+        run: node tools/check-links.mjs
+
+  html-validate:
+    name: HTML検証
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: html-validate
+        run: >
+          npx --yes html-validate@9
+          "index.html" "404.html"
+          "about/index.html" "contact/index.html" "privacy/index.html"
+          "work/**/*.html" "projects/index.html" "writing/index.html" "photo/index.html"
+          "en/**/*.html"

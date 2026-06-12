@@ -18,7 +18,19 @@
 
 新サイトでは、すべてのコンテンツ（Work、Projects、Writing、プロフィール情報）を **JSONファイル** で管理しています。
 
-JSONファイルを編集することで、サイトの内容を簡単に更新できます。
+JSONファイルを編集したら、**ビルドスクリプトを実行して静的HTMLを再生成**します。
+
+```bash
+node tools/build.mjs
+```
+
+ビルドスクリプトは以下を自動生成します（生成されたHTMLもコミットします）:
+
+- 各ページの `<!-- build:〇〇 -->` マーカー内のコンテンツ（Home / Work / Projects / Writing / Photo / About）
+- ケーススタディ詳細ページ `/work/<slug>/` と `/en/work/<slug>/`
+- `sitemap.xml` と `llms.txt`
+
+JSONだけ更新してビルドを忘れた場合は、CI（`.github/workflows/ci.yml` の build-sync ジョブ）が検知して失敗します。
 
 ### JSONファイルの場所
 
@@ -51,7 +63,9 @@ data/
 1. JSONファイルをテキストエディタで開く（VSCode、Sublime Text 等）
 2. 内容を編集する
 3. ファイルを保存する
-4. ブラウザでページを開いて確認する
+4. `node tools/build.mjs` を実行して静的HTMLを再生成する
+5. ブラウザでページを開いて確認する
+6. JSONと生成されたHTMLをあわせてコミットする
 
 ---
 
