@@ -19,11 +19,13 @@ const Site = {
     { key: 'projects', label: 'Projects', href: '/projects/' },
     { key: 'writing', label: 'Writing', href: '/writing/' },
     { key: 'photo', label: 'Photo', href: '/photo/' },
+    { key: 'game', label: 'Game', href: '/game/' },
     { key: 'about', label: 'About', href: '/about/' },
     { key: 'contact', label: 'Contact', href: '/contact/' }
   ],
 
   localizeHref(href) {
+    if (href.startsWith('/game/')) return href; // 遊び場は言語共通（日本語のみ）
     return IS_EN ? `/en${href}` : href;
   },
 

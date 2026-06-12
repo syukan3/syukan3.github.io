@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>遡行 | GAME — 坂江 俊輔</title>
+<meta name="description" content="スタックトレースを跳んで遡り、根本原因を目指す縦スクロールジャンプゲーム。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a; --green: #2ecc71;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 440px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .hint .c { color: var(--cyan); } .hint .m { color: var(--magenta); } .hint .r { color: var(--risk); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin: 14px 0 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #depth { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 15px; letter-spacing: .15em; color: var(--cream); }
+  #best { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #trace { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 10px; letter-spacing: .2em; color: var(--slate); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">BEST 0</div>
+  <div id="depth">depth: 0 frames</div>
+  <div id="trace">TRACING…</div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Stack Climber — Endless</div>
+  <h1 class="title">遡行</h1>
+  <div class="title-en">S O K O U</div>
+  <p class="tagline">左右で移動。スタックを遡れ。</p>
+  <p class="hint">
+    例外は吐かれた。原因はこのスタックトレースの<em>ずっと上</em>にいる。<br>
+    デバッガは着地のたびに跳ねる。← → キー、または画面の<em>左右</em>を押して操れ。<br>
+    <span class="c">キャッシュフレーム</span>は2倍跳ね、<span class="r">脆弱フレーム</span>は一度で崩れ、<br>
+    <span class="m">非同期フレーム</span>は落ち着きなく横へ動く。<br>
+    落ちたら、原因は迷宮入りだ。
+  </p>
+  <button class="btn" id="btn-start">遡行を開始</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">Trace Terminated</div>
+  <div class="cause" id="cause">根本原因は、また今度。</div>
+  <div class="dist-line">深さ <b id="r-depth">0</b> frames</div>
+  <div class="dist-line" id="r-sub">キャッシュ加速 0 ／ 崩した脆弱フレーム 0</div>
+  <div class="dist-line" id="r-best">BEST 0</div>
+  <div class="rank-sub" id="r-line">デバッガは落下した。例外は今日も元気だ。</div>
+  <button class="btn" id="btn-retry">もう一度遡る</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP / SPACE でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   遡行 / SOKOU — スタックトレース縦登りゲーム
+   フレームを跳んで遡り、根本原因（はるか上空）を目指す。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8", slate: "#3a3a3a", noir: "#0a0a0a",
+};
+
+const FN_POOL = [
+  "handler", "retry", "parseConfig", "fetchUser", "validate", "serialize",
+  "mapResults", "onMessage", "flushQueue", "resolveDeps", "hydrate", "renderList",
+  "applyPatch", "syncState", "decodeFrame", "scheduleJob", "commitTx", "runMiddleware",
+  "normalize", "debounceInput", "buildQuery", "mergeOpts", "spawnWorker", "drainBuffer",
+  "loadModule", "castType", "wrapLegacy", "pollStatus", "emitChange", "reindex",
+];
+
+const MILESTONE_MSGS = [
+  "まだ深い", "ログは続いている", "犯人は近い", "printfの足跡がある",
+  "ここから先、コメントはない", "スタックに体温が残っている", "真犯人の気配",
+  "根本原因まで、あと少し…のはず",
+];
+
+const OVER_LINES = [
+  "デバッガは落下した。例外は今日も元気だ。",
+  "スタックの底で、原因を見失った。",
+  "再現手順だけが、手元に残った。",
+  "「動くからヨシ」と誰かが言った。",
+];
+
+/* ---------- 物理定数 ---------- */
+const GRAV = 2200;            // px/s^2
+const JUMP_V = 950;           // 通常バウンド初速
+const SPRING_K = Math.SQRT2;  // 2倍の高さ = 初速 √2 倍
+const JUMP_H = (JUMP_V * JUMP_V) / (2 * GRAV); // ≈ 205px
+const MAX_GAP = JUMP_H * 0.85;                 // ≈ 174px — 必ず届く
+const MOVE_V = 330;           // 横最高速
+const AIR_ACC = 7;            // 空中慣性（大きいほど機敏）
+const PW = 78, PH = 14;       // フレーム棒サイズ
+const FRAME_PX = 40;          // 1 frame = 40px
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+resize();
+window.addEventListener("resize", resize);
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.16;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  bounce(d) { this.blip(300 + Math.min(d, 300) * 0.8, 0.09, "square", 0.3, 140); },
+  spring()  { this.blip(320, 0.3, "sine", 0.5, 700); this.blip(640, 0.18, "sine", 0.3, 500); },
+  crack()   { this.blip(170, 0.18, "sawtooth", 0.4, -90); },
+  mile()    { this.blip(659, 0.16, "sine", 0.45, 180); this.blip(988, 0.26, "sine", 0.3, 200); },
+  over()    { this.blip(220, 0.7, "sawtooth", 0.5, -170); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",   // title | play | over
+  player: { x: 0, y: 0, vx: 0, vy: 0, w: 26, h: 26, move: 0, sx: 1, sy: 1, boost: 0 },
+  platforms: [],   // {x, y, w, type, label, vx, dead}
+  particles: [],
+  cameraY: 0, topY: 0, depth: 0, genY: 0, genX: 0,
+  milestone: 0,
+  stats: { bounces: 0, springs: 0, broken: 0 },
+  msg: null,       // {text, sub, color, age, life}
+  overT: 0,
+  best: Number(localStorage.getItem("sokou-best") || 0),
+};
+
+function msg(text, sub, color, life = 1.3) {
+  S.msg = { text, sub, color, age: 0, life };
+}
+
+function burst(x, y, color, n, speed = 180) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 60, life: rand(0.3, 0.7), age: 0, color, r: rand(1.5, 3.5) });
+  }
+}
+
+/* ---------- フレーム生成 ---------- */
+function makePlatform(y, type, x) {
+  const p = {
+    x: x !== undefined ? x : rand(8, Math.max(9, W - PW - 8)), y, w: PW, type,
+    label: "at " + pick(FN_POOL) + "()",
+    vx: type === "async" ? (Math.random() < 0.5 ? -1 : 1) * rand(55, 85) : 0,
+    dead: false,
+  };
+  if (type === "async") p.x0 = p.x;
+  S.platforms.push(p);
+  return p;
+}
+
+// メインの足場連鎖は normal / cache / async のみ（崩れない）
+function pickChainType(climbed) {
+  const r = Math.random();
+  const pSpring = 0.1;
+  const pAsync = Math.min(0.1, climbed * 0.00002);
+  if (r < pSpring) return "cache";
+  if (r < pSpring + pAsync) return "async";
+  return "normal";
+}
+
+function ensurePlatforms() {
+  // カメラ上端より一画面ぶん先まで敷いておく
+  while (S.genY > S.cameraY - H * 0.5) {
+    const climbed = Math.max(0, -S.genY);
+    const gapMax = Math.min(MAX_GAP, 80 + climbed * 0.02);
+    const gap = rand(gapMax * 0.55, gapMax);
+    S.genY -= gap;
+    // 前の足場から「滞空時間内に届く」横距離に必ず収める
+    const tAir = (JUMP_V + Math.sqrt(Math.max(0, JUMP_V * JUMP_V - 2 * GRAV * gap))) / GRAV;
+    const maxDx = MOVE_V * tAir * 0.72;
+    const x = clamp(S.genX + rand(-maxDx, maxDx), 8, Math.max(9, W - PW - 8));
+    makePlatform(S.genY, pickChainType(climbed), x);
+    S.genX = x;
+    // 脆弱フレームは連鎖の合間のボーナス足場（崩れても詰まない）
+    const pRisk = Math.min(0.3, 0.1 + climbed * 0.00003);
+    if (Math.random() < pRisk) {
+      const rx = clamp(x + (Math.random() < 0.5 ? -1 : 1) * rand(100, 240), 8, Math.max(9, W - PW - 8));
+      makePlatform(S.genY + gap * rand(0.35, 0.65), "risk", rx);
+    }
+  }
+  // 画面下に消えたフレームは破棄
+  S.platforms = S.platforms.filter(p => !p.dead && p.y < S.cameraY + H + 80);
+}
+
+/* ---------- 入力 ---------- */
+function setMove(d) { S.player.move = clamp(d, -1, 1); }
+
+const keys = new Set();
+window.addEventListener("keydown", e => {
+  if (e.code === "ArrowLeft" || e.code === "ArrowRight") {
+    e.preventDefault();
+    keys.add(e.code);
+    setMove(keys.has("ArrowRight") ? 1 : -1);
+  }
+  if (e.code === "Space") {
+    e.preventDefault();
+    if (!e.repeat && S.mode === "over" && S.overT > 0.6) startGame();
+  }
+}, { passive: false });
+window.addEventListener("keyup", e => {
+  if (e.code === "ArrowLeft" || e.code === "ArrowRight") {
+    keys.delete(e.code);
+    setMove(keys.has("ArrowRight") ? 1 : keys.has("ArrowLeft") ? -1 : 0);
+  }
+});
+
+let pointerOn = false;
+function pointerSteer(e) { setMove(e.clientX < W / 2 ? -1 : 1); }
+canvas.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  AudioFX.init();
+  pointerOn = true;
+  pointerSteer(e);
+});
+canvas.addEventListener("pointermove", e => { if (pointerOn) pointerSteer(e); });
+const pointerEnd = () => { pointerOn = false; if (keys.size === 0) setMove(0); };
+window.addEventListener("pointerup", pointerEnd);
+window.addEventListener("pointercancel", pointerEnd);
+
+/* ---------- バウンド ---------- */
+function bounceOn(p) {
+  const pl = S.player;
+  pl.y = p.y - pl.h / 2;
+  S.stats.bounces++;
+  if (p.type === "cache") {
+    pl.vy = -JUMP_V * SPRING_K;
+    pl.sy = 1.55; pl.sx = 0.6; pl.boost = 0.55;
+    S.stats.springs++;
+    burst(pl.x, p.y, COLOR.cyan, 10, 150);
+    AudioFX.spring();
+  } else {
+    pl.vy = -JUMP_V;
+    pl.sy = 0.55; pl.sx = 1.4;
+    AudioFX.bounce(S.depth);
+  }
+  if (p.type === "risk") {
+    p.dead = true;
+    S.stats.broken++;
+    burst(pl.x, p.y + PH / 2, COLOR.risk, 16, 220);
+    AudioFX.crack();
+  }
+}
+
+/* ---------- 更新 ---------- */
+function update(dt) {
+  if (S.mode !== "play") {
+    if (S.mode === "over") S.overT += dt;
+    updateParticles(dt);
+    return;
+  }
+  const pl = S.player;
+
+  // 横移動（慣性つき）
+  pl.vx += (pl.move * MOVE_V - pl.vx) * Math.min(1, dt * AIR_ACC);
+  pl.x += pl.vx * dt;
+  // 画面端ラップ
+  if (pl.x < -pl.w / 2) pl.x += W + pl.w;
+  if (pl.x > W + pl.w / 2) pl.x -= W + pl.w;
+
+  // 縦移動
+  const prevBottom = pl.y + pl.h / 2;
+  pl.vy = Math.min(pl.vy + GRAV * dt, 1500);
+  pl.y += pl.vy * dt;
+  const bottom = pl.y + pl.h / 2;
+
+  // 非同期フレームの横移動（巡回範囲を限定して詰み防止）
+  for (const p of S.platforms) {
+    if (p.vx) {
+      p.x += p.vx * dt;
+      const lo = Math.max(6, (p.x0 ?? p.x) - 90);
+      const hi = Math.min(W - p.w - 6, (p.x0 ?? p.x) + 90);
+      if (p.x < lo) { p.x = lo; p.vx = Math.abs(p.vx); }
+      if (p.x > hi) { p.x = hi; p.vx = -Math.abs(p.vx); }
+    }
+  }
+
+  // 着地判定（落下中のみ衝突）
+  if (pl.vy > 0) {
+    for (const p of S.platforms) {
+      if (p.dead) continue;
+      if (prevBottom <= p.y + 1 && bottom >= p.y &&
+          pl.x + pl.w * 0.38 > p.x && pl.x - pl.w * 0.38 < p.x + p.w) {
+        bounceOn(p);
+        break;
+      }
+    }
+  }
+
+  // スカッシュ＆ブースト回復
+  pl.sx += (1 - pl.sx) * Math.min(1, dt * 9);
+  pl.sy += (1 - pl.sy) * Math.min(1, dt * 9);
+  if (pl.boost > 0) pl.boost -= dt;
+
+  // カメラは上にしか動かない
+  S.cameraY = Math.min(S.cameraY, pl.y - H * 0.45);
+  ensurePlatforms();
+
+  // 深さ
+  S.topY = Math.min(S.topY, pl.y);
+  const d = Math.max(0, Math.floor(-S.topY / FRAME_PX));
+  if (d !== S.depth) {
+    S.depth = d;
+    document.getElementById("depth").textContent = "depth: " + d + " frames";
+  }
+  while (S.depth >= S.milestone + 50) {
+    S.milestone += 50;
+    const m = MILESTONE_MSGS[(S.milestone / 50 - 1) % MILESTONE_MSGS.length];
+    msg(m, "depth " + S.milestone + " frames", COLOR.emberBright, 1.5);
+    AudioFX.mile();
+  }
+
+  // 画面下へ落下 = 原因見失い
+  if (pl.y > S.cameraY + H + 60) gameOver();
+
+  if (S.msg && (S.msg.age += dt) >= S.msg.life) S.msg = null;
+  updateParticles(dt);
+}
+
+function updateParticles(dt) {
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 500 * dt;
+  }
+}
+
+/* ---------- 描画 ---------- */
+const monoFont = () => getComputedStyle(document.body).getPropertyValue("--font-mono");
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  if (S.mode === "title") return;
+
+  const pl = S.player;
+  ctx.save();
+  ctx.translate(0, -S.cameraY);
+
+  // 左端の深度マーカー（10 frames ごと）
+  ctx.font = "9px " + monoFont();
+  ctx.textAlign = "left";
+  ctx.fillStyle = "rgba(58,58,58,.9)";
+  const step = FRAME_PX * 10;
+  for (let y = Math.ceil(S.cameraY / step) * step; y < S.cameraY + H + step; y += step) {
+    const n = Math.round(-y / FRAME_PX);
+    if (n < 0) continue;
+    ctx.fillText("#" + n, 6, y - 3);
+    ctx.fillRect(6, y, 14, 1);
+  }
+
+  // フレーム（足場）
+  for (const p of S.platforms) {
+    if (p.dead) continue;
+    let fill = COLOR.cream;
+    if (p.type === "risk") fill = COLOR.risk;
+    else if (p.type === "cache") fill = COLOR.cyan;
+    else if (p.type === "async") fill = COLOR.magenta;
+    ctx.fillStyle = fill;
+    ctx.fillRect(p.x, p.y, p.w, PH);
+    // ヒビ（脆弱フレーム）
+    if (p.type === "risk") {
+      ctx.strokeStyle = "rgba(10,10,10,.55)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(p.x + p.w * 0.3, p.y);
+      ctx.lineTo(p.x + p.w * 0.42, p.y + PH * 0.6);
+      ctx.lineTo(p.x + p.w * 0.34, p.y + PH);
+      ctx.moveTo(p.x + p.w * 0.68, p.y);
+      ctx.lineTo(p.x + p.w * 0.6, p.y + PH * 0.5);
+      ctx.lineTo(p.x + p.w * 0.72, p.y + PH);
+      ctx.stroke();
+    }
+    // バネの目印（キャッシュフレーム）
+    if (p.type === "cache") {
+      ctx.fillStyle = "rgba(10,10,10,.5)";
+      ctx.fillRect(p.x + p.w / 2 - 8, p.y - 3, 16, 3);
+    }
+    ctx.fillStyle = COLOR.noir;
+    ctx.font = "8px " + monoFont();
+    ctx.textAlign = "center";
+    ctx.fillText(p.label, p.x + p.w / 2, p.y + PH - 4);
+    ctx.textAlign = "left";
+  }
+
+  // パーティクル
+  for (const p of S.particles) {
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+
+  // プレイヤー（デバッガ）
+  if (S.mode === "play") {
+    ctx.save();
+    ctx.translate(pl.x, pl.y + pl.h / 2);
+    ctx.scale(pl.sx, pl.sy);
+    ctx.translate(0, -pl.h / 2);
+    // 本体
+    ctx.fillStyle = COLOR.ember;
+    const w = pl.w, h = pl.h, r = 6;
+    ctx.beginPath();
+    ctx.moveTo(-w / 2 + r, -h / 2);
+    ctx.arcTo(w / 2, -h / 2, w / 2, h / 2, r);
+    ctx.arcTo(w / 2, h / 2, -w / 2, h / 2, r);
+    ctx.arcTo(-w / 2, h / 2, -w / 2, -h / 2, r);
+    ctx.arcTo(-w / 2, -h / 2, w / 2, -h / 2, r);
+    ctx.fill();
+    // アンテナ（ブレークポイント）
+    ctx.strokeStyle = COLOR.emberBright;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, -h / 2); ctx.lineTo(0, -h / 2 - 7); ctx.stroke();
+    ctx.fillStyle = pl.boost > 0 ? COLOR.cyan : COLOR.risk;
+    ctx.beginPath(); ctx.arc(0, -h / 2 - 9, 3, 0, TAU); ctx.fill();
+    // 目（進行方向を見る）
+    const look = clamp(pl.vx / MOVE_V, -1, 1) * 3;
+    ctx.fillStyle = COLOR.noir;
+    ctx.fillRect(-6 + look, -5, 4, 7);
+    ctx.fillRect(2 + look, -5, 4, 7);
+    ctx.restore();
+  }
+
+  ctx.restore();
+
+  // スピードライン（キャッシュ加速中）
+  if (pl.boost > 0 && S.mode === "play") {
+    ctx.globalAlpha = Math.min(0.22, pl.boost * 0.5);
+    ctx.strokeStyle = COLOR.cyan;
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 7; i++) {
+      const x = ((i * 137 + 41) % W);
+      const y0 = (performance.now() * 0.9 + i * 173) % (H + 120) - 60;
+      ctx.beginPath(); ctx.moveTo(x, y0); ctx.lineTo(x, y0 + rand(40, 90)); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // メッセージ
+  if (S.msg) {
+    const k = S.msg.age / S.msg.life;
+    const a = k < 0.12 ? k / 0.12 : k > 0.6 ? Math.max(0, 1 - (k - 0.6) / 0.4) : 1;
+    ctx.globalAlpha = a;
+    ctx.textAlign = "center";
+    ctx.fillStyle = S.msg.color;
+    ctx.font = `700 ${Math.round(Math.min(38, W * 0.06))}px 'Shippori Mincho', serif`;
+    ctx.fillText(S.msg.text, W / 2, H * 0.28);
+    ctx.fillStyle = "rgba(216,205,182,.85)";
+    ctx.font = "12px " + monoFont();
+    ctx.fillText(S.msg.sub, W / 2, H * 0.28 + 28);
+    ctx.globalAlpha = 1;
+    ctx.textAlign = "left";
+  }
+}
+
+/* ---------- 開始 / 終了 ---------- */
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  const pl = S.player;
+  pl.x = W / 2; pl.y = 0; pl.vx = 0; pl.vy = -JUMP_V;
+  pl.move = 0; pl.sx = 1; pl.sy = 1; pl.boost = 0;
+  S.platforms = []; S.particles = []; S.msg = null;
+  S.cameraY = -H * 0.65; S.topY = 0; S.depth = 0; S.milestone = 0;
+  S.stats = { bounces: 0, springs: 0, broken: 0 };
+  S.overT = 0;
+  // 足元に必ず通常フレームを 1 枚
+  makePlatform(40, "normal", W / 2 - PW / 2);
+  S.genY = 40; S.genX = W / 2 - PW / 2;
+  ensurePlatforms();
+  S.mode = "play";
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  document.getElementById("best").textContent = "BEST " + S.best;
+  document.getElementById("depth").textContent = "depth: 0 frames";
+}
+
+function gameOver() {
+  if (S.mode === "over") return;
+  S.mode = "over"; S.overT = 0;
+  AudioFX.over();
+  if (S.depth > S.best) { S.best = S.depth; localStorage.setItem("sokou-best", String(S.depth)); }
+  document.getElementById("r-depth").textContent = S.depth;
+  document.getElementById("r-sub").textContent =
+    `キャッシュ加速 ${S.stats.springs} ／ 崩した脆弱フレーム ${S.stats.broken}`;
+  document.getElementById("r-best").textContent = "BEST " + S.best;
+  document.getElementById("r-line").textContent = pick(OVER_LINES);
+  document.getElementById("hud").classList.remove("on");
+  document.getElementById("screen-result").classList.remove("hidden");
+}
+
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.6) startGame();
+});
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  update(dt);
+  draw();
+}
+requestAnimationFrame(loop);
+
+window.__G = { S, startGame, setMove, gameOver, makePlatform };
+</script>
+</body>
+</html>

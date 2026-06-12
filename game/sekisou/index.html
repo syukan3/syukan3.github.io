@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>積層 — SEKISOU | スプリントを、積み上げろ。</title>
+<meta name="description" content="ワンタップでスプリントを積み上げ、システムを天まで建てるゲーム。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 440px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(30px, 7vw, 46px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #floor { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 20px; letter-spacing: .15em; color: var(--cream); }
+  #floor small { font-size: 11px; color: var(--silver); }
+  #best { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #combo { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 11px; letter-spacing: .2em; color: var(--ember-bright); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">BEST 0</div>
+  <div id="floor">SPRINT 0</div>
+  <div id="combo"></div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Tower Builder — One Tap</div>
+  <h1 class="title">積層</h1>
+  <div class="title-en">S E K I S O U</div>
+  <p class="tagline">スプリントを、積み上げろ。</p>
+  <p class="hint">
+    流れるブロックを、タップ / SPACE で<em>真上に積む</em>。<br>
+    ズレた分は<em>スコープ削減</em>で切り落とされ、塔は細くなる。<br>
+    ぴったり積むと「完全一致」— 塔が少し回復し、連続で<em>ゾーン</em>に入る。<br>
+    何スプリントで、システムは天に届くか。
+  </p>
+  <button class="btn" id="btn-start">スプリント開始</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">PROJECT CLOSED</div>
+  <div class="cause" id="cause">スコープが消滅した</div>
+  <div class="dist-line"><b id="r-floors">0</b> スプリント</div>
+  <div class="dist-line" id="r-best">BEST 0</div>
+  <div class="rank-label">到達</div>
+  <div class="rank" id="rank">PoC</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">次のプロジェクト</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP / SPACE でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   積層 / SEKISOU — ワンタップのタワービルダー
+   スプリントを積み、ズレはスコープ削減。完全一致でゾーンへ。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", silver: "#b8b8b8", slate: "#3a3a3a",
+};
+const LH = 26;                 // 1層の高さ
+const PERFECT_PX = 6;          // 完全一致のしきい値
+
+const MILESTONES = { 10: "MVP 完成", 20: "正式リリース", 30: "グロース期", 40: "全社標準", 50: "もはや インフラ" };
+
+const RANKS = [
+  [10, "PoC", "動いた。次は誰かに見せよう。"],
+  [20, "MVP", "最小限だが、価値はある。"],
+  [30, "正式リリース", "おめでとう。ここからが本番だ。"],
+  [40, "グロース", "塔は街のどこからでも見える。"],
+  [50, "全社標準", "あなたの設計が、当たり前になった。"],
+  [Infinity, "伝説のアーキテクチャ", "もはや雲の上。監査も届かない。"],
+];
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+window.addEventListener("resize", resize);
+resize();
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.16;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  drop()       { this.blip(180, 0.09, "square", 0.35, -60); },
+  cut()        { this.blip(420, 0.12, "sawtooth", 0.3, -200); },
+  perfect(n)   { this.blip(660 * Math.pow(1.06, Math.min(n, 12)), 0.18, "sine", 0.5, 180); },
+  milestone()  { this.blip(523, 0.3, "sine", 0.5); this.blip(784, 0.45, "sine", 0.35); },
+  over()       { this.blip(220, 0.7, "sawtooth", 0.5, -170); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",       // title | play | over
+  blocks: [],          // {x, w, level, hue}
+  cur: null,           // {w, level, dir, speed, x}
+  pieces: [],          // 切り落とし {x, y, w, vy, vr, rot}
+  floats: [],
+  combo: 0,
+  camY: 0,             // 描画オフセット
+  shake: 0, overT: 0,
+  best: Number(localStorage.getItem("sekisou-best") || 0),
+};
+
+const BASE_W = () => Math.min(W * 0.62, 340);
+const baseY = () => H * 0.82;
+
+function blockColor(level, perfect) {
+  if (perfect) return COLOR.emberBright;
+  const cycle = [COLOR.cream, COLOR.creamDim, COLOR.ember, "#caa97a"];
+  return cycle[level % cycle.length];
+}
+
+function resetGame() {
+  S.blocks = [{ x: W / 2 - BASE_W() / 2, w: BASE_W(), level: 0 }];
+  S.pieces = []; S.floats = [];
+  S.combo = 0; S.camY = 0; S.shake = 0; S.overT = 0;
+  newCurrent();
+}
+
+function newCurrent() {
+  const top = S.blocks[S.blocks.length - 1];
+  const level = top.level + 1;
+  const speed = (3.2 + Math.min(level * 0.16, 4.2)) * (W * 0.0021);
+  S.cur = {
+    w: top.w, level,
+    x: -top.w - 10,
+    dir: 1,
+    speed,
+    t: 0,
+  };
+}
+
+function floatAdd(x, y, text, color, life = 1.1) {
+  S.floats.push({ x, y, text, color, age: 0, life });
+}
+
+/* ---------- 操作 ---------- */
+function drop() {
+  if (S.mode === "over") { if (S.overT > 0.6) startGame(); return; }
+  if (S.mode !== "play" || !S.cur) return;
+  const top = S.blocks[S.blocks.length - 1];
+  const c = S.cur;
+  const dx = c.x - top.x;
+
+  if (Math.abs(dx) <= PERFECT_PX) {
+    // 完全一致
+    S.combo++;
+    let w = top.w;
+    if (S.combo >= 2) w = Math.min(BASE_W(), w + 5);  // ゾーン: 塔が回復する
+    S.blocks.push({ x: top.x, w, level: c.level, perfect: true });
+    floatAdd(W / 2, blockScreenY(c.level) - 26, S.combo >= 2 ? `完全一致 ×${S.combo} — ゾーン` : "完全一致！", COLOR.emberBright, 1.2);
+    AudioFX.perfect(S.combo);
+    S.shake = 3;
+  } else {
+    const overlapL = Math.max(c.x, top.x);
+    const overlapR = Math.min(c.x + c.w, top.x + top.w);
+    const w = overlapR - overlapL;
+    if (w <= 4) {
+      // 完全に外した
+      S.pieces.push({ x: c.x, y: blockScreenY(c.level), w: c.w, vy: -60, vr: rand(-3, 3), rot: 0, color: blockColor(c.level) });
+      return gameOver("スコープが消滅した");
+    }
+    S.combo = 0;
+    // 切り落とし
+    const cutW = c.w - w;
+    const cutX = dx > 0 ? overlapR : c.x;
+    S.pieces.push({ x: cutX, y: blockScreenY(c.level), w: cutW, vy: -40, vr: dx > 0 ? rand(1, 3) : rand(-3, -1), rot: 0, color: blockColor(c.level) });
+    S.blocks.push({ x: overlapL, w, level: c.level });
+    floatAdd(dx > 0 ? overlapR + cutW / 2 : c.x + cutW / 2, blockScreenY(c.level) - 18, "スコープ削減", COLOR.silver, 0.9);
+    AudioFX.cut();
+  }
+  AudioFX.drop();
+
+  // マイルストーン
+  const lv = c.level;
+  if (MILESTONES[lv]) {
+    floatAdd(W / 2, blockScreenY(lv) - 60, `${lv}層 — ${MILESTONES[lv]}`, COLOR.cyan, 1.8);
+    AudioFX.milestone();
+  }
+  document.getElementById("floor").innerHTML = `SPRINT ${lv}`;
+  document.getElementById("combo").textContent = S.combo >= 2 ? `ゾーン ×${S.combo}` : "";
+  newCurrent();
+}
+
+window.addEventListener("keydown", e => {
+  if (e.code === "Space") { e.preventDefault(); if (!e.repeat) drop(); }
+}, { passive: false });
+canvas.addEventListener("pointerdown", e => { e.preventDefault(); drop(); });
+
+/* ---------- 進行 ---------- */
+function blockScreenY(level) {
+  return baseY() - level * LH + S.camY;
+}
+
+function gameOver(cause) {
+  S.mode = "over"; S.overT = 0;
+  S.shake = 8;
+  AudioFX.over();
+  const floors = S.blocks[S.blocks.length - 1].level;
+  if (floors > S.best) { S.best = floors; localStorage.setItem("sekisou-best", String(floors)); }
+  setTimeout(() => {
+    document.getElementById("cause").textContent = cause;
+    document.getElementById("r-floors").textContent = floors;
+    document.getElementById("r-best").textContent = "BEST " + S.best;
+    const r = RANKS.find(r => floors < r[0]);
+    document.getElementById("rank").textContent = r[1];
+    document.getElementById("rank-sub").innerHTML = r[2];
+    document.getElementById("hud").classList.remove("on");
+    document.getElementById("screen-result").classList.remove("hidden");
+  }, 700);
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  resetGame();
+  S.mode = "play";
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  document.getElementById("best").textContent = "BEST " + S.best;
+  document.getElementById("floor").innerHTML = "SPRINT 0";
+  document.getElementById("combo").textContent = "";
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+window.addEventListener("keydown", e => {
+  if (e.code === "Space" && S.mode === "over" && S.overT > 0.6 &&
+      !document.getElementById("screen-result").classList.contains("hidden")) {
+    e.preventDefault(); startGame();
+  }
+}, { passive: false });
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.6) startGame();
+});
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+
+function update(dt) {
+  // 流れるブロック
+  if (S.cur && S.mode === "play") {
+    const c = S.cur;
+    c.x += c.dir * c.speed * 60 * dt;
+    const m = 16;
+    if (c.x < -c.w * 0.25 - m) { c.x = -c.w * 0.25 - m; c.dir = 1; }
+    if (c.x + c.w > W + c.w * 0.25 + m) { c.x = W + c.w * 0.25 + m - c.w; c.dir = -1; }
+  }
+  // カメラ: 上端が見えるように追従
+  const topLevel = S.blocks[S.blocks.length - 1].level;
+  const targetCam = Math.max(0, (topLevel + 4) * LH - (baseY() - H * 0.18));
+  S.camY += (targetCam - S.camY) * Math.min(1, dt * 4);
+
+  // 切り落とし片
+  for (let i = S.pieces.length - 1; i >= 0; i--) {
+    const p = S.pieces[i];
+    p.vy += 1400 * dt; p.y += p.vy * dt; p.rot += p.vr * dt;
+    if (p.y > H + 100) S.pieces.splice(i, 1);
+  }
+  for (let i = S.floats.length - 1; i >= 0; i--) {
+    const f = S.floats[i];
+    f.age += dt; f.y -= 20 * dt;
+    if (f.age >= f.life) S.floats.splice(i, 1);
+  }
+  if (S.shake > 0) S.shake = Math.max(0, S.shake - dt * 24);
+  if (S.mode === "over") S.overT += dt;
+}
+
+function draw(time) {
+  const t = time / 1000;
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (S.shake > 0.3) ctx.translate(rand(-S.shake, S.shake) * 0.5, rand(-S.shake, S.shake) * 0.5);
+
+  // 星
+  ctx.fillStyle = "rgba(243,236,220,.3)";
+  for (let i = 0; i < 40; i++) {
+    const sx = (i * 137.5) % W;
+    const sy = ((i * 89.3) % (H * 0.9)) + S.camY * 0.15 % H;
+    ctx.fillRect(sx, sy % H, 1.4, 1.4);
+  }
+
+  // 地面
+  const gy = baseY() + LH + S.camY;
+  if (gy < H + 40) {
+    ctx.strokeStyle = "rgba(243,236,220,.5)";
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke();
+    ctx.fillStyle = "rgba(184,184,184,.5)";
+    ctx.font = "10px " + getComputedStyle(document.body).getPropertyValue("--font-mono");
+    ctx.textAlign = "center";
+    ctx.fillText("要件定義（地盤）", W / 2, gy + 16);
+  }
+
+  // 塔
+  ctx.font = "9px " + getComputedStyle(document.body).getPropertyValue("--font-mono");
+  for (const b of S.blocks) {
+    const y = blockScreenY(b.level);
+    if (y < -LH || y > H + LH) continue;
+    ctx.fillStyle = b.perfect ? COLOR.emberBright : blockColor(b.level);
+    ctx.globalAlpha = b.level === 0 ? 1 : 0.96;
+    ctx.fillRect(b.x, y, b.w, LH - 3);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "rgba(16,11,5,.55)";
+    if (b.level > 0 && b.level % 5 === 0 && b.w > 70) {
+      ctx.textAlign = "center";
+      ctx.fillText("SPRINT " + b.level, b.x + b.w / 2, y + LH / 2 + 2);
+    }
+  }
+
+  // 流れるブロック
+  if (S.cur && S.mode === "play") {
+    const c = S.cur;
+    const y = blockScreenY(c.level);
+    ctx.fillStyle = blockColor(c.level);
+    ctx.fillRect(c.x, y, c.w, LH - 3);
+    // ガイド線
+    const top = S.blocks[S.blocks.length - 1];
+    ctx.strokeStyle = "rgba(243,236,220,.15)";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 5]);
+    ctx.beginPath(); ctx.moveTo(top.x, 0); ctx.lineTo(top.x, H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(top.x + top.w, 0); ctx.lineTo(top.x + top.w, H); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // 切り落とし
+  for (const p of S.pieces) {
+    ctx.save();
+    ctx.translate(p.x + p.w / 2, p.y + LH / 2);
+    ctx.rotate(p.rot);
+    ctx.globalAlpha = 0.8;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(-p.w / 2, -LH / 2, p.w, LH - 3);
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+
+  // フロート
+  ctx.textAlign = "center";
+  for (const f of S.floats) {
+    ctx.globalAlpha = 1 - f.age / f.life;
+    ctx.fillStyle = f.color;
+    ctx.font = "13px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+    ctx.fillText(f.text, f.x, f.y);
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.restore();
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  update(dt);
+  draw(now);
+}
+resetGame();
+requestAnimationFrame(loop);
+window.__G = { S, drop, startGame };
+</script>
+</body>
+</html>

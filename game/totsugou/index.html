@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>突合 — TOTSUGOU | 帳簿は、必ず合う。</title>
+<meta name="description" content="勘定科目の神経衰弱。月次を締めろ。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 440px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(30px, 7vw, 46px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #timer { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 18px; letter-spacing: .15em; color: var(--cream); }
+  #best { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #miss { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 11px; letter-spacing: .2em; color: var(--silver); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">BEST —</div>
+  <div id="timer">0.0</div>
+  <div id="miss">差異 0 件</div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Reconciliation — Memory Pairs</div>
+  <h1 class="title">突合</h1>
+  <div class="title-en">T O T S U G O U</div>
+  <p class="tagline">帳簿は、必ず合う。</p>
+  <p class="hint">
+    月次決算の夜。伏せられた伝票をめくり、<em>同じ勘定科目のペア</em>を消し込む。<br>
+    めくって外すと「差異」として記録される。<br>
+    8ペアすべてを消し込めば、<em>月次締め</em>完了。<br>
+    速く、正確に。監査はいつも見ている。
+  </p>
+  <button class="btn" id="btn-start">月次を締める</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">MONTHLY CLOSING</div>
+  <div class="cause">月次、締まりました。</div>
+  <div class="dist-line">所要 <b id="r-time">0.0</b> 秒</div>
+  <div class="dist-line" id="r-miss">差異 0 件</div>
+  <div class="dist-line" id="r-best">BEST —</div>
+  <div class="rank-label">経理格付け</div>
+  <div class="rank" id="rank">経理1年目</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">来月も締める</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   突合 / TOTSUGOU — 勘定科目の神経衰弱
+   伝票をめくり、同じ科目を消し込む。差異を出すな。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8", slate: "#3a3a3a", green: "#2ecc71",
+};
+
+const PAIRS = [
+  { label: "売掛", color: COLOR.ember },
+  { label: "買掛", color: COLOR.cyan },
+  { label: "預金", color: COLOR.emberBright },
+  { label: "利息", color: COLOR.magenta },
+  { label: "API", color: COLOR.green },
+  { label: "DB",  color: COLOR.creamDim },
+  { label: "鍵",  color: COLOR.risk },
+  { label: "監査", color: COLOR.silver },
+];
+const COLS = 4, ROWS = 4;
+
+// 評価: タイム + 差異ペナルティ
+function judge(time, miss) {
+  const eff = time + miss * 3;
+  if (eff < 35) return ["締めの鬼", "監査が拍手している。実在するのか、あなたは。"];
+  if (eff < 50) return ["経理部長", "差異ゼロに近い美しい締め。"];
+  if (eff < 70) return ["主任", "及第点。来月はもっと速い。"];
+  if (eff < 95) return ["経理2年目", "手は覚えてきた。あとは記憶力。"];
+  return ["経理1年目", "伝票はめくった分だけ覚えよう。"];
+}
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+let CW = 0, CH = 0, OX = 0, OY = 0;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const gw = Math.min(W * 0.92, 480);
+  const gh = Math.min(H * 0.66, 600);
+  CW = Math.min(gw / COLS, gh / ROWS * 0.78);
+  CH = CW * 1.28;
+  OX = (W - CW * COLS) / 2;
+  OY = (H - CH * ROWS) / 2 + 12;
+}
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.15;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  flip()  { this.blip(420, 0.06, "triangle", 0.3, 120); },
+  match() { this.blip(660, 0.16, "sine", 0.5, 200); this.blip(990, 0.22, "sine", 0.3, 220); },
+  nope()  { this.blip(240, 0.16, "sawtooth", 0.3, -80); },
+  done()  { this.blip(523, 0.3, "sine", 0.5); this.blip(659, 0.42, "sine", 0.4); this.blip(784, 0.55, "sine", 0.35); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",       // title | play | over
+  cards: [],           // {pair, flip(0..1), target(0|1), state: down|up|matched, matchAge}
+  picked: [],          // indices
+  lockT: 0,
+  time: 0, miss: 0,
+  particles: [], floats: [],
+  best: JSON.parse(localStorage.getItem("totsugou-best") || "null"),
+};
+
+function resetGame() {
+  const deck = [];
+  PAIRS.forEach((p, i) => { deck.push(i, i); });
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  S.cards = deck.map(pair => ({ pair, flip: 0, target: 0, state: "down", matchAge: 0 }));
+  S.picked = []; S.lockT = 0;
+  S.time = 0; S.miss = 0;
+  S.particles = []; S.floats = [];
+}
+
+function burst(x, y, color, n, speed = 140) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.3, 0.6), age: 0, color, r: rand(1, 2.6) });
+  }
+}
+function floatAdd(x, y, text, color, life = 1.0) {
+  S.floats.push({ x, y, text, color, age: 0, life });
+}
+function cardXY(i) {
+  return [OX + (i % COLS) * CW, OY + Math.floor(i / COLS) * CH];
+}
+
+/* ---------- 入力 ---------- */
+canvas.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  if (S.mode !== "play" || S.lockT > 0) return;
+  for (let i = 0; i < S.cards.length; i++) {
+    const c = S.cards[i];
+    if (c.state !== "down") continue;
+    const [x, y] = cardXY(i);
+    if (e.clientX < x + 3 || e.clientX > x + CW - 3 || e.clientY < y + 3 || e.clientY > y + CH - 3) continue;
+    flipCard(i);
+    return;
+  }
+});
+
+function flipCard(i) {
+  const c = S.cards[i];
+  c.state = "up"; c.target = 1;
+  S.picked.push(i);
+  AudioFX.flip();
+  if (S.picked.length === 2) {
+    const [a, b] = S.picked;
+    if (S.cards[a].pair === S.cards[b].pair) {
+      S.lockT = 0.45;
+      setTimeout(() => {
+        for (const idx of [a, b]) {
+          S.cards[idx].state = "matched";
+          const [x, y] = cardXY(idx);
+          burst(x + CW / 2, y + CH / 2, PAIRS[S.cards[idx].pair].color, 12, 150);
+        }
+        const [x, y] = cardXY(b);
+        floatAdd(x + CW / 2, y + CH / 2 - 20, "消込", COLOR.emberBright, 0.9);
+        AudioFX.match();
+        S.picked = [];
+        if (S.cards.every(cc => cc.state === "matched")) finish();
+      }, 380);
+    } else {
+      S.miss++;
+      document.getElementById("miss").textContent = `差異 ${S.miss} 件`;
+      S.lockT = 0.9;
+      setTimeout(() => {
+        S.cards[a].target = 0; S.cards[a].state = "down";
+        S.cards[b].target = 0; S.cards[b].state = "down";
+        S.picked = [];
+        AudioFX.nope();
+      }, 820);
+    }
+  }
+}
+
+function finish() {
+  S.mode = "over";
+  AudioFX.done();
+  const t = S.time;
+  const rec = { t: Math.round(t * 10) / 10, m: S.miss };
+  const better = !S.best || (t + S.miss * 3) < (S.best.t + S.best.m * 3);
+  if (better) { S.best = rec; localStorage.setItem("totsugou-best", JSON.stringify(rec)); }
+  setTimeout(() => {
+    document.getElementById("r-time").textContent = t.toFixed(1);
+    document.getElementById("r-miss").textContent = `差異 ${S.miss} 件`;
+    document.getElementById("r-best").textContent = S.best ? `BEST ${S.best.t.toFixed(1)}秒・差異${S.best.m}件` : "BEST —";
+    const [rk, sub] = judge(t, S.miss);
+    document.getElementById("rank").textContent = rk;
+    document.getElementById("rank-sub").innerHTML = sub;
+    document.getElementById("hud").classList.remove("on");
+    document.getElementById("screen-result").classList.remove("hidden");
+  }, 900);
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  resetGame();
+  S.mode = "play";
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  document.getElementById("best").textContent = S.best ? `BEST ${S.best.t.toFixed(1)}s` : "BEST —";
+  document.getElementById("miss").textContent = "差異 0 件";
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  startGame();
+});
+
+/* ---------- 描画 ---------- */
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function draw(time) {
+  const t = time / 1000;
+  ctx.clearRect(0, 0, W, H);
+
+  const mono = getComputedStyle(document.body).getPropertyValue("--font-mono");
+  ctx.textAlign = "center";
+
+  for (let i = 0; i < S.cards.length; i++) {
+    const c = S.cards[i];
+    const [x, y] = cardXY(i);
+    const cx = x + CW / 2, cy = y + CH / 2;
+    if (c.state === "matched") {
+      c.matchAge += 1 / 60;
+      const k = clamp(c.matchAge / 0.5, 0, 1);
+      ctx.globalAlpha = 1 - k * 0.75;
+      ctx.strokeStyle = "rgba(243,236,220,.3)";
+      roundRect(x + 6, y + 6, CW - 12, CH - 12, 8);
+      ctx.stroke();
+      // 済 スタンプ
+      ctx.strokeStyle = "rgba(192,57,43,.8)";
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(cx, cy, CW * 0.2, 0, TAU); ctx.stroke();
+      ctx.fillStyle = "rgba(192,57,43,.8)";
+      ctx.font = `700 ${Math.round(CW * 0.22)}px 'Shippori Mincho', serif`;
+      ctx.textBaseline = "middle";
+      ctx.fillText("済", cx, cy);
+      ctx.textBaseline = "alphabetic";
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = 1;
+      continue;
+    }
+    // flip tween
+    c.flip += (c.target - c.flip) * 0.22;
+    const f = c.flip;
+    const sx = Math.abs(1 - f * 2);  // 1→0→1
+    const showFace = f > 0.5;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(Math.max(0.04, sx), 1);
+
+    if (showFace) {
+      const p = PAIRS[c.pair];
+      ctx.fillStyle = "rgba(40,35,28,.97)";
+      roundRect(-CW / 2 + 6, -CH / 2 + 6, CW - 12, CH - 12, 8);
+      ctx.fill();
+      ctx.strokeStyle = p.color;
+      ctx.lineWidth = 1.6;
+      roundRect(-CW / 2 + 6, -CH / 2 + 6, CW - 12, CH - 12, 8);
+      ctx.stroke();
+      ctx.fillStyle = p.color;
+      ctx.font = `700 ${Math.round(CW * 0.3)}px 'Shippori Mincho', serif`;
+      ctx.textBaseline = "middle";
+      ctx.fillText(p.label, 0, 0);
+      ctx.textBaseline = "alphabetic";
+      ctx.font = "8px " + mono;
+      ctx.fillStyle = "rgba(184,184,184,.5)";
+      ctx.fillText("伝票 No." + String(1000 + i * 37), 0, CH / 2 - 16);
+    } else {
+      // 裏面: ノワールの伝票
+      ctx.fillStyle = "rgba(22,19,15,.97)";
+      roundRect(-CW / 2 + 6, -CH / 2 + 6, CW - 12, CH - 12, 8);
+      ctx.fill();
+      ctx.strokeStyle = "rgba(224,164,90,.35)";
+      ctx.lineWidth = 1.2;
+      roundRect(-CW / 2 + 6, -CH / 2 + 6, CW - 12, CH - 12, 8);
+      ctx.stroke();
+      // ブラケット模様
+      ctx.strokeStyle = "rgba(224,164,90,.5)";
+      const bs = CW * 0.13, bl = CW * 0.07;
+      for (const [mx, my] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+        const px2 = mx * (CW / 2 - 16), py2 = my * (CH / 2 - 16);
+        ctx.beginPath();
+        ctx.moveTo(px2, py2 - my * bl);
+        ctx.lineTo(px2, py2);
+        ctx.lineTo(px2 - mx * bl, py2);
+        ctx.stroke();
+      }
+      ctx.fillStyle = "rgba(184,184,184,.4)";
+      ctx.font = "9px " + mono;
+      ctx.textBaseline = "middle";
+      ctx.fillText("未突合", 0, 0);
+      ctx.textBaseline = "alphabetic";
+    }
+    ctx.restore();
+    ctx.lineWidth = 1;
+  }
+
+  // パーティクル / フロート
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += 1 / 60;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx / 60; p.y += p.vy / 60; p.vy += 6;
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x, p.y, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+  for (let i = S.floats.length - 1; i >= 0; i--) {
+    const f = S.floats[i];
+    f.age += 1 / 60; f.y -= 0.5;
+    if (f.age >= f.life) { S.floats.splice(i, 1); continue; }
+    ctx.globalAlpha = 1 - f.age / f.life;
+    ctx.fillStyle = f.color;
+    ctx.font = "14px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+    ctx.fillText(f.text, f.x, f.y);
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* ---------- ループ ---------- */
+resize();
+window.addEventListener("resize", resize);
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (S.mode === "play") {
+    S.time += dt;
+    if (S.lockT > 0) S.lockT -= dt;
+    document.getElementById("timer").textContent = S.time.toFixed(1);
+  }
+  draw(now);
+}
+requestAnimationFrame(loop);
+window.__G = { S, startGame, flipCard };
+</script>
+</body>
+</html>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>連鎖 — RENSA | なぞって、揃えて、消し込む。</title>
+<meta name="description" content="ドロップをなぞって動かし、3つ揃えて連鎖させるパズル。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 460px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(28px, 6.6vw, 44px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #score { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 18px; letter-spacing: .15em; color: var(--ember-bright); }
+  #best { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #moves { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 12px; letter-spacing: .2em; color: var(--cream-dim); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">BEST 0</div>
+  <div id="score">0</div>
+  <div id="moves">残り 8 手</div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Orb Match — Combo Puzzle</div>
+  <h1 class="title">連鎖</h1>
+  <div class="title-en">R E N S A</div>
+  <p class="tagline">なぞって、揃えて、消し込む。</p>
+  <p class="hint">
+    ドロップを掴んで<em>なぞる</em>と、通った場所と入れ替わる。<br>
+    離すと、縦横3つ以上が消えて<em>コンボ</em>。落ちてきて繋がれば、さらに<em>連鎖</em>。<br>
+    障害・データ・承認・予算・負債 — 全部まとめて消し込め。<br>
+    持ち時間は8手。1回の操作は<em>5秒</em>まで。
+  </p>
+  <button class="btn" id="btn-start">月初の盤面へ</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">BOARD CLEARED</div>
+  <div class="cause">8手、使い切りました。</div>
+  <div class="dist-line">スコア <b id="r-score">0</b></div>
+  <div class="dist-line" id="r-combo">最大コンボ 0</div>
+  <div class="dist-line" id="r-best">BEST 0</div>
+  <div class="rank-label">パズル査定</div>
+  <div class="rank" id="rank">指が迷子</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">もう8手</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   連鎖 / RENSA — なぞって動かすコンボパズル
+   8手でどこまでスコアを伸ばせるか。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+
+const COLS = 6, ROWS = 5, NTYPES = 5;
+const MOVES = 8, DRAG_LIMIT = 5;
+
+const TYPES = [
+  { k: "障", c: "#e83a2e", tc: "rgba(255,245,240,.95)" },   // 赤
+  { k: "資", c: "#2e8ef0", tc: "rgba(240,248,255,.95)" },   // 青
+  { k: "承", c: "#2ecc5e", tc: "rgba(240,255,244,.95)" },   // 緑
+  { k: "予", c: "#ffd23e", tc: "rgba(60,42,8,.9)" },        // 黄
+  { k: "負", c: "#a44ae8", tc: "rgba(248,240,255,.95)" },   // 紫
+];
+
+const RANKS = [
+  [3000,  "指が迷子", "ドロップは、もっと遠くまで運べる。"],
+  [7000,  "二連鎖の人", "気持ちよさに気づいてしまった。"],
+  [13000, "盤面が見える人", "落ちてくる未来まで読んでいる。"],
+  [22000, "連鎖建築士", "それはもう設計。偶然ではない。"],
+  [Infinity, "全消しの極み", "盤面が、あなたを恐れている。"],
+];
+
+const COLOR = { cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86", cyan: "#69bfff", silver: "#b8b8b8" };
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1, CELL = 0, OX = 0, OY = 0;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  CELL = Math.min((W - 20) / COLS, (H * 0.6) / ROWS, 86);
+  OX = (W - CELL * COLS) / 2;
+  OY = H - CELL * ROWS - Math.max(24, H * 0.05);
+}
+resize();
+window.addEventListener("resize", resize);
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.15;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  move()    { this.blip(300, 0.04, "triangle", 0.18, 60); },
+  pop(n)    { this.blip(440 * Math.pow(1.12, Math.min(n, 12)), 0.16, "sine", 0.5, 160); },
+  drop()    { this.blip(180, 0.05, "square", 0.15, -30); },
+  bigend()  { this.blip(523, 0.3, "sine", 0.5); this.blip(659, 0.4, "sine", 0.4); this.blip(784, 0.55, "sine", 0.35); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",          // title | idle | drag | resolve | over
+  board: [],              // [r][c] = {t, yOff, pop}
+  grab: null,             // {r,c}
+  pointer: { x: 0, y: 0 },
+  dragT: 0, moved: false,
+  combo: 0, maxCombo: 0, turnScore: 0,
+  score: 0, moves: MOVES,
+  phase: null, phaseT: 0, pending: [],
+  particles: [], floats: [], shake: 0, overT: 0,
+  best: Number(localStorage.getItem("rensa-best") || 0),
+};
+
+function newOrb(t) { return { t: t === undefined ? Math.floor(rand(0, NTYPES)) : t, yOff: 0, pop: 0, popping: false }; }
+
+function resetGame() {
+  // 初期盤面: 3つ揃いが無いように生成
+  S.board = [];
+  for (let r = 0; r < ROWS; r++) {
+    S.board.push([]);
+    for (let c = 0; c < COLS; c++) {
+      let t;
+      do {
+        t = Math.floor(rand(0, NTYPES));
+      } while (
+        (c >= 2 && S.board[r][c - 1].t === t && S.board[r][c - 2].t === t) ||
+        (r >= 2 && S.board[r - 1][c].t === t && S.board[r - 2][c].t === t)
+      );
+      S.board[r].push(newOrb(t));
+    }
+  }
+  S.grab = null; S.dragT = 0; S.moved = false;
+  S.combo = 0; S.maxCombo = 0; S.turnScore = 0;
+  S.score = 0; S.moves = MOVES;
+  S.phase = null; S.phaseT = 0; S.pending = [];
+  S.particles = []; S.floats = []; S.shake = 0; S.overT = 0;
+}
+
+function cellAt(x, y) {
+  const c = Math.floor((x - OX) / CELL), r = Math.floor((y - OY) / CELL);
+  if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return null;
+  return { r, c };
+}
+function cellCenter(r, c) { return [OX + c * CELL + CELL / 2, OY + r * CELL + CELL / 2]; }
+
+function burst(x, y, color, n, speed = 150) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.25, 0.55), age: 0, color, r: rand(1.2, 3) });
+  }
+}
+function floatAdd(x, y, text, color, life = 1.0, size = 14) {
+  S.floats.push({ x, y, text, color, age: 0, life, size });
+}
+
+/* ---------- 入力 ---------- */
+canvas.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  if (S.mode === "over") { if (S.overT > 0.6) startGame(); return; }
+  if (S.mode !== "idle") return;
+  const cell = cellAt(e.clientX, e.clientY);
+  if (!cell) return;
+  S.grab = cell;
+  S.pointer.x = e.clientX; S.pointer.y = e.clientY;
+  S.mode = "drag";
+  S.dragT = 0; S.moved = false;
+});
+window.addEventListener("pointermove", e => {
+  if (S.mode !== "drag" || !S.grab) return;
+  S.pointer.x = e.clientX; S.pointer.y = e.clientY;
+  const cell = cellAt(e.clientX, e.clientY);
+  if (!cell) return;
+  // 速いドラッグでも1マスずつ（斜め含む）経路を辿って入れ替える
+  let guard = 12;
+  while ((cell.r !== S.grab.r || cell.c !== S.grab.c) && guard-- > 0) {
+    const nr = S.grab.r + Math.sign(cell.r - S.grab.r);
+    const nc = S.grab.c + Math.sign(cell.c - S.grab.c);
+    const a = S.board[S.grab.r][S.grab.c];
+    S.board[S.grab.r][S.grab.c] = S.board[nr][nc];
+    S.board[nr][nc] = a;
+    S.grab = { r: nr, c: nc };
+    S.moved = true;
+    AudioFX.move();
+  }
+});
+window.addEventListener("pointerup", () => {
+  if (S.mode === "drag") releaseDrag();
+});
+
+function releaseDrag() {
+  S.grab = null;
+  if (!S.moved) { S.mode = "idle"; return; }
+  S.combo = 0; S.turnScore = 0;
+  S.mode = "resolve";
+  S.phase = "check"; S.phaseT = 0.08;
+}
+
+/* ---------- マッチ解決 ---------- */
+function findMatches() {
+  const mark = Array.from({ length: ROWS }, () => new Array(COLS).fill(false));
+  // 横
+  for (let r = 0; r < ROWS; r++) {
+    let run = 1;
+    for (let c = 1; c <= COLS; c++) {
+      if (c < COLS && S.board[r][c].t === S.board[r][c - 1].t) run++;
+      else {
+        if (run >= 3) for (let k = c - run; k < c; k++) mark[r][k] = true;
+        run = 1;
+      }
+    }
+  }
+  // 縦
+  for (let c = 0; c < COLS; c++) {
+    let run = 1;
+    for (let r = 1; r <= ROWS; r++) {
+      if (r < ROWS && S.board[r][c].t === S.board[r - 1][c].t) run++;
+      else {
+        if (run >= 3) for (let k = r - run; k < r; k++) mark[k][c] = true;
+        run = 1;
+      }
+    }
+  }
+  // 連結グループ化
+  const groups = [];
+  const seen = Array.from({ length: ROWS }, () => new Array(COLS).fill(false));
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    if (!mark[r][c] || seen[r][c]) continue;
+    const t = S.board[r][c].t;
+    const stack = [[r, c]], cells = [];
+    seen[r][c] = true;
+    while (stack.length) {
+      const [rr, cc] = stack.pop();
+      cells.push([rr, cc]);
+      for (const [nr, nc] of [[rr - 1, cc], [rr + 1, cc], [rr, cc - 1], [rr, cc + 1]]) {
+        if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) continue;
+        if (mark[nr][nc] && !seen[nr][nc] && S.board[nr][nc].t === t) {
+          seen[nr][nc] = true;
+          stack.push([nr, nc]);
+        }
+      }
+    }
+    groups.push({ t, cells });
+  }
+  return groups;
+}
+
+function resolveStep(dt) {
+  S.phaseT -= dt;
+  if (S.phaseT > 0) return;
+
+  if (S.phase === "check") {
+    const groups = findMatches();
+    if (!groups.length) {
+      // ターン終了
+      if (S.combo >= 2) floatAdd(W / 2, OY - 36, `${S.combo} コンボ！ +${S.turnScore}`, COLOR.emberBright, 1.4, 18);
+      S.moves--;
+      document.getElementById("moves").textContent = `残り ${S.moves} 手`;
+      if (S.moves <= 0) return gameOver();
+      S.mode = "idle"; S.phase = null;
+      return;
+    }
+    S.pending = groups;
+    S.phase = "pop"; S.phaseT = 0.05;
+
+  } else if (S.phase === "pop") {
+    // 1グループずつ順番にポップする
+    const g = S.pending.shift();
+    S.combo++;
+    S.maxCombo = Math.max(S.maxCombo, S.combo);
+    const pts = Math.round(g.cells.length * 60 * (1 + (S.combo - 1) * 0.3));
+    S.turnScore += pts;
+    S.score += pts;
+    const [cr, cc] = g.cells[Math.floor(g.cells.length / 2)];
+    const [gx, gy] = cellCenter(cr, cc);
+    floatAdd(gx, gy, `${S.combo} COMBO`, TYPES[g.t].c, 0.9, 14);
+    for (const [r, c] of g.cells) {
+      const [x, y] = cellCenter(r, c);
+      burst(x, y, TYPES[g.t].c, 8, 140);
+      const o = S.board[r][c];
+      if (o) { o.popping = true; o.pop = 0.2; }
+    }
+    AudioFX.pop(S.combo);
+    document.getElementById("score").textContent = S.score;
+    if (S.pending.length) S.phaseT = 0.34;
+    else { S.phase = "fallWait"; S.phaseT = 0.26; }
+
+  } else if (S.phase === "fallWait") {
+    S.phase = "fall"; S.phaseT = 0.02;
+
+  } else if (S.phase === "fall") {
+    // 落下 + 補充
+    for (let c = 0; c < COLS; c++) {
+      let write = ROWS - 1;
+      for (let r = ROWS - 1; r >= 0; r--) {
+        if (S.board[r][c]) {
+          if (write !== r) {
+            S.board[write][c] = S.board[r][c];
+            S.board[write][c].yOff = -(write - r) * CELL;
+            S.board[r][c] = null;
+          }
+          write--;
+        }
+      }
+      let n = 1;
+      for (let r = write; r >= 0; r--) {
+        S.board[r][c] = newOrb();
+        S.board[r][c].yOff = -(n++) * CELL - 20;
+      }
+    }
+    AudioFX.drop();
+    S.phase = "settle"; S.phaseT = 0.05;
+
+  } else if (S.phase === "settle") {
+    // 全部落ちきったら再チェック
+    let moving = false;
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      if (S.board[r][c] && Math.abs(S.board[r][c].yOff) > 1) moving = true;
+    }
+    if (moving) { S.phaseT = 0.05; return; }
+    S.phase = "check"; S.phaseT = 0.12;
+  }
+}
+
+function gameOver() {
+  S.mode = "over"; S.overT = 0; S.phase = null;
+  AudioFX.bigend();
+  if (S.score > S.best) { S.best = S.score; localStorage.setItem("rensa-best", String(S.score)); }
+  setTimeout(() => {
+    document.getElementById("r-score").textContent = S.score;
+    document.getElementById("r-combo").textContent = "最大コンボ " + S.maxCombo;
+    document.getElementById("r-best").textContent = "BEST " + S.best;
+    const r = RANKS.find(r => S.score < r[0]);
+    document.getElementById("rank").textContent = r[1];
+    document.getElementById("rank-sub").innerHTML = r[2];
+    document.getElementById("hud").classList.remove("on");
+    document.getElementById("screen-result").classList.remove("hidden");
+  }, 800);
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  resetGame();
+  S.mode = "idle";
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  document.getElementById("best").textContent = "BEST " + S.best;
+  document.getElementById("score").textContent = "0";
+  document.getElementById("moves").textContent = `残り ${MOVES} 手`;
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.6) startGame();
+});
+
+/* ---------- 描画 ---------- */
+function drawOrb(x, y, t, r, dim = false, alpha = 1) {
+  const def = TYPES[t];
+  const g = ctx.createRadialGradient(x - r * 0.3, y - r * 0.35, r * 0.1, x, y, r);
+  g.addColorStop(0, def.c);
+  g.addColorStop(1, shade(def.c, 0.4));
+  ctx.globalAlpha = (dim ? 0.45 : 1) * alpha;
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+  ctx.strokeStyle = "rgba(16,11,5,.45)";
+  ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.stroke();
+  // ハイライト
+  ctx.fillStyle = "rgba(255,255,255,.28)";
+  ctx.beginPath(); ctx.ellipse(x - r * 0.25, y - r * 0.45, r * 0.38, r * 0.2, -0.5, 0, TAU); ctx.fill();
+  drawMark(x, y, t, r, def.tc);
+  ctx.globalAlpha = 1;
+}
+
+// 属性マーク: 炎 / 雫 / 葉 / 星 / 月
+function drawMark(x, y, t, r, color) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = color;
+  const s = r * 0.5;
+  if (t === 0) {
+    // 炎
+    ctx.beginPath();
+    ctx.moveTo(0, -s * 1.2);
+    ctx.bezierCurveTo(s * 0.2, -s * 0.5, s * 0.9, -s * 0.35, s * 0.58, s * 0.25);
+    ctx.quadraticCurveTo(s * 0.52, s * 0.78, 0, s * 0.98);
+    ctx.quadraticCurveTo(-s * 0.52, s * 0.78, -s * 0.58, s * 0.25);
+    ctx.bezierCurveTo(-s * 0.9, -s * 0.35, -s * 0.2, -s * 0.5, 0, -s * 1.2);
+    ctx.fill();
+  } else if (t === 1) {
+    // 雫
+    ctx.beginPath();
+    ctx.moveTo(0, -s * 1.1);
+    ctx.quadraticCurveTo(s * 0.8, -s * 0.05, s * 0.62, s * 0.32);
+    ctx.arc(0, s * 0.32, s * 0.62, 0, Math.PI, false);
+    ctx.quadraticCurveTo(-s * 0.8, -s * 0.05, 0, -s * 1.1);
+    ctx.fill();
+  } else if (t === 2) {
+    // 葉
+    ctx.rotate(-Math.PI / 4);
+    ctx.beginPath();
+    ctx.moveTo(0, -s * 1.05);
+    ctx.quadraticCurveTo(s * 0.9, -s * 0.25, 0, s * 1.05);
+    ctx.quadraticCurveTo(-s * 0.9, -s * 0.25, 0, -s * 1.05);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(16,40,20,.4)";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(0, -s * 0.8); ctx.lineTo(0, s * 0.8); ctx.stroke();
+  } else if (t === 3) {
+    // 星
+    ctx.beginPath();
+    for (let i = 0; i < 10; i++) {
+      const a = -Math.PI / 2 + i * Math.PI / 5;
+      const rr = i % 2 ? s * 0.5 : s * 1.1;
+      const px = Math.cos(a) * rr, py = Math.sin(a) * rr;
+      i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+  } else {
+    // 月
+    ctx.beginPath();
+    ctx.arc(0, 0, s * 1.05, Math.PI * 0.32, Math.PI * 1.68, false);
+    ctx.arc(s * 0.62, 0, s * 0.85, Math.PI * 1.45, Math.PI * 0.55, true);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+}
+function shade(hex, k) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgb(${(n >> 16) * k | 0},${((n >> 8) & 255) * k | 0},${(n & 255) * k | 0})`;
+}
+
+function draw(time) {
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (S.shake > 0.3) { ctx.translate(rand(-S.shake, S.shake) * 0.5, 0); S.shake -= 0.4; }
+
+  // 盤面の枠
+  ctx.strokeStyle = "rgba(243,236,220,.12)";
+  ctx.lineWidth = 1;
+  for (let r = 0; r <= ROWS; r++) {
+    ctx.beginPath(); ctx.moveTo(OX, OY + r * CELL); ctx.lineTo(OX + COLS * CELL, OY + r * CELL); ctx.stroke();
+  }
+  for (let c = 0; c <= COLS; c++) {
+    ctx.beginPath(); ctx.moveTo(OX + c * CELL, OY); ctx.lineTo(OX + c * CELL, OY + ROWS * CELL); ctx.stroke();
+  }
+
+  // ドラッグ持ち時間バー
+  if (S.mode === "drag" && S.moved) {
+    const k = clamp(1 - S.dragT / DRAG_LIMIT, 0, 1);
+    ctx.fillStyle = k < 0.25 ? "#e06a4a" : "rgba(243,236,220,.5)";
+    ctx.fillRect(OX, OY - 10, COLS * CELL * k, 3);
+  }
+
+  // オーブ
+  const rr = CELL * 0.42;
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const o = S.board[r][c];
+    if (!o) continue;
+    if (S.grab && S.grab.r === r && S.grab.c === c) continue;  // 掴み中は後で描く
+    const [x, y] = cellCenter(r, c);
+    if (o.popping) {
+      // 1つずつ膨らんで消える
+      const k = clamp(o.pop / 0.2, 0, 1);
+      drawOrb(x, y + o.yOff, o.t, rr * (1 + (1 - k) * 0.55), false, k);
+      continue;
+    }
+    drawOrb(x, y + o.yOff, o.t, rr);
+  }
+  // 掴んでいるオーブはポインタ位置に
+  if (S.grab && S.mode === "drag") {
+    const o = S.board[S.grab.r][S.grab.c];
+    if (o) {
+      const [hx, hy] = cellCenter(S.grab.r, S.grab.c);
+      ctx.globalAlpha = 0.35;
+      drawOrb(hx, hy, o.t, rr, true);
+      ctx.globalAlpha = 1;
+      drawOrb(S.pointer.x, S.pointer.y - 28, o.t, rr * 1.15);
+    }
+  }
+
+  // パーティクル / フロート
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += 1 / 60;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx / 60; p.y += p.vy / 60; p.vy += 7;
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x, p.y, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+  ctx.textAlign = "center";
+  for (let i = S.floats.length - 1; i >= 0; i--) {
+    const f = S.floats[i];
+    f.age += 1 / 60; f.y -= 0.5;
+    if (f.age >= f.life) { S.floats.splice(i, 1); continue; }
+    ctx.globalAlpha = 1 - f.age / f.life;
+    ctx.fillStyle = f.color;
+    ctx.font = `700 ${f.size}px 'Shippori Mincho', serif`;
+    ctx.fillText(f.text, f.x, f.y);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+
+  // 落下アニメ + ポップ消滅
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const o = S.board[r] && S.board[r][c];
+    if (!o) continue;
+    if (o.yOff !== 0) {
+      o.yOff += (0 - o.yOff) * Math.min(1, dt * 14);
+      if (Math.abs(o.yOff) < 1) o.yOff = 0;
+    }
+    if (o.popping) {
+      o.pop -= dt;
+      if (o.pop <= 0) S.board[r][c] = null;
+    }
+  }
+  if (S.mode === "drag" && S.moved) {
+    S.dragT += dt;
+    if (S.dragT >= DRAG_LIMIT) releaseDrag();
+  }
+  if (S.mode === "resolve") resolveStep(dt);
+  if (S.mode === "over") S.overT += dt;
+  draw(now);
+}
+resetGame();
+S.mode = "title";
+requestAnimationFrame(loop);
+window.__G = { S, startGame, releaseDrag, findMatches, TYPES, cellCenter };
+</script>
+</body>
+</html>

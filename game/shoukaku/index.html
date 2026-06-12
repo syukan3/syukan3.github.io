@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>昇格 | GAME — 坂江 俊輔</title>
+<meta name="description" content="同じ役職を重ねて昇格させる、スライド&マージパズル。目指せ社長の椅子。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 460px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(28px, 6.6vw, 44px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  .win-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; line-height: 2; margin: 6px 0 26px; max-width: 420px; }
+  #screen-win h1.title { text-shadow: 0 0 60px rgba(105,191,255,.35), 0 0 90px rgba(255,105,191,.2); }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #score { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 18px; letter-spacing: .15em; color: var(--ember-bright); }
+  #best { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #post { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 11px; letter-spacing: .2em; color: var(--cream-dim); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">BEST 0</div>
+  <div id="score">0</div>
+  <div id="post">現職 新人</div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Slide Merge — Corporate 2048</div>
+  <h1 class="title">昇格</h1>
+  <div class="title-en">S H O U K A K U</div>
+  <p class="tagline">辞令一枚で、人は動く。</p>
+  <p class="hint">
+    スワイプ / 矢印キーで全社員がスライド。同じ役職が重なれば<em>昇格</em>、空きポストが尽きれば<em>人事凍結</em>。目指せ、<em>社長</em>の椅子。
+  </p>
+  <button class="btn" id="btn-start">辞令を受け取る</button>
+</div>
+
+<div class="screen hidden" id="screen-win">
+  <div class="bracket">INAUGURATION</div>
+  <h1 class="title">社長就任</h1>
+  <p class="win-sub">
+    派閥も根回しも、すべてはこの椅子のためにあった。<br>
+    だが組織図の上には、まだ席がある — 会長、そして相談役。
+  </p>
+  <button class="btn" id="btn-continue">続ける</button>
+  <button class="btn ghost" id="btn-newgame">新しい会社で出直す</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">PERSONNEL FILE</div>
+  <div class="cause">人事異動、凍結。</div>
+  <div class="dist-line">スコア <b id="r-score">0</b></div>
+  <div class="dist-line" id="r-best">BEST 0</div>
+  <div class="rank-label">最終到達役職</div>
+  <div class="rank" id="rank">新人</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">転職して再挑戦</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   昇格 / SHOUKAKU — スライド&マージ昇進パズル
+   同じ役職を重ねて昇格。空きポストが尽きたら人事凍結。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+
+const N = 4;                 // 4×4 の組織図
+const SLIDE_DUR = 0.12;      // スライド時間
+const FX_DUR = 0.12;         // ポップ / 出現時間
+const WIN_RANK = 11;         // 社長
+const MAX_RANK = 13;         // 相談役（これ以上は昇格しない）
+
+/* 役職テーブル: name, 背景色, フレーバー */
+const RANKS = [
+  { name: "新人",     c: "#d8cdb6", sub: "まずは挨拶から。社会は厳しい。" },
+  { name: "若手",     c: "#cdbd9a", sub: "議事録係を、まだ卒業できていない。" },
+  { name: "主任",     c: "#d6b07a", sub: "肩書きはあるが、給料はあまり変わらない。" },
+  { name: "係長",     c: "#e0a45a", sub: "中間管理職の入口に立ってしまった。" },
+  { name: "課長",     c: "#e8964e", sub: "ハンコの重みを知り始めた頃。" },
+  { name: "次長",     c: "#e07e4a", sub: "『次』が何の次なのか、誰も知らない。" },
+  { name: "部長",     c: "#e06a4a", sub: "会議の8割は、部長のためにある。" },
+  { name: "本部長",   c: "#d65a78", sub: "本部とは、つまり偉い部のことである。" },
+  { name: "執行役員", c: "#bd5ab8", sub: "執行するのは、主に宴席の采配。" },
+  { name: "副社長",   c: "#8f6ae8", sub: "あと一歩。社長室のドアはもう見えている。" },
+  { name: "社長",     c: "#69bfff", sub: "ついに頂点。だが株主総会が待っている。" },
+  { name: "会長",     c: "#ff69bf", sub: "院政の始まり。実権はまだ手放さない。" },
+  { name: "相談役",   c: "#f6cf86", sub: "もはや出社しない。だが、すべてを知っている。" },
+];
+const VAL = r => Math.pow(2, r);   // rank1=2, rank2=4, ...
+
+/* 背景輝度から文字色を自動選択 */
+function textColorFor(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return lum > 0.6 ? "#100b05" : "#f3ecdc";
+}
+RANKS.forEach(d => { d.tc = textColorFor(d.c); });
+
+const COLOR = { cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86", cyan: "#69bfff", magenta: "#ff69bf", silver: "#b8b8b8" };
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1, CELL = 0, GAP = 0, BX = 0, BY = 0, BSIZE = 0;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  BSIZE = Math.min(W - 28, H - 170, 460);
+  GAP = Math.max(6, BSIZE * 0.024);
+  CELL = (BSIZE - GAP * (N + 1)) / N;
+  BX = (W - BSIZE) / 2;
+  BY = clamp((H - BSIZE) / 2 + 14, 64, H - BSIZE - 14);
+}
+resize();
+window.addEventListener("resize", resize);
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.15;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  slide()   { this.blip(220, 0.05, "triangle", 0.2, 50); },
+  merge(r)  { this.blip(330 * Math.pow(1.09, Math.min(r, 13)), 0.14, "sine", 0.5, 140); },
+  denied()  { this.blip(140, 0.08, "square", 0.18, -30); },
+  win()     { this.blip(523, 0.3, "sine", 0.5); this.blip(659, 0.45, "sine", 0.4); this.blip(784, 0.6, "sine", 0.35); this.blip(1047, 0.8, "sine", 0.3); },
+  over()    { this.blip(220, 0.7, "sawtooth", 0.5, -170); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",      // title | play | won | over
+  board: [],          // [r][c] = 0(空) or rank 1..13
+  score: 0,
+  highest: 1,
+  won: false,         // 社長就任演出を見たか
+  anim: null,         // { t, dur, moves:[{fr,fc,tr,tc,rank}], merges, spawn }
+  fx: [],             // { type:'pop'|'spawn', r, c, t }
+  particles: [],
+  overT: 0,
+  best: Number(localStorage.getItem("shoukaku-best") || 0),
+};
+
+function emptyBoard() {
+  return Array.from({ length: N }, () => new Array(N).fill(0));
+}
+
+function spawnTile(animate = true) {
+  const empties = [];
+  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) if (!S.board[r][c]) empties.push([r, c]);
+  if (!empties.length) return null;
+  const [r, c] = empties[Math.floor(rand(0, empties.length))];
+  const rank = Math.random() < 0.9 ? 1 : 2;
+  S.board[r][c] = rank;
+  return { r, c, rank, animate };
+}
+
+function cellXY(r, c) {
+  return [BX + GAP + c * (CELL + GAP), BY + GAP + r * (CELL + GAP)];
+}
+
+function burst(x, y, color, n, speed = 160) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.3, 0.6), age: 0, color, r: rand(1.2, 3) });
+  }
+}
+
+/* ---------- 移動ロジック ---------- */
+function finishAnim() {
+  if (!S.anim) return;
+  // 演出を即完了させる（連打・ヘッドレス駆動対応）
+  for (const m of S.anim.merges) S.fx.push({ type: "pop", r: m.r, c: m.c, t: FX_DUR });
+  if (S.anim.spawn) S.fx.push({ type: "spawn", r: S.anim.spawn.r, c: S.anim.spawn.c, t: FX_DUR });
+  S.anim = null;
+}
+
+function canMoveAny() {
+  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+    const v = S.board[r][c];
+    if (!v) return true;
+    if (v < MAX_RANK) {
+      if (c + 1 < N && S.board[r][c + 1] === v) return true;
+      if (r + 1 < N && S.board[r + 1][c] === v) return true;
+    }
+  }
+  return false;
+}
+
+function move(dir) {
+  if (S.mode !== "play") return false;
+  if (!{ left: 1, right: 1, up: 1, down: 1 }[dir]) return false;
+  finishAnim();
+
+  const old = S.board;
+  const nb = emptyBoard();
+  const moves = [], merges = [];
+  let gain = 0, changed = false;
+
+  // line index li=0..3、i は移動先方向の端から数えた位置
+  const pos = (li, i) => {
+    if (dir === "left")  return [li, i];
+    if (dir === "right") return [li, N - 1 - i];
+    if (dir === "up")    return [i, li];
+    return [N - 1 - i, li]; // down
+  };
+
+  for (let li = 0; li < N; li++) {
+    const cells = [];
+    for (let i = 0; i < N; i++) {
+      const [r, c] = pos(li, i);
+      if (old[r][c]) cells.push({ r, c, rank: old[r][c] });
+    }
+    let write = 0;
+    for (let k = 0; k < cells.length; k++) {
+      const cur = cells[k];
+      const [tr, tc] = pos(li, write);
+      const mergeable = k + 1 < cells.length && cells[k + 1].rank === cur.rank && cur.rank < MAX_RANK;
+      moves.push({ fr: cur.r, fc: cur.c, tr, tc, rank: cur.rank });
+      if (mergeable) {
+        const nxt = cells[k + 1];
+        moves.push({ fr: nxt.r, fc: nxt.c, tr, tc, rank: nxt.rank });
+        const nr = cur.rank + 1;
+        nb[tr][tc] = nr;
+        gain += VAL(nr);
+        merges.push({ r: tr, c: tc, rank: nr });
+        changed = true;
+        k++;
+      } else {
+        nb[tr][tc] = cur.rank;
+        if (tr !== cur.r || tc !== cur.c) changed = true;
+      }
+      write++;
+    }
+  }
+
+  if (!changed) {
+    AudioFX.denied();
+    if (!canMoveAny()) gameOver();
+    return false;
+  }
+
+  S.board = nb;
+  const spawn = spawnTile();
+  S.anim = { t: 0, dur: SLIDE_DUR, moves, merges, spawn };
+  S.fx = [];
+
+  if (gain > 0) {
+    S.score += gain;
+    if (S.score > S.best) { S.best = S.score; localStorage.setItem("shoukaku-best", String(S.best)); }
+    for (const m of merges) {
+      S.highest = Math.max(S.highest, m.rank);
+      const [x, y] = cellXY(m.r, m.c);
+      burst(x + CELL / 2, y + CELL / 2, RANKS[m.rank - 1].c, m.rank >= 7 ? 16 : 8, 120 + m.rank * 10);
+    }
+    AudioFX.merge(S.highest);
+  } else {
+    AudioFX.slide();
+  }
+  updateHUD();
+
+  if (!S.won && S.highest >= WIN_RANK) {
+    S.won = true;
+    setTimeout(() => {
+      if (S.mode !== "play") return;
+      S.mode = "won";
+      AudioFX.win();
+      document.getElementById("screen-win").classList.remove("hidden");
+    }, 300);
+  } else if (!canMoveAny()) {
+    setTimeout(gameOver, 350);
+  }
+  return true;
+}
+
+function checkGameOver() {
+  if (S.mode === "play" && !canMoveAny()) gameOver();
+  return S.mode === "over";
+}
+
+function updateHUD() {
+  document.getElementById("score").textContent = S.score;
+  document.getElementById("best").textContent = "BEST " + S.best;
+  document.getElementById("post").textContent = "現職 " + RANKS[S.highest - 1].name;
+}
+
+function gameOver() {
+  if (S.mode === "over") return;
+  S.mode = "over"; S.overT = 0;
+  AudioFX.over();
+  document.getElementById("r-score").textContent = S.score;
+  document.getElementById("r-best").textContent = "BEST " + S.best;
+  const d = RANKS[S.highest - 1];
+  document.getElementById("rank").textContent = d.name;
+  document.getElementById("rank-sub").textContent = d.sub;
+  document.getElementById("hud").classList.remove("on");
+  document.getElementById("screen-result").classList.remove("hidden");
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  S.board = emptyBoard();
+  S.score = 0; S.highest = 1; S.won = false;
+  S.anim = null; S.fx = []; S.particles = []; S.overT = 0;
+  S.mode = "play";
+  const a = spawnTile(), b = spawnTile();
+  for (const sp of [a, b]) if (sp) S.fx.push({ type: "spawn", r: sp.r, c: sp.c, t: 0 });
+  S.highest = Math.max(a ? a.rank : 1, b ? b.rank : 1);
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("screen-win").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  updateHUD();
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("btn-newgame").addEventListener("click", startGame);
+document.getElementById("btn-continue").addEventListener("click", () => {
+  document.getElementById("screen-win").classList.add("hidden");
+  if (S.mode === "won") S.mode = "play";
+});
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.6) startGame();
+});
+
+/* ---------- 入力 ---------- */
+window.addEventListener("keydown", e => {
+  const map = { ArrowLeft: "left", ArrowRight: "right", ArrowUp: "up", ArrowDown: "down" };
+  const dir = map[e.key];
+  if (!dir) return;
+  e.preventDefault();
+  if (S.mode === "play") move(dir);
+}, { passive: false });
+
+let swipe = null;
+canvas.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  if (S.mode !== "play") return;
+  swipe = { x: e.clientX, y: e.clientY, id: e.pointerId };
+});
+window.addEventListener("pointerup", e => {
+  if (!swipe || e.pointerId !== swipe.id) return;
+  const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+  swipe = null;
+  const TH = 24;
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < TH) return;
+  if (S.mode !== "play") return;
+  if (Math.abs(dx) >= Math.abs(dy)) move(dx > 0 ? "right" : "left");
+  else move(dy > 0 ? "down" : "up");
+});
+window.addEventListener("pointercancel", () => { swipe = null; });
+
+/* ---------- 描画 ---------- */
+function rr(x, y, w, h, rad) {
+  ctx.beginPath();
+  ctx.moveTo(x + rad, y);
+  ctx.arcTo(x + w, y, x + w, y + h, rad);
+  ctx.arcTo(x + w, y + h, x, y + h, rad);
+  ctx.arcTo(x, y + h, x, y, rad);
+  ctx.arcTo(x, y, x + w, y, rad);
+  ctx.closePath();
+}
+
+function drawTile(x, y, rank, scale = 1, alpha = 1) {
+  const d = RANKS[rank - 1];
+  const s = CELL * scale;
+  const ox = x + (CELL - s) / 2, oy = y + (CELL - s) / 2;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  if (rank >= 9) {
+    ctx.shadowColor = d.c;
+    ctx.shadowBlur = 10 + (rank - 9) * 5;
+  }
+  ctx.fillStyle = d.c;
+  rr(ox, oy, s, s, Math.max(4, s * 0.08));
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = "rgba(16,11,5,.35)";
+  ctx.lineWidth = 1;
+  rr(ox, oy, s, s, Math.max(4, s * 0.08));
+  ctx.stroke();
+  if (s > CELL * 0.3) {
+    // 役職名
+    ctx.fillStyle = d.tc;
+    const chars = d.name.length;
+    const fs = s * (chars <= 2 ? 0.32 : chars === 3 ? 0.26 : 0.2);
+    ctx.font = `700 ${fs}px 'Shippori Mincho', serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(d.name, ox + s / 2, oy + s / 2 - s * 0.04);
+    // 段位の数値（2,4,8,...）
+    ctx.globalAlpha = alpha * 0.6;
+    ctx.font = `${Math.max(8, s * 0.13)}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+    ctx.textAlign = "right";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText(String(VAL(rank)), ox + s - s * 0.08, oy + s - s * 0.08);
+  }
+  ctx.restore();
+  ctx.globalAlpha = 1;
+}
+
+const easeOut = k => 1 - Math.pow(1 - k, 3);
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  if (S.mode !== "title") {
+    // 組織図ラベル
+    ctx.font = "10px ui-monospace, SFMono-Regular, Menlo, monospace";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "rgba(184,184,184,.5)";
+    ctx.fillText("人事部 — 組織図 v" + (1 + Math.floor(S.score / 1000)), BX + GAP, BY - 10);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "rgba(224,164,90,.6)";
+    ctx.fillText("空きポスト " + S.board.flat().filter(v => !v).length, BX + BSIZE - GAP, BY - 10);
+
+    // 盤の背景
+    ctx.fillStyle = "rgba(243,236,220,.05)";
+    rr(BX, BY, BSIZE, BSIZE, 10);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(243,236,220,.12)";
+    ctx.lineWidth = 1;
+    rr(BX, BY, BSIZE, BSIZE, 10);
+    ctx.stroke();
+
+    // 空きマス
+    for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+      const [x, y] = cellXY(r, c);
+      ctx.fillStyle = "rgba(243,236,220,.045)";
+      rr(x, y, CELL, CELL, Math.max(4, CELL * 0.08));
+      ctx.fill();
+    }
+
+    if (S.anim) {
+      // スライド中: 移動タイルのみ描画（合体結果と新規タイルは到着後）
+      const k = easeOut(clamp(S.anim.t / S.anim.dur, 0, 1));
+      for (const m of S.anim.moves) {
+        const [fx, fy] = cellXY(m.fr, m.fc);
+        const [tx, ty] = cellXY(m.tr, m.tc);
+        drawTile(fx + (tx - fx) * k, fy + (ty - fy) * k, m.rank);
+      }
+    } else {
+      for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+        const v = S.board[r][c];
+        if (!v) continue;
+        const [x, y] = cellXY(r, c);
+        let scale = 1;
+        for (const f of S.fx) {
+          if (f.r !== r || f.c !== c) continue;
+          const k = clamp(f.t / FX_DUR, 0, 1);
+          if (f.type === "spawn") scale = easeOut(k);
+          else scale = 1 + 0.28 * Math.sin(Math.PI * k);
+        }
+        if (scale > 0.02) drawTile(x, y, v, scale);
+      }
+    }
+  }
+
+  // パーティクル
+  for (const p of S.particles) {
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+
+function update(dt) {
+  if (S.anim) {
+    S.anim.t += dt;
+    if (S.anim.t >= S.anim.dur) {
+      for (const m of S.anim.merges) S.fx.push({ type: "pop", r: m.r, c: m.c, t: 0 });
+      if (S.anim.spawn) S.fx.push({ type: "spawn", r: S.anim.spawn.r, c: S.anim.spawn.c, t: 0 });
+      S.anim = null;
+    }
+  }
+  for (let i = S.fx.length - 1; i >= 0; i--) {
+    S.fx[i].t += dt;
+    if (S.fx[i].t >= FX_DUR) S.fx.splice(i, 1);
+  }
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 280 * dt;
+  }
+  if (S.mode === "over") S.overT += dt;
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  update(dt);
+  draw();
+}
+requestAnimationFrame(loop);
+
+window.__G = { S, startGame, move, spawnTile, checkGameOver, canMoveAny, gameOver, RANKS, VAL };
+</script>
+</body>
+</html>

@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>横断 | GAME — 坂江 俊輔</title>
+<meta name="description" content="会議・仕様変更・至急の波をかいくぐり、リリース台まで横断するアーケードゲーム。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a; --green: #2ecc71;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 440px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(30px, 7vw, 46px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #score { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 18px; letter-spacing: .15em; color: var(--cream); }
+  #best { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #lives { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 11px; letter-spacing: .2em; color: var(--magenta); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">BEST 0 / ROUND 1</div>
+  <div id="score">SCORE 0</div>
+  <div id="lives">ライフ ●●●</div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Road Crossing — Arcade</div>
+  <h1 class="title">横断</h1>
+  <div class="title-en">O U D A N</div>
+  <p class="tagline">スワイプで移動。会議に轢かれるな。</p>
+  <p class="hint">
+    定時後のオフィス街。ノートPCを抱えて<em>リリース台</em>まで横断しろ。<br>
+    車道には<em>会議</em>のセダン、<em>仕様変更</em>のトラック、<em>至急</em>のバイクが走る。<br>
+    スワイプ / 矢印キー / タップで1マスずつ移動。<br>
+    <em>休憩スペース</em>では轢かれない。たまに落ちている<em>☕</em>は +50。<br>
+    渡り切るたび交通量は加速する。ライフは<em>3</em>。
+  </p>
+  <button class="btn" id="btn-start">横断を開始</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">TRAFFIC REPORT</div>
+  <div class="cause" id="cause">会議に轢かれた</div>
+  <div class="dist-line">スコア <b id="r-score">0</b></div>
+  <div class="dist-line" id="r-rounds">横断成功 0 回</div>
+  <div class="dist-line" id="r-best">BEST 0</div>
+  <div class="rank-label">通勤格付け</div>
+  <div class="rank" id="rank">在宅勤務</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">もう一度横断する</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP / SPACE でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   横断 / OUDAN — オフィス街ロードクロッシング
+   会議・仕様変更・至急をかいくぐり、リリース台へ。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+const mod = (n, m) => ((n % m) + m) % m;
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8", slate: "#3a3a3a", green: "#2ecc71",
+};
+
+const COLS = 9, ROWS = 13;
+const GOAL_ROW = 0, START_ROW = 12;
+const MEDIAN_ROWS = [4, 8];
+const SPAN = COLS + 6;     // 仮想レーン長（画面外バッファ込み）
+const PAD = 3;             // 画面外の左バッファ
+
+/* 車種: len=マス数, speed=マス/秒, color/label */
+const KINDS = {
+  sedan: { len: 2, label: "会議",     color: COLOR.cyan,    n: 3 },
+  truck: { len: 3, label: "仕様変更", color: COLOR.magenta, n: 2 },
+  bike:  { len: 1, label: "至急",     color: COLOR.ember,   n: 3 },
+};
+const LANE_DEF = [
+  { row: 1,  kind: "bike",  dir:  1, speed: 2.2 },
+  { row: 2,  kind: "sedan", dir: -1, speed: 1.4 },
+  { row: 3,  kind: "truck", dir:  1, speed: 0.85 },
+  { row: 5,  kind: "sedan", dir: -1, speed: 1.6 },
+  { row: 6,  kind: "bike",  dir:  1, speed: 2.4 },
+  { row: 7,  kind: "truck", dir: -1, speed: 0.9 },
+  { row: 9,  kind: "sedan", dir:  1, speed: 1.4 },
+  { row: 10, kind: "bike",  dir: -1, speed: 2.0 },
+  { row: 11, kind: "truck", dir:  1, speed: 0.75 },
+];
+
+const RANKS = [
+  [1,        "在宅勤務",     "そもそも道路に出ていない。それも戦略。"],
+  [3,        "近所のコンビニ", "横断歩道には慣れてきた。会議はまだ怖い。"],
+  [6,        "都心通勤",     "朝の交差点を読む目。仕様変更も避けられる。"],
+  [10,       "メッセンジャー", "車道は庭。至急のバイクと並走できる。"],
+  [Infinity, "歩行の達人",   "信号はもう要らない。交通があなたを避ける。"],
+];
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+resize();
+window.addEventListener("resize", resize);
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.16;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  hop()    { this.blip(620, 0.05, "square", 0.25, 120); },
+  coffee() { this.blip(880, 0.12, "sine", 0.45, 160); this.blip(1320, 0.18, "sine", 0.3, 180); },
+  goal()   { this.blip(523, 0.14, "sine", 0.5); this.blip(659, 0.2, "sine", 0.45); this.blip(784, 0.3, "sine", 0.5, 200); },
+  crash()  { this.blip(150, 0.5, "sawtooth", 0.55, -80); this.blip(110, 0.6, "sawtooth", 0.4, -40); },
+  over()   { this.blip(220, 0.7, "sawtooth", 0.5, -170); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",       // title | play | over
+  time: 0,
+  round: 1,
+  score: 0,
+  lives: 3,
+  crossings: 0,
+  speedMult: 1,
+  player: { col: 4, row: START_ROW },
+  hop: null,           // {fc, fr, t, dur} 視覚用ホップ
+  dead: false, deadT: 0,
+  deadAt: null,        // squash 位置
+  lanes: [],           // {row, kind, dir, speed, len, vehicles:[{x0,x,len}]}
+  coffee: null,        // {col, row}
+  flash: 0, shake: 0, overT: 0,
+  msg: null,
+  particles: [],
+  best: Number(localStorage.getItem("oudan-best") || 0),
+};
+
+function buildLanes() {
+  S.lanes = LANE_DEF.map(d => {
+    const k = KINDS[d.kind];
+    const slot = SPAN / k.n;
+    const off = rand(0, SPAN);
+    const vehicles = [];
+    for (let i = 0; i < k.n; i++) {
+      vehicles.push({ x0: off + i * slot + rand(-0.4, 0.4), x: 0, len: k.len });
+    }
+    return { row: d.row, kind: d.kind, dir: d.dir, speed: d.speed, len: k.len, vehicles };
+  });
+  updateVehicles();
+}
+
+function updateVehicles() {
+  for (const ln of S.lanes) {
+    const v0 = ln.dir * ln.speed * S.speedMult * S.time;
+    for (const v of ln.vehicles) v.x = mod(v.x0 + v0, SPAN) - PAD;
+  }
+}
+
+function laneAt(row) { return S.lanes.find(l => l.row === row) || null; }
+
+/* col,row のマスが、今から lookahead 秒のあいだ安全か */
+function isSafe(col, row, lookahead = 0.4) {
+  if (col < 0 || col > COLS - 1) return false;
+  const ln = laneAt(row);
+  if (!ln) return true;
+  const m = 0.35;
+  for (const v of ln.vehicles) {
+    for (const t of [0, lookahead * 0.5, lookahead]) {
+      const x = mod(v.x + PAD + ln.dir * ln.speed * S.speedMult * t, SPAN) - PAD;
+      if (x - m < col + 1 && x + v.len + m > col) return false;
+    }
+  }
+  return true;
+}
+
+function spawnCoffee() {
+  S.coffee = null;
+  if (Math.random() < 0.65) {
+    const row = MEDIAN_ROWS[Math.floor(Math.random() * MEDIAN_ROWS.length)];
+    S.coffee = { col: Math.floor(rand(0, COLS)), row };
+  }
+}
+
+function msg(text, sub, color, life = 1.3) {
+  S.msg = { text, sub, color, age: 0, life };
+}
+
+function burst(x, y, color, n, speed = 180) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.3, 0.7), age: 0, color, r: rand(1, 3) });
+  }
+}
+
+/* ---------- グリッド座標 ---------- */
+function grid() {
+  const topPad = Math.max(52, H * 0.07), botPad = Math.max(16, H * 0.025);
+  const cell = Math.min((W * 0.96) / COLS, (H - topPad - botPad) / ROWS);
+  const gw = cell * COLS, gh = cell * ROWS;
+  return { x: (W - gw) / 2, y: topPad + (H - topPad - botPad - gh) / 2, cell, w: gw, h: gh };
+}
+const cellCenter = (col, row) => {
+  const g = grid();
+  return { x: g.x + (col + 0.5) * g.cell, y: g.y + (row + 0.5) * g.cell, cell: g.cell };
+};
+
+/* ---------- 移動 ---------- */
+const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+
+function step(dir) {
+  if (S.mode !== "play" || S.dead) return;
+  const d = DIRS[dir];
+  if (!d) return;
+  const nc = clamp(S.player.col + d[0], 0, COLS - 1);
+  const nr = clamp(S.player.row + d[1], 0, ROWS - 1);
+  if (nc === S.player.col && nr === S.player.row) return;
+  S.hop = { fc: S.player.col, fr: S.player.row, t: 0, dur: 0.13 };
+  S.player.col = nc; S.player.row = nr;
+  AudioFX.hop();
+
+  // ☕ 回収
+  if (S.coffee && S.coffee.col === nc && S.coffee.row === nr) {
+    const p = cellCenter(nc, nr);
+    S.score += 50;
+    burst(p.x, p.y, COLOR.emberBright, 16, 180);
+    msg("☕ 補給完了", "+50 — カフェインは正義", COLOR.emberBright, 1.1);
+    AudioFX.coffee();
+    S.coffee = null;
+    updateHUD();
+  }
+
+  // ゴール
+  if (nr === GOAL_ROW) {
+    const gain = 100 * S.round;
+    S.score += gain;
+    S.crossings++;
+    const p = cellCenter(nc, nr);
+    burst(p.x, p.y, COLOR.green, 30, 240);
+    msg("リリース完了", `+${gain} — 交通量が増えていく…`, COLOR.green, 1.4);
+    AudioFX.goal();
+    S.flash = 0.25;
+    S.round++;
+    S.speedMult = Math.min(2.2, Math.pow(1.08, S.round - 1));
+    S.player.col = 4; S.player.row = START_ROW;
+    S.hop = null;
+    spawnCoffee();
+    updateHUD();
+  }
+}
+
+/* ---------- 衝突 ---------- */
+function checkCollision() {
+  if (S.dead || S.mode !== "play") return;
+  const { col, row } = S.player;
+  const ln = laneAt(row);
+  if (!ln) return;
+  for (const v of ln.vehicles) {
+    if (v.x < col + 0.8 && v.x + v.len > col + 0.2) {
+      const p = cellCenter(col, row);
+      S.dead = true; S.deadT = 0;
+      S.deadAt = { col, row };
+      S.lives--;
+      S.shake = 12;
+      burst(p.x, p.y, COLOR.risk, 26, 250);
+      AudioFX.crash();
+      const why = KINDS[ln.kind].label;
+      if (S.lives > 0) msg(`${why}に轢かれた`, `残りライフ ${S.lives}`, COLOR.risk, 1.3);
+      else msg(`${why}に轢かれた`, "今日はもう、歩けない", COLOR.risk, 1.5);
+      updateHUD();
+      return;
+    }
+  }
+}
+
+function respawn() {
+  S.dead = false; S.deadAt = null;
+  S.player.col = 4; S.player.row = START_ROW;
+  S.hop = null;
+}
+
+/* ---------- 入力 ---------- */
+window.addEventListener("keydown", e => {
+  const map = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right" };
+  if (e.code === "Space") {
+    e.preventDefault();
+    if (S.mode === "over" && S.overT > 0.6 && !e.repeat) startGame();
+    return;
+  }
+  if (map[e.key]) { e.preventDefault(); if (!e.repeat) step(map[e.key]); }
+}, { passive: false });
+
+let ptr = null;
+canvas.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  AudioFX.init();
+  ptr = { x: e.clientX, y: e.clientY, t: performance.now() };
+});
+canvas.addEventListener("pointerup", e => {
+  e.preventDefault();
+  if (!ptr) return;
+  const dx = e.clientX - ptr.x, dy = e.clientY - ptr.y;
+  ptr = null;
+  const dist = Math.hypot(dx, dy);
+  if (dist >= 24) {
+    // スワイプ
+    step(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up"));
+  } else {
+    // タップ: プレイヤーから見た方向へ
+    if (S.mode !== "play") return;
+    const p = cellCenter(S.player.col, S.player.row);
+    const tx = e.clientX - p.x, ty = e.clientY - p.y;
+    if (Math.hypot(tx, ty) < p.cell * 0.4) return;
+    step(Math.abs(tx) > Math.abs(ty) ? (tx > 0 ? "right" : "left") : (ty > 0 ? "down" : "up"));
+  }
+});
+canvas.addEventListener("pointercancel", () => { ptr = null; });
+
+function updateHUD() {
+  document.getElementById("score").textContent = "SCORE " + S.score;
+  document.getElementById("best").textContent = "BEST " + S.best + " / ROUND " + S.round;
+  document.getElementById("lives").textContent =
+    "ライフ " + "●".repeat(Math.max(0, S.lives)) + "○".repeat(3 - Math.max(0, S.lives));
+}
+
+function gameOver(cause) {
+  if (S.mode === "over") return;
+  S.mode = "over"; S.overT = 0;
+  AudioFX.over();
+  if (S.score > S.best) { S.best = S.score; localStorage.setItem("oudan-best", String(S.score)); }
+  document.getElementById("cause").textContent = cause;
+  document.getElementById("r-score").textContent = S.score;
+  document.getElementById("r-rounds").textContent = `横断成功 ${S.crossings} 回`;
+  document.getElementById("r-best").textContent = "BEST " + S.best;
+  const r = RANKS.find(r => S.crossings < r[0]);
+  document.getElementById("rank").textContent = r[1];
+  document.getElementById("rank-sub").innerHTML = r[2];
+  document.getElementById("hud").classList.remove("on");
+  document.getElementById("screen-result").classList.remove("hidden");
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  S.mode = "play";
+  S.time = 0; S.round = 1; S.score = 0; S.lives = 3; S.crossings = 0;
+  S.speedMult = 1;
+  S.player.col = 4; S.player.row = START_ROW;
+  S.hop = null; S.dead = false; S.deadT = 0; S.deadAt = null;
+  S.flash = 0; S.shake = 0; S.overT = 0;
+  S.msg = null; S.particles = [];
+  buildLanes();
+  spawnCoffee();
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  updateHUD();
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.6) startGame();
+});
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+
+function update(dt) {
+  if (S.mode === "play") {
+    S.time += dt;
+    updateVehicles();
+    if (S.dead) {
+      S.deadT += dt;
+      if (S.deadT >= 0.9) {
+        if (S.lives <= 0) gameOver("交通量に呑まれた");
+        else respawn();
+      }
+    } else {
+      checkCollision();
+    }
+  }
+  if (S.hop && (S.hop.t += dt) >= S.hop.dur) S.hop = null;
+  if (S.flash > 0) S.flash -= dt;
+  if (S.shake > 0) S.shake = Math.max(0, S.shake - dt * 26);
+  if (S.msg && (S.msg.age += dt) >= S.msg.life) S.msg = null;
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 300 * dt;
+  }
+  if (S.mode === "over") S.overT += dt;
+}
+
+/* ---------- 描画 ---------- */
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function drawPlayer(g, t) {
+  let col = S.player.col, row = S.player.row, bob = 0;
+  if (S.hop) {
+    const k = clamp(S.hop.t / S.hop.dur, 0, 1);
+    const e = 1 - (1 - k) * (1 - k);
+    col = S.hop.fc + (col - S.hop.fc) * e;
+    row = S.hop.fr + (row - S.hop.fr) * e;
+    bob = Math.sin(k * Math.PI) * g.cell * 0.28;
+  }
+  if (S.dead && S.deadAt) { col = S.deadAt.col; row = S.deadAt.row; }
+  const cx = g.x + (col + 0.5) * g.cell;
+  const cy = g.y + (row + 0.5) * g.cell - bob;
+  const r = g.cell * 0.5;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  if (S.dead) {
+    // ぺしゃんこ
+    const k = clamp(S.deadT / 0.25, 0, 1);
+    ctx.scale(1 + k * 0.5, 1 - k * 0.72);
+    ctx.globalAlpha = clamp(1 - (S.deadT - 0.5) / 0.4, 0.15, 1);
+  }
+  // 影
+  ctx.fillStyle = "rgba(0,0,0,.4)";
+  ctx.beginPath(); ctx.ellipse(0, r * 0.62 + bob, r * 0.5, r * 0.16, 0, 0, TAU); ctx.fill();
+  // グロー
+  const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.2);
+  glow.addColorStop(0, "rgba(243,236,220,.22)");
+  glow.addColorStop(1, "rgba(243,236,220,0)");
+  ctx.fillStyle = glow;
+  ctx.beginPath(); ctx.arc(0, 0, r * 1.2, 0, TAU); ctx.fill();
+  // 体
+  ctx.fillStyle = COLOR.cream;
+  roundRect(-r * 0.26, -r * 0.18, r * 0.52, r * 0.66, r * 0.14); ctx.fill();
+  // 頭
+  ctx.beginPath(); ctx.arc(0, -r * 0.42, r * 0.26, 0, TAU); ctx.fill();
+  // ノートPC（横断の相棒）
+  ctx.fillStyle = COLOR.cyan;
+  roundRect(-r * 0.5, r * 0.02, r * 0.42, r * 0.3, r * 0.06); ctx.fill();
+  ctx.fillStyle = "rgba(10,10,10,.55)";
+  ctx.fillRect(-r * 0.46, r * 0.07, r * 0.34, r * 0.2);
+  ctx.restore();
+}
+
+function draw(time) {
+  const t = time / 1000;
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (S.shake > 0.3) ctx.translate(rand(-S.shake, S.shake) * 0.5, rand(-S.shake, S.shake) * 0.5);
+
+  if (S.mode !== "title") {
+    const g = grid();
+    const mono = getComputedStyle(document.body).getPropertyValue("--font-mono");
+    const labelFont = `${Math.max(8, Math.round(g.cell * 0.22))}px ${mono}`;
+
+    // 行背景
+    for (let r = 0; r < ROWS; r++) {
+      const y = g.y + r * g.cell;
+      if (r === GOAL_ROW) {
+        ctx.fillStyle = "rgba(224,164,90,.12)";
+        ctx.fillRect(g.x, y, g.w, g.cell);
+      } else if (r === START_ROW) {
+        ctx.fillStyle = "rgba(243,236,220,.05)";
+        ctx.fillRect(g.x, y, g.w, g.cell);
+      } else if (MEDIAN_ROWS.includes(r)) {
+        ctx.fillStyle = "rgba(105,191,255,.055)";
+        ctx.fillRect(g.x, y, g.w, g.cell);
+      } else {
+        ctx.fillStyle = "rgba(255,255,255,.022)";
+        ctx.fillRect(g.x, y, g.w, g.cell);
+      }
+    }
+    // 車線の区切り（破線）
+    ctx.strokeStyle = "rgba(243,236,220,.08)";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([g.cell * 0.32, g.cell * 0.3]);
+    for (const pair of [[1, 2], [2, 3], [5, 6], [6, 7], [9, 10], [10, 11]]) {
+      const y = g.y + pair[1] * g.cell;
+      ctx.beginPath(); ctx.moveTo(g.x, y); ctx.lineTo(g.x + g.w, y); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    // 路肩ライン
+    ctx.strokeStyle = "rgba(243,236,220,.16)";
+    for (const r of [1, 4, 5, 8, 9, 12]) {
+      const y = g.y + r * g.cell;
+      ctx.beginPath(); ctx.moveTo(g.x, y); ctx.lineTo(g.x + g.w, y); ctx.stroke();
+    }
+    // 外枠
+    ctx.strokeStyle = "rgba(243,236,220,.2)";
+    ctx.strokeRect(g.x, g.y, g.w, g.h);
+
+    // 行ラベル
+    ctx.font = labelFont;
+    ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ctx.fillStyle = "rgba(246,207,134,.8)";
+    ctx.fillText("リリース台", g.x + 6, g.y + 0.5 * g.cell);
+    ctx.fillStyle = "rgba(184,184,184,.6)";
+    ctx.fillText("オフィス", g.x + 6, g.y + (START_ROW + 0.5) * g.cell);
+    ctx.fillStyle = "rgba(105,191,255,.5)";
+    for (const r of MEDIAN_ROWS) ctx.fillText("休憩スペース", g.x + 6, g.y + (r + 0.5) * g.cell);
+
+    // ☕
+    if (S.coffee) {
+      const p = cellCenter(S.coffee.col, S.coffee.row);
+      const bobble = Math.sin(t * 3) * g.cell * 0.04;
+      ctx.font = `${Math.round(g.cell * 0.5)}px serif`;
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText("☕", p.x, p.y + bobble);
+      ctx.font = `${Math.max(7, Math.round(g.cell * 0.16))}px ${mono}`;
+      ctx.fillStyle = "rgba(246,207,134,.7)";
+      ctx.fillText("+50", p.x, p.y + g.cell * 0.42);
+    }
+
+    // 車両
+    ctx.textBaseline = "middle";
+    for (const ln of S.lanes) {
+      const k = KINDS[ln.kind];
+      const y = g.y + ln.row * g.cell;
+      for (const v of ln.vehicles) {
+        const vx = g.x + v.x * g.cell;
+        if (vx + v.len * g.cell < g.x - g.cell * 0.5 || vx > g.x + g.w + g.cell * 0.5) continue;
+        const inset = g.cell * 0.12;
+        ctx.save();
+        ctx.beginPath(); ctx.rect(g.x - 1, y, g.w + 2, g.cell); ctx.clip();
+        // 車体
+        ctx.fillStyle = "rgba(26,26,26,.95)";
+        roundRect(vx + inset * 0.5, y + inset, v.len * g.cell - inset, g.cell - inset * 2, g.cell * 0.16);
+        ctx.fill();
+        ctx.strokeStyle = k.color;
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+        // ヘッドライト
+        const hx = ln.dir > 0 ? vx + v.len * g.cell - inset : vx + inset;
+        ctx.fillStyle = COLOR.emberBright;
+        ctx.beginPath(); ctx.arc(hx, y + g.cell * 0.32, g.cell * 0.05, 0, TAU); ctx.fill();
+        ctx.beginPath(); ctx.arc(hx, y + g.cell * 0.68, g.cell * 0.05, 0, TAU); ctx.fill();
+        // ラベル
+        ctx.fillStyle = k.color;
+        ctx.font = `600 ${Math.max(8, Math.round(g.cell * 0.26))}px 'Shippori Mincho', serif`;
+        ctx.textAlign = "center";
+        ctx.fillText(k.label, vx + (v.len * g.cell) / 2, y + g.cell * 0.52);
+        ctx.restore();
+      }
+    }
+
+    drawPlayer(g, t);
+  }
+
+  // フラッシュ
+  if (S.flash > 0) {
+    ctx.fillStyle = `rgba(243,236,220,${S.flash * 0.25})`;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // メッセージ
+  if (S.msg) {
+    const k = S.msg.age / S.msg.life;
+    const a = k < 0.12 ? k / 0.12 : k > 0.6 ? Math.max(0, 1 - (k - 0.6) / 0.4) : 1;
+    ctx.globalAlpha = a;
+    ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = S.msg.color;
+    ctx.font = `700 ${Math.round(Math.min(38, W * 0.06))}px 'Shippori Mincho', serif`;
+    ctx.fillText(S.msg.text, W / 2, H * 0.3);
+    ctx.fillStyle = "rgba(216,205,182,.85)";
+    ctx.font = "12px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+    ctx.fillText(S.msg.sub, W / 2, H * 0.3 + 28);
+    ctx.globalAlpha = 1;
+  }
+
+  // パーティクル
+  for (const p of S.particles) {
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  update(dt);
+  draw(now);
+}
+requestAnimationFrame(loop);
+window.__G = { S, startGame, step, isSafe, gameOver };
+</script>
+</body>
+</html>

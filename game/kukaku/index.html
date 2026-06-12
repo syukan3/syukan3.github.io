@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>区画 | GAME — 坂江 俊輔</title>
+<meta name="description" content="未隔離のネットワークに境界線を引き、ウイルスを封じ込める陣取りゲーム。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a; --green: #2ecc71;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 440px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(30px, 7vw, 46px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #pct { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 18px; letter-spacing: .15em; color: var(--cream); }
+  #pct small { font-size: 10px; color: var(--silver); letter-spacing: .2em; }
+  #lv { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #lives { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 11px; letter-spacing: .2em; color: var(--magenta); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="lv">SEGMENT 01</div>
+  <div id="pct">0<small> % / 75%</small></div>
+  <div id="lives">復旧予算 ●●●</div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Territory Capture — Segmentation</div>
+  <h1 class="title">区画</h1>
+  <div class="title-en">K U K A K U</div>
+  <p class="tagline">線を引いた者が、境界を制す。</p>
+  <p class="hint">
+    スワイプ / 矢印キーで進路を切る。安全な<em>隔離済み区画</em>から踏み出すと、<br>
+    あなたの軌跡が<em>未隔離のフラットネットワーク</em>に境界線を引く。<br>
+    隔離済みに戻れば封鎖完了 — <em>ウイルスのいない側</em>はすべて手に入る。<br>
+    だが線が引きかけのうちに<em>ウイルス</em>が触れたら、インシデント発生。<br>
+    全域の<em>75%</em>を隔離すれば、次のセグメントへ。
+  </p>
+  <button class="btn" id="btn-start">隔離計画を開始</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">INCIDENT REPORT</div>
+  <div class="cause" id="cause">復旧予算が尽きた</div>
+  <div class="dist-line">獲得区画 <b id="r-score">0</b> セル</div>
+  <div class="dist-line" id="r-pct">最大隔離率 0%</div>
+  <div class="dist-line" id="r-best">BEST 0</div>
+  <div class="rank-label">設計格付け</div>
+  <div class="rank" id="rank">野良LAN</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">再設計する</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP / SPACE でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   区画 / KUKAKU — 陣取り（Qix系・グリッド実装）
+   隔離済み区画から未踏域へ線を引き、戻って封鎖する。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8", slate: "#3a3a3a", green: "#2ecc71",
+};
+
+const RANKS = [
+  [2000,  "野良LAN", "全機器が同一セグメント。プリンタが世界に公開されている。"],
+  [5000,  "社内VLAN", "とりあえず部署で分けた。設計書はない。"],
+  [9000,  "DMZ構築済み", "外と内の境界はある。内側はまだ無法地帯。"],
+  [14000, "マイクロセグメンテーション", "ワークロード単位で隔離。監査が褒めた。"],
+  [Infinity, "ゼロトラスト", "もはや境界すら信用しない。あなた自身も検証対象だ。"],
+];
+
+/* ---------- グリッド定数 ---------- */
+const GW = 40, GH = 56;                 // 区画グリッド（縦長）
+const UNCLAIMED = 0, CLAIMED = 1, TRAIL = 2;
+const DIRS = { up: [0,-1], down: [0,1], left: [-1,0], right: [1,0] };
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+let cell = 8, ox = 0, oy = 0;           // セル寸法と盤面オフセット
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const top = 56, bottom = 24, side = 16;
+  cell = Math.max(4, Math.min((W - side * 2) / GW, (H - top - bottom) / GH));
+  ox = (W - cell * GW) / 2;
+  oy = top + (H - top - bottom - cell * GH) / 2;
+}
+resize();
+window.addEventListener("resize", resize);
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.16;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  turn()   { this.blip(880, 0.04, "square", 0.12); },
+  capture(big) {
+    this.blip(523, 0.14, "sine", 0.5, 140);
+    this.blip(784, 0.22, "sine", 0.4, 160);
+    if (big) this.blip(1047, 0.34, "sine", 0.4, 200);
+  },
+  clear()  { this.blip(659, 0.18, "sine", 0.5); this.blip(880, 0.22, "sine", 0.45); this.blip(1319, 0.42, "sine", 0.4, 180); },
+  hit()    { this.blip(150, 0.5, "sawtooth", 0.55, -80); this.blip(110, 0.6, "sawtooth", 0.4, -40); },
+  over()   { this.blip(220, 0.7, "sawtooth", 0.5, -170); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",        // title | play | over
+  grid: new Uint8Array(GW * GH),
+  px: 0, py: 0,         // プレイヤー（セル座標）
+  dir: null,            // "up"|"down"|"left"|"right"|null
+  pending: null,        // 次ステップで適用する方向
+  moveAcc: 0, moveSpd: 12,   // セル/秒
+  trailing: false,
+  trail: [],            // [ [x,y], ... ]
+  enemies: [],          // { x, y, vx, vy }  float セル座標
+  level: 1, lives: 3,
+  score: 0, claimedPct: 0, maxPct: 0,
+  interiorTotal: (GW - 2) * (GH - 2),
+  lock: 0,              // 演出中（被弾・クリア間）
+  flash: 0, shake: 0, overT: 0,
+  msg: null,
+  particles: [],
+  deathFx: null,        // { x, y, t }
+  best: Number(localStorage.getItem("kukaku-best") || 0),
+};
+
+const idx = (x, y) => y * GW + x;
+const inGrid = (x, y) => x >= 0 && x < GW && y >= 0 && y < GH;
+
+function buildLevel() {
+  S.grid.fill(UNCLAIMED);
+  for (let x = 0; x < GW; x++) { S.grid[idx(x, 0)] = CLAIMED; S.grid[idx(x, GH - 1)] = CLAIMED; }
+  for (let y = 0; y < GH; y++) { S.grid[idx(0, y)] = CLAIMED; S.grid[idx(GW - 1, y)] = CLAIMED; }
+  S.px = Math.floor(GW / 2); S.py = GH - 1;
+  S.dir = null; S.pending = null; S.moveAcc = 0;
+  S.trailing = false; S.trail = [];
+  S.moveSpd = Math.min(15, 11 + S.level * 0.5);
+  const n = Math.min(4, S.level);
+  S.enemies = [];
+  const spd = Math.min(13, 6.5 + S.level * 0.9);
+  for (let i = 0; i < n; i++) {
+    S.enemies.push({
+      x: rand(GW * 0.25, GW * 0.75), y: rand(GH * 0.2, GH * 0.55),
+      vx: (Math.random() < 0.5 ? -1 : 1) * spd, vy: (Math.random() < 0.5 ? -1 : 1) * spd,
+    });
+  }
+  recount();
+  updateHUD();
+}
+
+function recount() {
+  let c = 0;
+  for (let y = 1; y < GH - 1; y++)
+    for (let x = 1; x < GW - 1; x++)
+      if (S.grid[idx(x, y)] === CLAIMED) c++;
+  S.claimedPct = c / S.interiorTotal * 100;
+  if (S.claimedPct > S.maxPct) S.maxPct = S.claimedPct;
+  return c;
+}
+
+function msg(text, sub, color, life = 1.3) {
+  S.msg = { text, sub, color, age: 0, life };
+}
+
+function burst(x, y, color, n, speed = 180) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.3, 0.7), age: 0, color, r: rand(1, 3) });
+  }
+}
+
+const cellPx = (x, y) => [ox + (x + 0.5) * cell, oy + (y + 0.5) * cell];
+
+/* ---------- 入力 ---------- */
+function setDir(d) {
+  if (!DIRS[d]) return;
+  if (S.mode !== "play") return;
+  // 線を引いている最中の即時反転は禁止（自分の線に戻るだけなので）
+  if (S.dir) {
+    const [cx, cy] = DIRS[S.dir], [nx, ny] = DIRS[d];
+    if (S.trailing && cx === -nx && cy === -ny) return;
+  }
+  S.pending = d;
+  if (!S.dir) AudioFX.turn();
+}
+window.addEventListener("keydown", e => {
+  const map = { ArrowUp: "up", ArrowDown: "down", ArrowLeft: "left", ArrowRight: "right",
+                KeyW: "up", KeyS: "down", KeyA: "left", KeyD: "right" };
+  if (map[e.code]) { e.preventDefault(); setDir(map[e.code]); return; }
+  if (e.code === "Space") {
+    e.preventDefault();
+    if (!e.repeat && S.mode === "over" && S.overT > 0.6) startGame();
+  }
+}, { passive: false });
+
+let swipe = null;
+canvas.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  swipe = { x: e.clientX, y: e.clientY, done: false };
+});
+canvas.addEventListener("pointermove", e => {
+  if (!swipe || swipe.done) return;
+  const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+  if (Math.hypot(dx, dy) < 22) return;
+  setDir(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up"));
+  swipe.done = true;
+});
+canvas.addEventListener("pointerup", () => { swipe = null; });
+canvas.addEventListener("pointercancel", () => { swipe = null; });
+
+/* ---------- 封鎖（フラッドフィル） ---------- */
+function closeCapture() {
+  // 各ウイルスがいる未隔離領域を探索 → 届かなかった未隔離領域＋軌跡を隔離
+  const reach = new Uint8Array(GW * GH);
+  const stack = [];
+  for (const e of S.enemies) {
+    const ex = clamp(Math.floor(e.x), 0, GW - 1), ey = clamp(Math.floor(e.y), 0, GH - 1);
+    if (S.grid[idx(ex, ey)] === UNCLAIMED && !reach[idx(ex, ey)]) {
+      reach[idx(ex, ey)] = 1; stack.push(ex, ey);
+    }
+  }
+  while (stack.length) {
+    const y = stack.pop(), x = stack.pop();
+    const nb = [[x+1,y],[x-1,y],[x,y+1],[x,y-1]];
+    for (const [nx, ny] of nb) {
+      if (!inGrid(nx, ny)) continue;
+      const i = idx(nx, ny);
+      if (!reach[i] && S.grid[i] === UNCLAIMED) { reach[i] = 1; stack.push(nx, ny); }
+    }
+  }
+  let gained = 0;
+  for (let i = 0; i < S.grid.length; i++) {
+    if ((S.grid[i] === UNCLAIMED && !reach[i]) || S.grid[i] === TRAIL) { S.grid[i] = CLAIMED; gained++; }
+  }
+  S.trail = []; S.trailing = false;
+  // ウイルスが隔離地帯に浮いてしまった場合の保険（理論上は起きない）
+  for (const e of S.enemies) {
+    const ex = clamp(Math.floor(e.x), 0, GW - 1), ey = clamp(Math.floor(e.y), 0, GH - 1);
+    if (S.grid[idx(ex, ey)] !== UNCLAIMED) {
+      outer:
+      for (let r = 1; r < Math.max(GW, GH); r++) {
+        for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+          const nx = ex + dx, ny = ey + dy;
+          if (inGrid(nx, ny) && S.grid[idx(nx, ny)] === UNCLAIMED) { e.x = nx + 0.5; e.y = ny + 0.5; break outer; }
+        }
+      }
+    }
+  }
+  recount();
+  const gainPct = gained / S.interiorTotal * 100;
+  S.score += gained + (gainPct >= 10 ? gained : 0);   // 大量封鎖はスコア2倍
+  const [mx, my] = cellPx(S.px, S.py);
+  burst(mx, my, gainPct >= 10 ? COLOR.emberBright : COLOR.cyan, gainPct >= 10 ? 30 : 14, gainPct >= 10 ? 240 : 150);
+  if (gainPct >= 10) {
+    msg("区画整理", `一括 ${gainPct.toFixed(1)}% 封鎖 — スコア2倍`, COLOR.emberBright, 1.5);
+    AudioFX.capture(true);
+  } else if (gained > 0) {
+    AudioFX.capture(false);
+  }
+  S.flash = 0.2;
+  updateHUD();
+  if (S.claimedPct >= 75) levelClear();
+}
+
+function levelClear() {
+  if (S.lock > 0) return;
+  S.lock = 1.6;
+  AudioFX.clear();
+  msg("セグメント封鎖完了", `隔離率 ${S.claimedPct.toFixed(1)}% — 次の区画へ`, COLOR.green, 1.5);
+  S.score += 500;
+  setTimeout(() => {
+    if (S.mode !== "play") return;
+    S.level++;
+    buildLevel();
+    S.lock = 0;
+  }, 1500);
+}
+
+/* ---------- 被弾 ---------- */
+function loseLife(why) {
+  if (S.lock > 0 || S.mode !== "play") return;
+  S.lives--;
+  S.lock = 1.1;
+  S.shake = 12;
+  const [px, py] = cellPx(S.px, S.py);
+  S.deathFx = { x: px, y: py, t: 0 };
+  burst(px, py, COLOR.risk, 28, 260);
+  AudioFX.hit();
+  // 軌跡を消去
+  for (const [tx, ty] of S.trail) if (S.grid[idx(tx, ty)] === TRAIL) S.grid[idx(tx, ty)] = UNCLAIMED;
+  S.trail = []; S.trailing = false;
+  // 隔離済みセルへ復帰（下辺中央）
+  S.px = Math.floor(GW / 2); S.py = GH - 1;
+  S.dir = null; S.pending = null; S.moveAcc = 0;
+  updateHUD();
+  if (S.lives <= 0) {
+    msg("ウイルス侵入", why, COLOR.risk, 1.6);
+    setTimeout(() => gameOver("復旧予算が尽きた"), 1100);
+  } else {
+    msg("インシデント発生", `${why} — 残り ${S.lives}`, COLOR.risk, 1.4);
+    setTimeout(() => { if (S.mode === "play") S.lock = 0; }, 1000);
+  }
+}
+
+function updateHUD() {
+  document.getElementById("lv").textContent = "SEGMENT " + String(S.level).padStart(2, "0");
+  document.getElementById("pct").innerHTML = Math.floor(S.claimedPct) + "<small> % / 75%</small>";
+  document.getElementById("lives").textContent = "復旧予算 " + "●".repeat(Math.max(0, S.lives)) + "○".repeat(Math.max(0, 3 - S.lives));
+}
+
+function gameOver(cause) {
+  if (S.mode === "over") return;
+  S.mode = "over"; S.overT = 0;
+  AudioFX.over();
+  if (S.score > S.best) { S.best = S.score; localStorage.setItem("kukaku-best", String(S.score)); }
+  document.getElementById("cause").textContent = cause;
+  document.getElementById("r-score").textContent = S.score;
+  document.getElementById("r-pct").textContent = `最大隔離率 ${S.maxPct.toFixed(1)}% ／ SEGMENT ${String(S.level).padStart(2, "0")}`;
+  document.getElementById("r-best").textContent = "BEST " + S.best;
+  const r = RANKS.find(r => S.score < r[0]);
+  document.getElementById("rank").textContent = r[1];
+  document.getElementById("rank-sub").textContent = r[2];
+  document.getElementById("hud").classList.remove("on");
+  document.getElementById("screen-result").classList.remove("hidden");
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  S.level = 1; S.lives = 3; S.score = 0; S.maxPct = 0;
+  S.particles = []; S.msg = null; S.deathFx = null;
+  S.flash = 0; S.shake = 0; S.overT = 0; S.lock = 0;
+  S.mode = "play";
+  buildLevel();
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  updateHUD();
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.6) startGame();
+});
+
+/* ---------- プレイヤー移動（1セル） ---------- */
+function stepPlayer() {
+  if (S.pending) {
+    // 方向転換は移動可能なときだけ採用
+    const [dx, dy] = DIRS[S.pending];
+    const nx = S.px + dx, ny = S.py + dy;
+    const ok = inGrid(nx, ny) && !(S.grid[idx(nx, ny)] === TRAIL);
+    if (ok) { S.dir = S.pending; }
+    S.pending = null;
+  }
+  if (!S.dir) return;
+  const [dx, dy] = DIRS[S.dir];
+  const nx = S.px + dx, ny = S.py + dy;
+  const blocked = (x, y) => !inGrid(x, y) || S.grid[idx(x, y)] === TRAIL;
+  const deadEnd = () => S.trailing &&
+    blocked(S.px + 1, S.py) && blocked(S.px - 1, S.py) &&
+    blocked(S.px, S.py + 1) && blocked(S.px, S.py - 1);
+  if (blocked(nx, ny)) {                                  // 盤外 / 自分の線 → 停止
+    S.dir = null;
+    if (deadEnd()) loseLife("自分の線で袋小路に入った");
+    return;
+  }
+  const ni = idx(nx, ny);
+  if (S.grid[ni] === UNCLAIMED) {
+    S.grid[ni] = TRAIL;
+    S.trail.push([nx, ny]);
+    S.trailing = true;
+    S.px = nx; S.py = ny;
+    return;
+  }
+  // CLAIMED へ
+  S.px = nx; S.py = ny;
+  if (S.trailing) closeCapture();
+}
+
+/* ---------- ウイルス ---------- */
+const blockedForEnemy = (x, y) => !inGrid(x, y) || S.grid[idx(x, y)] !== UNCLAIMED;
+
+function stepEnemies(dt) {
+  for (const e of S.enemies) {
+    let nx = e.x + e.vx * dt;
+    if (blockedForEnemy(Math.floor(nx), Math.floor(e.y))) { e.vx = -e.vx; nx = e.x; }
+    let ny = e.y + e.vy * dt;
+    if (blockedForEnemy(Math.floor(nx), Math.floor(ny))) { e.vy = -e.vy; ny = e.y; }
+    // 角に挟まれた場合の保険
+    if (blockedForEnemy(Math.floor(nx), Math.floor(ny))) { nx = e.x; ny = e.y; }
+    e.x = nx; e.y = ny;
+    const cx = Math.floor(e.x), cy = Math.floor(e.y);
+    if (inGrid(cx, cy) && S.grid[idx(cx, cy)] === TRAIL) { loseLife("境界線に接触された"); return; }
+    if (S.trailing && Math.abs(e.x - (S.px + 0.5)) < 0.9 && Math.abs(e.y - (S.py + 0.5)) < 0.9) {
+      loseLife("作業中に直撃された"); return;
+    }
+  }
+}
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+
+function update(dt) {
+  if (S.mode === "play" && S.lock <= 0) {
+    S.moveAcc += dt * S.moveSpd;
+    let steps = 0;
+    while (S.moveAcc >= 1 && steps < 4) {
+      S.moveAcc -= 1; steps++;
+      stepPlayer();
+      if (S.lock > 0 || S.mode !== "play") break;
+    }
+    if (S.lock <= 0 && S.mode === "play") {
+      stepEnemies(dt);
+      // __G 経由で grid を直接書き換えるテストにも追従する
+      recount();
+      if (S.claimedPct >= 75) { updateHUD(); levelClear(); }
+    }
+  }
+  if (S.flash > 0) S.flash -= dt;
+  if (S.shake > 0) S.shake = Math.max(0, S.shake - dt * 26);
+  if (S.msg && (S.msg.age += dt) >= S.msg.life) S.msg = null;
+  if (S.deathFx && (S.deathFx.t += dt) > 0.9) S.deathFx = null;
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 300 * dt;
+  }
+  if (S.mode === "over") S.overT += dt;
+}
+
+function draw(time) {
+  const t = time / 1000;
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (S.shake > 0.3) ctx.translate(rand(-S.shake, S.shake) * 0.5, rand(-S.shake, S.shake) * 0.5);
+
+  if (S.mode !== "title") {
+    const bw = cell * GW, bh = cell * GH;
+
+    // 未隔離 = 闇の霧
+    ctx.fillStyle = "rgba(16,11,5,.9)";
+    ctx.fillRect(ox, oy, bw, bh);
+
+    // 隔離済み区画（整然としたネットワーク網）
+    ctx.fillStyle = "rgba(224,164,90,.13)";
+    for (let y = 0; y < GH; y++) {
+      let runStart = -1;
+      for (let x = 0; x <= GW; x++) {
+        const claimed = x < GW && S.grid[idx(x, y)] === CLAIMED;
+        if (claimed && runStart < 0) runStart = x;
+        if (!claimed && runStart >= 0) {
+          ctx.fillRect(ox + runStart * cell, oy + y * cell, (x - runStart) * cell, cell);
+          runStart = -1;
+        }
+      }
+    }
+    // 網目（隔離済みの上にだけ薄く）
+    ctx.strokeStyle = "rgba(246,207,134,.10)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let x = 0; x <= GW; x += 4) { ctx.moveTo(ox + x * cell, oy); ctx.lineTo(ox + x * cell, oy + bh); }
+    for (let y = 0; y <= GH; y += 4) { ctx.moveTo(ox, oy + y * cell); ctx.lineTo(ox + bw, oy + y * cell); }
+    ctx.stroke();
+    // 未隔離部は霧で網目を再度沈める
+    ctx.fillStyle = "rgba(10,10,10,.78)";
+    for (let y = 0; y < GH; y++) {
+      let runStart = -1;
+      for (let x = 0; x <= GW; x++) {
+        const dark = x < GW && S.grid[idx(x, y)] !== CLAIMED;
+        if (dark && runStart < 0) runStart = x;
+        if (!dark && runStart >= 0) {
+          ctx.fillRect(ox + runStart * cell, oy + y * cell, (x - runStart) * cell, cell);
+          runStart = -1;
+        }
+      }
+    }
+
+    // 軌跡（引きかけの境界線）
+    if (S.trail.length) {
+      const pulse = 0.65 + 0.35 * Math.sin(t * 9);
+      ctx.fillStyle = `rgba(246,207,134,${0.5 + 0.3 * pulse})`;
+      for (const [tx, ty] of S.trail) {
+        ctx.fillRect(ox + tx * cell + cell * 0.2, oy + ty * cell + cell * 0.2, cell * 0.6, cell * 0.6);
+      }
+    }
+
+    // 盤面外枠
+    ctx.strokeStyle = "rgba(243,236,220,.22)";
+    ctx.strokeRect(ox - 0.5, oy - 0.5, bw + 1, bh + 1);
+
+    // ウイルス
+    for (const e of S.enemies) {
+      const [exp, eyp] = [ox + e.x * cell, oy + e.y * cell];
+      const r = cell * 1.05;
+      const glow = ctx.createRadialGradient(exp, eyp, 0, exp, eyp, r * 2.4);
+      glow.addColorStop(0, "rgba(255,105,191,.35)");
+      glow.addColorStop(1, "rgba(255,105,191,0)");
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(exp, eyp, r * 2.4, 0, TAU); ctx.fill();
+      ctx.fillStyle = COLOR.magenta;
+      ctx.beginPath();
+      const spikes = 8;
+      for (let i = 0; i <= spikes * 2; i++) {
+        const a = (i / (spikes * 2)) * TAU + t * 2.4;
+        const rr = i % 2 === 0 ? r : r * 0.55;
+        const x = exp + Math.cos(a) * rr, y = eyp + Math.sin(a) * rr;
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "rgba(16,11,5,.8)";
+      ctx.beginPath(); ctx.arc(exp, eyp, r * 0.3, 0, TAU); ctx.fill();
+    }
+
+    // プレイヤー
+    if (!S.deathFx) {
+      const [pxp, pyp] = cellPx(S.px, S.py);
+      const glow = ctx.createRadialGradient(pxp, pyp, 0, pxp, pyp, cell * 2.6);
+      glow.addColorStop(0, "rgba(243,236,220,.4)");
+      glow.addColorStop(1, "rgba(243,236,220,0)");
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(pxp, pyp, cell * 2.6, 0, TAU); ctx.fill();
+      ctx.fillStyle = S.trailing ? COLOR.emberBright : COLOR.cream;
+      ctx.fillRect(pxp - cell * 0.45, pyp - cell * 0.45, cell * 0.9, cell * 0.9);
+      ctx.strokeStyle = "rgba(16,11,5,.7)";
+      ctx.strokeRect(pxp - cell * 0.45, pyp - cell * 0.45, cell * 0.9, cell * 0.9);
+    } else {
+      // 死亡演出：収縮するリング
+      const k = S.deathFx.t / 0.9;
+      ctx.strokeStyle = `rgba(224,106,74,${1 - k})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(S.deathFx.x, S.deathFx.y, cell * (4 - k * 3.4), 0, TAU); ctx.stroke();
+      ctx.lineWidth = 1;
+    }
+
+    // 操作ヒント（停止中のみ）
+    if (S.mode === "play" && !S.dir && !S.trailing) {
+      ctx.fillStyle = "rgba(216,205,182,.5)";
+      ctx.font = "12px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+      ctx.textAlign = "center";
+      ctx.fillText("スワイプ / 矢印キーで発進", W / 2, oy + bh - cell * 3);
+    }
+  }
+
+  // フラッシュ
+  if (S.flash > 0) {
+    ctx.fillStyle = `rgba(243,236,220,${S.flash * 0.25})`;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // メッセージ
+  if (S.msg) {
+    const k = S.msg.age / S.msg.life;
+    const a = k < 0.12 ? k / 0.12 : k > 0.6 ? Math.max(0, 1 - (k - 0.6) / 0.4) : 1;
+    ctx.globalAlpha = a;
+    ctx.textAlign = "center";
+    ctx.fillStyle = S.msg.color;
+    ctx.font = `700 ${Math.round(Math.min(38, W * 0.06))}px 'Shippori Mincho', serif`;
+    ctx.fillText(S.msg.text, W / 2, H * 0.3);
+    ctx.fillStyle = "rgba(216,205,182,.85)";
+    ctx.font = "12px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+    ctx.fillText(S.msg.sub, W / 2, H * 0.3 + 28);
+    ctx.globalAlpha = 1;
+  }
+
+  // パーティクル
+  for (const p of S.particles) {
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  update(dt);
+  draw(now);
+}
+requestAnimationFrame(loop);
+
+window.__G = { S, startGame, setDir, closeCapture, recount, buildLevel, loseLife, GW, GH, idx, CLAIMED, UNCLAIMED, TRAIL };
+</script>
+</body>
+</html>

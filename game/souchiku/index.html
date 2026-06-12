@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>走築 — SOUCHIKU | 走った分だけ、システムは進む。</title>
+<meta name="description" content="キャスター付きサーバーラックで走る不条理ラン。リリースまで辿り着け。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a;
+    --black: #100b05;
+    --smoke: #2a2a2a;
+    --slate: #3a3a3a;
+    --silver: #b8b8b8;
+    --cream: #f3ecdc;
+    --cream-dim: #d8cdb6;
+    --ember: #e0a45a;
+    --ember-bright: #f6cf86;
+    --cyan: #69bfff;
+    --magenta: #ff69bf;
+    --green: #2ecc71;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    height: 100%; overflow: hidden;
+    background: var(--noir); color: var(--cream);
+    font-family: var(--font-body);
+    overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks {
+    background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%);
+  }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before {
+    content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite;
+  }
+  @keyframes grain {
+    0%,100% { transform: translate(0,0); } 20% { transform: translate(-6%,4%); }
+    40% { transform: translate(4%,-7%); } 60% { transform: translate(-3%,-3%); } 80% { transform: translate(6%,5%); }
+  }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px;
+    background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    transition: opacity .35s ease;
+  }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em;
+    color: var(--ember); text-transform: uppercase;
+  }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1;
+    color: var(--cream); letter-spacing: .08em; margin: 18px 0 4px;
+    text-shadow: 0 0 50px rgba(224,164,90,.25);
+  }
+  .title-en {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em;
+    color: var(--silver); margin-bottom: 22px; text-indent: .6em;
+  }
+  .tagline {
+    font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px);
+    color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px;
+  }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 460px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn {
+    font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em;
+    color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px;
+    cursor: pointer; transition: background .2s, transform .15s;
+  }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost {
+    background: transparent; color: var(--cream-dim);
+    border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px;
+  }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link {
+    position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em;
+    color: var(--silver); text-decoration: none;
+  }
+  .back-link:hover { color: var(--ember); }
+
+  /* result */
+  .cause {
+    font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px);
+    color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px;
+  }
+  .build-result {
+    width: min(380px, 84vw); margin: 18px 0 4px;
+  }
+  .build-result .row {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em;
+    color: var(--silver); margin-bottom: 6px;
+  }
+  .build-result .row b { color: var(--ember-bright); font-weight: 400; }
+  .build-result .track { display: block; height: 5px; background: var(--smoke); border-radius: 3px; overflow: hidden; }
+  .build-result .fill {
+    display: block; height: 100%; width: 0; border-radius: 3px;
+    background: linear-gradient(90deg, var(--ember), var(--ember-bright));
+    transition: width 1.1s cubic-bezier(.2,.7,.2,1);
+  }
+  .rank-label {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em;
+    color: var(--ember); margin-top: 22px;
+  }
+  .rank {
+    font-family: var(--font-display); font-size: clamp(30px, 7vw, 46px);
+    color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px;
+  }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .dist-line {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .2em; color: var(--silver);
+    margin-bottom: 4px;
+  }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  /* HUD */
+  #hud {
+    position: fixed; inset: 0; z-index: 6; pointer-events: none;
+    opacity: 0; transition: opacity .4s;
+    font-family: var(--font-mono);
+  }
+  #hud.on { opacity: 1; }
+  #dist {
+    position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px; letter-spacing: .15em; color: var(--cream);
+  }
+  #dist small { font-size: 11px; color: var(--silver); }
+  #best {
+    position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px;
+    font-size: 10px; letter-spacing: .2em; color: var(--silver);
+  }
+  #build {
+    position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px;
+    text-align: right;
+  }
+  #build .label { font-size: 11px; letter-spacing: .2em; color: var(--ember-bright); }
+  #build .track {
+    display: block; width: 110px; height: 3px; margin-top: 6px; margin-left: auto;
+    background: rgba(255,255,255,.12); border-radius: 2px; overflow: hidden;
+  }
+  #build .fill {
+    display: block; height: 100%; width: 0;
+    background: linear-gradient(90deg, var(--ember), var(--ember-bright));
+    transition: width .3s linear;
+  }
+  #build.released .label { color: var(--green); }
+  #build.released .fill { background: var(--green); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">BEST —</div>
+  <div id="dist">0 <small>m</small></div>
+  <div id="build">
+    <div class="label">要件定義 0%</div>
+    <span class="track"><span class="fill"></span></span>
+  </div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Absurd Build Runner — One Button</div>
+  <h1 class="title">走築</h1>
+  <div class="title-en">S O U C H I K U</div>
+  <p class="tagline">走った分だけ、システムは進む。</p>
+  <p class="hint">
+    キャスター付きサーバーラックで走る。タップ / SPACE で<em>跳ぶ</em>。空中でもう一度跳べる。<br>
+    走るほど「システム構築」が進捗し、要件定義から<em>リリース</em>へ向かう。<br>
+    承認と予算を集めろ。続けて集めると<em>全会一致フィーバー</em> — 数秒間、何にも止められない。<br>
+    仕様変更に当たると死ぬ。納期の谷に落ちても死ぬ。リリース後は<em>止めないこと</em>だ。
+  </p>
+  <button class="btn" id="btn-start">プロジェクト開始</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">PROJECT TERMINATED</div>
+  <div class="cause" id="cause">会議が長すぎた</div>
+  <div class="build-result">
+    <div class="row"><span>システム構築</span><b id="r-progress">0%</b></div>
+    <span class="track"><span class="fill" id="r-fill"></span></span>
+  </div>
+  <div class="dist-line" id="r-dist">0 m ／ 承認 0</div>
+  <div class="dist-line" id="r-best">BEST —</div>
+  <div class="rank-label">プロジェクト評価</div>
+  <div class="rank" id="rank">ヒアリングで終わった</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">再アサイン</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP / SPACE でも再アサインされる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   走築 / SOUCHIKU — 走った分だけ、システムは進む。
+   キャスター付きサーバーラックで疾走し、
+   仕様変更・技術的負債・会議を避け、承認と予算を集めて
+   要件定義 → 設計 → 実装 → テスト → 監査対応 → リリース。
+   リリース後は「稼働時間」がすべて。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8",
+  slate: "#3a3a3a", green: "#2ecc71",
+};
+
+const METER = 40;
+const GRAV = 2300;
+const JUMP1 = -800, JUMP2 = -700;
+const PX_RATIO = 0.18;
+const PROGRESS_PER_M = 0.075;   // 走行による進捗 %/m
+const PSCALE = 0.45;            // 機体スケール（チャリ走サイズ）
+const OSCALE = 0.55;            // 障害物スケール
+const FLY_FROM_M = 400;         // 空中障害物はこの距離から
+const INCIDENT_FROM_M = 300;    // 本番障害イベントはこの距離から
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+window.addEventListener("resize", resize);
+resize();
+
+const groundY = () => H * 0.78;
+
+/* ---------------- audio ---------------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.15;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(freq, dur, type = "sine", vol = 1, slide = 0) {
+    if (!this.ctx || this.ctx.state === "suspended") return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(40, freq + slide), t + dur);
+    g.gain.setValueAtTime(vol * 0.5, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(this.gain);
+    o.start(t); o.stop(t + dur + 0.02);
+  },
+  jump()    { this.blip(440, 0.12, "triangle", 0.4, 320); },
+  jump2()   { this.blip(560, 0.12, "triangle", 0.4, 380); },
+  land()    { this.blip(130, 0.07, "square", 0.2, -40); },
+  collect() { this.blip(880, 0.18, "sine", 0.5, 260); },
+  budget()  { this.blip(660, 0.2, "sine", 0.5, 200); this.blip(990, 0.3, "sine", 0.35, 240); },
+  phase()   { this.blip(523, 0.25, "sine", 0.45, 0); this.blip(659, 0.3, "sine", 0.3, 0); },
+  fever()   { this.blip(659, 0.3, "sine", 0.5, 0); this.blip(880, 0.4, "sine", 0.4, 0); this.blip(1175, 0.5, "sine", 0.35, 0); },
+  smash()   { this.blip(500, 0.1, "square", 0.4, -200); },
+  release() { this.blip(523, 0.4, "sine", 0.5, 0); this.blip(659, 0.5, "sine", 0.4, 0); this.blip(784, 0.6, "sine", 0.4, 0); },
+  sting()   { this.blip(320, 0.45, "sine", 0.4, -120); this.blip(484, 0.5, "sine", 0.25, -150); },
+  death()   { this.blip(240, 0.7, "sawtooth", 0.5, -190); },
+};
+
+/* ---------------- フェーズ ---------------- */
+const PHASES = [
+  [0,  "要件定義"],
+  [15, "設計"],
+  [35, "実装"],
+  [65, "テスト"],
+  [80, "監査対応"],
+  [95, "リリース準備"],
+];
+function phaseName(p) {
+  let name = PHASES[0][1];
+  for (const [th, n] of PHASES) if (p >= th) name = n;
+  return name;
+}
+
+/* ---------------- 不条理イベント（全部、仕事） ---------------- */
+const EVENTS = [
+  { name: "仕様変更の突風",   tilt: 0.085 },
+  { name: "緊急会議",         meeting: true, hue: "grayscale(0.85)" },
+  { name: "本番障害",         incident: true, hue: "sepia(0.35) hue-rotate(-30deg) saturate(2.2)" },
+  { name: "生成AIブースト",   ai: true, speed: 1.3 },
+  { name: "Qiitaがバズった",  qiita: true },
+  { name: "ハンコ行列",       hanko: true },
+  { name: "〆切が近い",       moon: true, speed: 1.15 },
+  { name: "ラック、自我に目覚める", eye: true },
+  { name: "全部レガシー",     legacy: true },
+  { name: "重力が承認待ち",   grav: 0.5 },
+];
+const EVENT_EVERY = 7.5, EVENT_LEN = 5.5;
+
+const NARRATION = [
+  "要件は、走りながら固める", "ドキュメントはあとで書く（書かない）",
+  "動くものが正義", "会議より走れ", "監査は突然来る",
+  "本番環境は神聖", "金曜デプロイはしない", "Qiitaに書くネタができた",
+  "攻めのAIを、守りの統制で", "技術で、事業を前に。",
+  "そのExcel、誰が更新してるの", "ステージングで動いたのに",
+];
+
+const EGO_LINES = ["私は何のシステム？", "要件が…ない…", "再起動していい？", "ファンがうるさいのは私のせいじゃない", "ラックにも一票ください"];
+
+const MILESTONES = [
+  "朝会を突破", "日次バッチ正常終了", "週次定例を乗り切った",
+  "障害ゼロ記録更新中", "監査資料、提出済み", "四半期レビュー通過",
+  "もう誰も止められない", "走りが仕様になった",
+];
+
+const MEETING_LINES = ["（会議中）", "（まだ会議中）", "（決まらない）", "（持ち帰りになった）"];
+
+/* ---------------- 障害物 ---------------- */
+const OB_TYPES = {
+  spec:   { w: 32, h: 34, label: "仕様変更", cause: "仕様変更に轢かれた" },
+  debt:   { w: 34, h: 42, label: "技術的負債", cause: "技術的負債に埋もれた" },
+  meeting:{ w: 28, h: 54, label: "会議室",   cause: "会議が長すぎた" },
+  audit:  { w: 20, h: 58, label: "監査指摘", cause: "監査指摘が刺さった" },
+  hanko:  { w: 26, h: 44, label: "承認印",   cause: "承認印に潰された" },
+};
+const PIT_CAUSE = "納期の谷に落ちた";
+const PHONE_CAUSE = "電話に出てしまった";
+const ALERT_CAUSE = "アラートの嵐に飲まれた";
+const LEGACY_CAUSE = "レガシーコードに絡まった";
+
+/* ---------------- 評価 ---------------- */
+function judge(progress, uptime, released) {
+  if (released) {
+    if (uptime < 30) return ["リリース即障害", "それでも、出したことに意味がある。<br>障害対応も、仕事のうちだ。"];
+    if (uptime < 90) return ["安定稼働", "動き続けるものが、信頼になる。<br>君のシステムは今日も静かに回っている。"];
+    return ["全社標準になった", "もう君のものではない。<br>システムは、文化になった。"];
+  }
+  if (progress < 15) return ["ヒアリングで終わった", "要件は、まだ誰の心の中にもなかった。"];
+  if (progress < 35) return ["PoCの墓", "動いた。動いただけだった。"];
+  if (progress < 65) return ["実装の沼", "コードは増えた。仕様も増えた。"];
+  if (progress < 80) return ["テスト不足", "「動くはず」は、動かない。"];
+  if (progress < 95) return ["監査で差し戻し", "正しさの証明が、いちばん難しい。"];
+  return ["リリース目前", "あと一歩だった。神は本番環境にいる。"];
+}
+
+/* ---------------- 状態 ---------------- */
+const S = {
+  mode: "title",
+  camX: 0, spd: 340, t: 0,
+  py: 0, vy: 0, grounded: false, jumps: 0, coyote: 0,
+  segs: [], obs: [], flies: [], orbs: [], particles: [], floats: [],
+  progress: 0, released: false, uptime: 0, phase: "要件定義",
+  approvals: 0,
+  event: null, eventTimer: 6, lastEvent: null, banner: null,
+  narrTimer: 4, egoTimer: 0, alertTimer: 0, likeTimer: 0, flyTimer: 10,
+  tiltCur: 0, deadT: 0, cause: "", wheelAng: 0, releaseFx: 0, groundAng: 0,
+  chain: 0, feverT: 0, stretch: 1, nextMile: 100,
+  stars: [],
+  best: JSON.parse(localStorage.getItem("souchiku-best") || "null"),
+};
+
+function resetGame() {
+  S.camX = 0; S.spd = 340; S.t = 0;
+  S.py = groundY(); S.vy = 0; S.grounded = true; S.jumps = 0; S.coyote = 0;
+  S.groundAng = 0;
+  S.segs = [{ x: -400, w: W + 1000, y0: groundY(), y1: groundY() }];
+  S.obs = []; S.flies = []; S.orbs = []; S.particles = []; S.floats = [];
+  S.progress = 0; S.released = false; S.uptime = 0; S.phase = "要件定義";
+  S.approvals = 0;
+  S.event = null; S.eventTimer = 6; S.lastEvent = null; S.banner = null;
+  S.narrTimer = 4; S.egoTimer = 0; S.alertTimer = 0; S.likeTimer = 0;
+  S.flyTimer = rand(10, 16);
+  S.tiltCur = 0; S.deadT = 0; S.cause = ""; S.wheelAng = 0; S.releaseFx = 0;
+  S.chain = 0; S.feverT = 0; S.stretch = 1; S.nextMile = 100;
+  canvas.style.filter = "";
+  if (!S.stars.length) {
+    for (let i = 0; i < 70; i++) {
+      S.stars.push({ x: Math.random() * W, y: Math.random() * H * 0.7, spd: rand(0.04, 0.18), r: rand(0.6, 1.8) });
+    }
+  }
+}
+
+/* ---------------- 地形生成 ---------------- */
+function genWorld() {
+  let last = S.segs[S.segs.length - 1];
+  while (last.x + last.w < S.camX + W + 1000) {
+    const ratio = clamp((S.spd - 340) / 400, 0, 1);
+    const gap = rand(90, 150) + ratio * 90;
+    const segW = rand(280, 600);
+    const nx = last.x + last.w + gap;
+
+    // 谷を越えた先は同じ高さ。たまに一段下がる（上りは坂でのみ）
+    let y0 = last.y1;
+    if (Math.random() < 0.25) y0 = clamp(y0 + rand(20, 70), H * 0.55, H * 0.86);
+    // 坂: 上り / 下り / 平坦
+    const roll = Math.random();
+    let y1 = y0;
+    if (roll < 0.3) y1 = clamp(y0 - rand(40, 100), H * 0.55, H * 0.86);
+    else if (roll < 0.6) y1 = clamp(y0 + rand(40, 100), H * 0.55, H * 0.86);
+    const seg = { x: nx, w: segW, y0, y1 };
+    S.segs.push(seg);
+    const surf = t => y0 + (y1 - y0) * t;
+
+    // 納期の谷を越える放物線に沿って、承認が並ぶ
+    if (Math.random() < 0.75) {
+      const gx0 = last.x + last.w, top = Math.min(last.y1, y0);
+      const n = 3 + (Math.random() < 0.3 ? 2 : 0);
+      const budgetAt = Math.random() < 0.22 ? Math.floor(n / 2) : -1;
+      for (let i = 0; i < n; i++) {
+        const tt = (i + 0.5) / n;
+        S.orbs.push({
+          x: gx0 + gap * tt,
+          y: top - 65 - Math.sin(tt * Math.PI) * 70,
+          type: i === budgetAt ? "budget" : "approval", got: false,
+        });
+      }
+    }
+    // 障害物（坂の上にも立つ）
+    let ox = nx + 200;
+    while (ox < nx + segW - 90) {
+      if (Math.random() < 0.62) {
+        S.obs.push({ x: ox, type: pick(Object.keys(OB_TYPES)), gy: surf((ox - nx) / segW) });
+      }
+      ox += rand(240, 460);
+    }
+    // 区間にも承認の列（坂に沿って並ぶ）
+    if (Math.random() < 0.45) {
+      const fx0 = nx + rand(60, Math.max(61, segW - 200));
+      const hgt = rand(55, 115);
+      for (let i = 0; i < 3; i++) {
+        const fx = fx0 + i * 46;
+        if (fx > nx + segW - 40) break;
+        S.orbs.push({ x: fx, y: surf((fx - nx) / segW) - hgt, type: "approval", got: false });
+      }
+    }
+    last = seg;
+  }
+  while (S.segs.length && S.segs[0].x + S.segs[0].w < S.camX - 200) S.segs.shift();
+  S.obs = S.obs.filter(o => o.x > S.camX - 100);
+  S.orbs = S.orbs.filter(o => o.x > S.camX - 100 && !o.got);
+}
+
+function segAt(worldX) {
+  for (const s of S.segs) if (worldX >= s.x && worldX <= s.x + s.w) return s;
+  return null;
+}
+function groundUnder(worldX) { return segAt(worldX) !== null; }
+function surfaceYAt(worldX) {
+  const s = segAt(worldX);
+  if (!s) return null;
+  return s.y0 + (s.y1 - s.y0) * ((worldX - s.x) / s.w);
+}
+
+/* ---------------- 入力 ---------------- */
+const px = () => W * PX_RATIO;
+
+function jump() {
+  if (S.mode === "title") return;
+  if (S.mode === "dead") { if (S.deadT > 0.6) startGame(); return; }
+  if (S.grounded || S.coyote > 0) {
+    S.vy = JUMP1; S.grounded = false; S.jumps = 1; S.coyote = 0;
+    S.stretch = 1.3;
+    dust(8); AudioFX.jump();
+  } else if (S.jumps < 2) {
+    S.vy = JUMP2; S.jumps = 2;
+    S.stretch = 1.25;
+    dust(5); AudioFX.jump2();
+    floatAdd(px(), S.py - 80, pick(["二段", "残業ジャンプ", "気合", "リスケ回避"]), COLOR.creamDim, 0.7);
+  }
+}
+window.addEventListener("keydown", e => {
+  if (e.code === "Space" || e.code === "ArrowUp") { e.preventDefault(); if (!e.repeat) jump(); }
+}, { passive: false });
+canvas.addEventListener("pointerdown", e => { e.preventDefault(); jump(); });
+
+/* ---------------- エフェクト ---------------- */
+function dust(n) {
+  for (let i = 0; i < n; i++) {
+    S.particles.push({
+      x: px() + rand(-10, 6), y: S.py - rand(0, 6),
+      vx: rand(-90, -20), vy: rand(-60, 10),
+      life: rand(0.25, 0.5), age: 0, r: rand(1.2, 2.6), color: COLOR.slate,
+    });
+  }
+}
+function burst(x, y, color, n, speed = 150) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.3, 0.7), age: 0, color, r: rand(1, 2.6) });
+  }
+}
+function floatAdd(x, y, text, color, life = 1.6) {
+  S.floats.push({ x, y, text, color, age: 0, life });
+}
+function narrate(text) {
+  S.floats.push({
+    x: S.camX + W + 60, y: rand(H * 0.12, H * 0.45),
+    text: text || pick(NARRATION), color: "rgba(216,205,182,.5)", age: 0, life: 6, world: true,
+  });
+}
+
+/* ---------------- 進捗 ---------------- */
+function addProgress(v) {
+  if (S.released) return;
+  S.progress = clamp(S.progress + v, 0, 100);
+  const name = phaseName(S.progress);
+  if (name !== S.phase) {
+    S.phase = name;
+    S.banner = { text: name + "フェーズへ", age: 0, life: 1.8 };
+    burst(px(), S.py - 40, COLOR.emberBright, 14, 160);
+    AudioFX.phase();
+  }
+  if (S.progress >= 100 && !S.released) {
+    S.released = true;
+    S.uptime = 0;
+    S.releaseFx = 1.6;
+    S.banner = { text: "リリース！", age: 0, life: 2.6 };
+    AudioFX.release();
+  }
+}
+
+/* ---------------- 更新 ---------------- */
+function evt(key) { return S.event && S.event.def[key]; }
+
+function maybeFever() {
+  if (S.chain >= 4 && S.feverT <= 0) {
+    S.feverT = 4.5;
+    S.banner = { text: "全会一致！", age: 0, life: 2.2 };
+    burst(px(), S.py - 30, COLOR.emberBright, 30, 260);
+    AudioFX.fever();
+  }
+}
+
+function update(dt) {
+  S.t += dt;
+  if (S.released) S.uptime += dt;
+  if (S.feverT > 0) { S.feverT -= dt; if (S.feverT <= 0) S.chain = 0; }
+  S.stretch += (1 - S.stretch) * Math.min(1, dt * 9);
+
+  // イベント（本番障害は序盤に来ない）
+  S.eventTimer -= dt;
+  if (S.eventTimer <= 0 && !S.event) {
+    const pool = EVENTS.filter(d => !(d.incident && S.camX / METER < INCIDENT_FROM_M));
+    let def = pick(pool);
+    if (S.lastEvent && def.name === S.lastEvent) def = pick(pool);
+    S.event = { def, t: EVENT_LEN };
+    S.lastEvent = def.name;
+    S.banner = { text: def.name, age: 0, life: 2 };
+    canvas.style.filter = def.hue || "";
+    S.egoTimer = 0.5; S.alertTimer = 0.4; S.likeTimer = 0.3;
+    if (def.hanko) {
+      // 承認印が行列を成して立ちはだかる
+      for (let i = 0; i < 4; i++) {
+        const hx = S.camX + W + 120 + i * 210;
+        if (groundUnder(hx)) S.obs.push({ x: hx, type: "hanko", gy: surfaceYAt(hx) });
+      }
+    }
+    AudioFX.sting();
+  }
+  if (S.event) {
+    S.event.t -= dt;
+    if (S.event.t <= 0) {
+      const def = S.event.def;
+      S.event = null; S.eventTimer = EVENT_EVERY;
+      canvas.style.filter = "";
+      if (def.ai) {
+        // AIが書いたコードのツケ: 技術的負債が待ち受ける
+        for (let i = 0; i < 3; i++) {
+          const dx = S.camX + W + 200 + i * 320;
+          if (groundUnder(dx)) S.obs.push({ x: dx, type: "debt", gy: surfaceYAt(dx) });
+        }
+        narrate("AIの書いたコード、誰がレビューするの");
+      }
+    }
+  }
+  if (S.banner && (S.banner.age += dt) >= S.banner.life) S.banner = null;
+
+  // イベント中の継続効果
+  if (evt("eye")) {
+    S.egoTimer -= dt;
+    if (S.egoTimer <= 0) {
+      S.egoTimer = rand(1.2, 2);
+      floatAdd(px() + rand(-10, 30), S.py - rand(70, 110), pick(EGO_LINES), COLOR.ember, 1.4);
+    }
+  }
+  if (evt("meeting")) {
+    S.egoTimer -= dt;
+    if (S.egoTimer <= 0) {
+      S.egoTimer = rand(0.9, 1.4);
+      floatAdd(W / 2 + rand(-80, 80), rand(H * 0.2, H * 0.4), pick(MEETING_LINES), "rgba(184,184,184,.7)", 1.2);
+    }
+  }
+  if (evt("incident")) {
+    S.alertTimer -= dt;
+    if (S.alertTimer <= 0) {
+      S.alertTimer = rand(0.7, 1.1);
+      const ay = surfaceYAt(S.camX + W + 60) ?? H * 0.75;
+      S.flies.push({ x: S.camX + W + 60, y: ay - rand(40, 170), ph: Math.random() * TAU, type: "alert" });
+    }
+  }
+  if (evt("qiita")) {
+    S.likeTimer -= dt;
+    if (S.likeTimer <= 0) {
+      S.likeTimer = rand(0.35, 0.6);
+      S.orbs.push({ x: S.camX + W + rand(20, 120), y: groundY() - rand(60, 200), type: "like", got: false });
+    }
+  }
+
+  // ナレーション
+  S.narrTimer -= dt;
+  if (S.narrTimer <= 0) { S.narrTimer = rand(5, 9); narrate(); }
+
+  // 前進 = 構築
+  const spdMul = evt("speed") || 1;
+  S.spd = Math.min(740, S.spd + dt * 6);
+  const v = S.spd * spdMul;
+  S.camX += v * dt;
+  S.wheelAng += v * dt / 7;
+  if (!evt("meeting")) {
+    addProgress((v * dt / METER) * PROGRESS_PER_M * (evt("ai") ? 3 : 1) * (S.feverT > 0 ? 2 : 1));
+  }
+
+  // マイルストーン
+  const distM = S.camX / METER;
+  if (distM >= S.nextMile) {
+    const msg = MILESTONES[((S.nextMile / 100 - 1) | 0) % MILESTONES.length];
+    floatAdd(W / 2, H * 0.42, S.nextMile + "m — " + msg, COLOR.cream, 1.8);
+    burst(px(), S.py - 30, COLOR.cream, 10, 140);
+    AudioFX.collect();
+    S.nextMile += 100;
+  }
+
+  // リリース花火
+  if (S.releaseFx > 0) {
+    S.releaseFx -= dt;
+    if (Math.random() < 0.35) {
+      burst(rand(W * 0.2, W * 0.9), rand(H * 0.12, H * 0.45),
+        pick([COLOR.emberBright, COLOR.cyan, COLOR.magenta, COLOR.green]), 16, 200);
+    }
+  }
+
+  // 傾き
+  const tiltTgt = evt("tilt") ? S.event.def.tilt * (S.event.t % 2 < 1 ? 1 : -1) : 0;
+  S.tiltCur += (tiltTgt - S.tiltCur) * Math.min(1, dt * 3);
+
+  genWorld();
+
+  // 物理（坂に追従する）
+  const gravMul = evt("grav") || 1;
+  const wx = S.camX + px();
+  const gySurf = surfaceYAt(wx);
+  if (S.grounded) {
+    if (gySurf === null) {
+      S.grounded = false; S.coyote = 0.09;        // 走り落ち
+    } else {
+      S.py = gySurf; S.vy = 0; S.coyote = 0.09;
+      const seg = segAt(wx);
+      S.groundAng = Math.atan2(seg.y1 - seg.y0, seg.w);
+    }
+  }
+  if (!S.grounded) {
+    S.vy += GRAV * gravMul * dt;
+    const prevY = S.py;
+    S.py += S.vy * dt;
+    if (S.vy >= 0 && gySurf !== null && S.py >= gySurf && prevY <= gySurf + 30) {
+      dust(5); AudioFX.land();
+      S.stretch = 0.72;
+      S.py = gySurf; S.vy = 0; S.grounded = true; S.jumps = 0;
+      const seg = segAt(wx);
+      S.groundAng = Math.atan2(seg.y1 - seg.y0, seg.w);
+    } else {
+      if (S.coyote > 0) S.coyote -= dt;
+      S.groundAng *= 1 - Math.min(1, dt * 5);    // 空中では水平に戻る
+    }
+  }
+  if (S.py > H + 80) return die(PIT_CAUSE);
+
+  // 当たり判定（見た目より甘め。フィーバー中は粉砕する）
+  const pcx = px(), phw = 12 * PSCALE, phh = 24 * PSCALE;
+  const pcy = S.py - 30 * PSCALE;
+  for (let i = S.obs.length - 1; i >= 0; i--) {
+    const o = S.obs[i];
+    const def = OB_TYPES[o.type];
+    const sx = o.x - S.camX;
+    if (sx < pcx - 60 || sx > pcx + 60) continue;
+    const ow = (def.w / 2) * OSCALE * 0.8, oh = def.h * OSCALE * 0.88;
+    const base = o.gy !== undefined ? o.gy : groundY();
+    if (Math.abs(pcx - sx) < phw + ow && pcy + phh > base - oh && pcy - phh < base) {
+      if (S.feverT > 0) {
+        S.obs.splice(i, 1);
+        addProgress(0.5);
+        burst(sx, base - oh / 2, COLOR.emberBright, 16, 220);
+        floatAdd(sx, base - oh - 14, def.label + "を突破", COLOR.emberBright, 0.9);
+        AudioFX.smash();
+        continue;
+      }
+      return die(evt("legacy") ? LEGACY_CAUSE : def.cause);
+    }
+  }
+  // 飛来物（電話 / アラート）— 序盤の空は安全
+  S.flyTimer -= dt;
+  if (S.flyTimer <= 0 && distM > FLY_FROM_M) {
+    S.flyTimer = rand(5, 9);
+    const fy = surfaceYAt(S.camX + W + 60) ?? H * 0.75;
+    S.flies.push({ x: S.camX + W + 60, y: fy - rand(55, 150), ph: Math.random() * TAU, type: "phone" });
+  }
+  for (let i = S.flies.length - 1; i >= 0; i--) {
+    const f = S.flies[i];
+    f.x -= (f.type === "alert" ? 180 : 130) * dt;
+    f.ph += dt * 5;
+    const sx = f.x - S.camX, sy = f.y + Math.sin(f.ph) * 22;
+    if (sx < -80) { S.flies.splice(i, 1); continue; }
+    if (Math.abs(pcx - sx) < phw + 9 && Math.abs(pcy - sy) < phh + 6) {
+      if (S.feverT > 0) {
+        S.flies.splice(i, 1);
+        burst(sx, sy, COLOR.emberBright, 12, 180);
+        floatAdd(sx, sy - 16, f.type === "alert" ? "アラート即対応" : "電話は出ない", COLOR.emberBright, 0.9);
+        AudioFX.smash();
+        continue;
+      }
+      return die(f.type === "alert" ? ALERT_CAUSE : PHONE_CAUSE);
+    }
+  }
+  // 収集物
+  for (const o of S.orbs) {
+    if (o.got) continue;
+    const sx = o.x - S.camX;
+    if (Math.abs(pcx - sx) < 24 && Math.abs(pcy - o.y) < 28) {
+      o.got = true;
+      if (o.type === "approval") {
+        S.approvals++; S.chain++;
+        addProgress(2.5);
+        burst(sx, o.y, COLOR.ember, 12, 160);
+        floatAdd(sx, o.y - 18, S.chain >= 2 ? `承認 ×${S.chain}` : "承認 +2.5%", COLOR.emberBright, 0.9);
+        AudioFX.collect();
+        maybeFever();
+      } else if (o.type === "budget") {
+        S.chain += 2;
+        addProgress(7);
+        burst(sx, o.y, COLOR.emberBright, 18, 200);
+        floatAdd(sx, o.y - 18, "予算獲得 +7%", COLOR.emberBright, 1.1);
+        AudioFX.budget();
+        maybeFever();
+      } else {
+        addProgress(0.8);
+        burst(sx, o.y, COLOR.cyan, 8, 130);
+        floatAdd(sx, o.y - 14, "+いいね", COLOR.cyan, 0.7);
+        AudioFX.collect();
+      }
+    }
+  }
+
+  updateFx(dt);
+}
+
+function updateFx(dt) {
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt;
+    p.vy += 300 * dt;
+  }
+  for (let i = S.floats.length - 1; i >= 0; i--) {
+    const f = S.floats[i];
+    f.age += dt;
+    if (!f.world) f.y -= 22 * dt;
+    if (f.age >= f.life) S.floats.splice(i, 1);
+  }
+}
+
+function die(cause) {
+  S.mode = "dead"; S.deadT = 0; S.cause = cause;
+  burst(px(), S.py - 30, COLOR.ember, 26, 240);
+  burst(px(), S.py - 30, COLOR.cream, 14, 180);
+  AudioFX.death();
+  const dist = Math.floor(S.camX / METER);
+  const rec = { p: Math.round(S.progress), d: dist, u: Math.round(S.uptime) };
+  if (!S.best || rec.p > S.best.p || (rec.p === S.best.p && rec.d > S.best.d)) {
+    S.best = rec;
+    localStorage.setItem("souchiku-best", JSON.stringify(rec));
+  }
+  setTimeout(showResult, 700);
+}
+
+/* ---------------- 描画 ---------------- */
+function drawRack(t) {
+  ctx.save();
+  ctx.translate(px(), S.py);
+  ctx.rotate(S.groundAng);
+  if (S.mode === "dead") ctx.rotate(S.deadT * 7);
+  // フィーバー: 金色のオーラ
+  if (S.feverT > 0 && S.mode === "play") {
+    const fa = Math.min(1, S.feverT / 0.8);
+    const g = ctx.createRadialGradient(0, -16, 0, 0, -16, 32);
+    g.addColorStop(0, `rgba(246,207,134,${0.45 * fa})`);
+    g.addColorStop(1, "rgba(246,207,134,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(0, -16, 32, 0, TAU); ctx.fill();
+  }
+  // スカッシュ&ストレッチ
+  const sy = S.stretch, sxF = 1 - (S.stretch - 1) * 0.5;
+  ctx.scale(PSCALE * sxF, PSCALE * sy);
+
+  // キャスター
+  ctx.strokeStyle = COLOR.silver;
+  ctx.lineWidth = 1.5;
+  for (const cx of [-9, 9]) {
+    ctx.beginPath(); ctx.arc(cx, -4, 4, 0, TAU); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx - Math.cos(S.wheelAng) * 3, -4 - Math.sin(S.wheelAng) * 3);
+    ctx.lineTo(cx + Math.cos(S.wheelAng) * 3, -4 + Math.sin(S.wheelAng) * 3);
+    ctx.stroke();
+  }
+  // ラック筐体
+  ctx.fillStyle = "rgba(26,26,26,.9)";
+  ctx.strokeStyle = COLOR.cream;
+  ctx.lineWidth = 2;
+  ctx.fillRect(-13, -56, 26, 48);
+  ctx.strokeRect(-13, -56, 26, 48);
+  // スリット
+  ctx.strokeStyle = "rgba(243,236,220,.25)";
+  ctx.lineWidth = 1;
+  for (let i = 0; i < 3; i++) {
+    ctx.beginPath(); ctx.moveTo(-9, -16 - i * 4); ctx.lineTo(9, -16 - i * 4); ctx.stroke();
+  }
+  // LED（本番障害中は赤く明滅）
+  const incident = evt("incident");
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 2; c++) {
+      const on = Math.sin(t * 7 + r * 1.7 + c * 2.6) > 0;
+      ctx.fillStyle = incident
+        ? (on ? COLOR.risk : "rgba(224,106,74,.25)")
+        : (on ? COLOR.green : "rgba(46,204,113,.2)");
+      ctx.fillRect(-7 + c * 9, -50 + r * 7, 3, 3);
+    }
+  }
+  // 自我（前面に目）
+  if (evt("eye")) {
+    ctx.fillStyle = COLOR.cream;
+    ctx.beginPath(); ctx.arc(6, -32, 5.5, 0, TAU); ctx.fill();
+    ctx.fillStyle = "#100b05";
+    ctx.beginPath(); ctx.arc(8, -32, 2.4, 0, TAU); ctx.fill();
+  }
+  // 乗り手（ネクタイの人、前傾でノートPCを持つ）
+  ctx.strokeStyle = COLOR.cream;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(-4, -56); ctx.lineTo(2, -72);             // 胴
+  ctx.moveTo(2, -72); ctx.lineTo(12, -64);             // 腕
+  ctx.moveTo(-4, -56); ctx.lineTo(-9, -48);            // 後ろ脚（踏ん張り）
+  ctx.stroke();
+  ctx.beginPath(); ctx.arc(4, -78, 5, 0, TAU); ctx.stroke();  // 頭
+  // ネクタイ（風になびく）
+  const flap = Math.sin(t * 11) * 4;
+  ctx.strokeStyle = COLOR.ember;
+  ctx.beginPath();
+  ctx.moveTo(1, -69);
+  ctx.quadraticCurveTo(-8, -66 + flap, -14, -62 + flap * 1.5);
+  ctx.stroke();
+  // ノートPC
+  ctx.strokeStyle = COLOR.cyan;
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(10, -68, 8, 5);
+  ctx.restore();
+}
+
+function drawObstacle(o, t) {
+  const def = OB_TYPES[o.type];
+  const sx = o.x - S.camX;
+  if (sx < -80 || sx > W + 80) return;
+  const gy = o.gy !== undefined ? o.gy : groundY();
+  const legacy = evt("legacy");
+  ctx.save();
+  ctx.translate(sx, gy);
+  ctx.save();
+  ctx.scale(OSCALE, OSCALE);
+
+  if (legacy) {
+    // 全部レガシー: 蜘蛛の巣の絡んだ謎の箱
+    ctx.fillStyle = "rgba(42,42,42,.9)";
+    ctx.strokeStyle = "rgba(184,184,184,.6)";
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(-def.w / 2, -def.h, def.w, def.h);
+    ctx.strokeRect(-def.w / 2, -def.h, def.w, def.h);
+    ctx.beginPath();
+    ctx.moveTo(-def.w / 2, -def.h); ctx.lineTo(def.w / 2, 0);
+    ctx.moveTo(def.w / 2, -def.h); ctx.lineTo(-def.w / 2, 0);
+    ctx.moveTo(-def.w / 2, -def.h / 2); ctx.lineTo(def.w / 2, -def.h / 2);
+    ctx.stroke();
+  } else if (o.type === "spec") {
+    // 仕様変更: ねじれた矢印
+    ctx.strokeStyle = COLOR.magenta; ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(-12, 0); ctx.lineTo(-12, -16); ctx.lineTo(8, -16); ctx.lineTo(8, -30); ctx.lineTo(-4, -30);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(-4, -30); ctx.lineTo(2, -36); ctx.moveTo(-4, -30); ctx.lineTo(2, -24);
+    ctx.stroke();
+  } else if (o.type === "debt") {
+    // 技術的負債: 積み上がった暗い箱
+    ctx.fillStyle = "rgba(30,26,20,.95)";
+    ctx.strokeStyle = COLOR.ember; ctx.lineWidth = 1.5;
+    for (const [bx, by, bw, bh] of [[-15, -14, 16, 14], [-2, -14, 16, 14], [-10, -28, 17, 14], [-6, -41, 14, 13]]) {
+      ctx.fillRect(bx, by, bw, bh); ctx.strokeRect(bx, by, bw, bh);
+    }
+  } else if (o.type === "meeting") {
+    // 会議室のドア
+    ctx.fillStyle = "rgba(26,26,26,.95)";
+    ctx.strokeStyle = COLOR.silver; ctx.lineWidth = 2;
+    ctx.fillRect(-def.w / 2, -def.h, def.w, def.h);
+    ctx.strokeRect(-def.w / 2, -def.h, def.w, def.h);
+    ctx.fillStyle = COLOR.risk;
+    ctx.fillRect(-def.w / 2 + 4, -def.h + 7, def.w - 8, 9);
+    ctx.fillStyle = "#100b05";
+    ctx.font = "7px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+    ctx.textAlign = "center";
+    ctx.fillText("会議中", 0, -def.h + 14);
+    ctx.fillStyle = COLOR.silver;
+    ctx.beginPath(); ctx.arc(def.w / 2 - 6, -def.h / 2, 1.8, 0, TAU); ctx.fill();
+  } else if (o.type === "audit") {
+    // 監査指摘: 赤い旗
+    ctx.strokeStyle = COLOR.silver; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -def.h); ctx.stroke();
+    ctx.fillStyle = COLOR.risk;
+    const wv = Math.sin(t * 4) * 3;
+    ctx.beginPath();
+    ctx.moveTo(0, -def.h); ctx.lineTo(20, -def.h + 6 + wv); ctx.lineTo(0, -def.h + 14);
+    ctx.closePath(); ctx.fill();
+  } else if (o.type === "hanko") {
+    // 承認印: 巨大なハンコ
+    ctx.strokeStyle = COLOR.ember; ctx.lineWidth = 2;
+    ctx.fillStyle = "rgba(26,22,16,.95)";
+    ctx.fillRect(-7, -def.h, 14, def.h - 12);
+    ctx.strokeRect(-7, -def.h, 14, def.h - 12);
+    ctx.beginPath(); ctx.ellipse(0, -8, 12, 7, 0, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = COLOR.risk;
+    ctx.beginPath(); ctx.arc(0, -def.h - 0.01, 0, 0, TAU); ctx.stroke();
+  }
+  ctx.restore();
+  ctx.fillStyle = "rgba(184,184,184,.45)";
+  ctx.font = "8px " + getComputedStyle(document.body).getPropertyValue("--font-mono");
+  ctx.textAlign = "center";
+  ctx.fillText(legacy ? "レガシー" : def.label, 0, 12);
+  ctx.restore();
+}
+
+function drawOrb(o, t) {
+  const sx = o.x - S.camX;
+  if (sx < -40 || sx > W + 40) return;
+  const pulse = 1 + Math.sin(t * 4 + o.x) * 0.15;
+  if (o.type === "approval") {
+    ctx.strokeStyle = COLOR.ember;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(sx, o.y, 8.5 * pulse, 0, TAU); ctx.stroke();
+    ctx.fillStyle = COLOR.emberBright;
+    ctx.font = "9px 'Shippori Mincho', serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("承", sx, o.y + 0.5);
+    ctx.textBaseline = "alphabetic";
+  } else if (o.type === "budget") {
+    ctx.save();
+    ctx.translate(sx, o.y);
+    ctx.rotate(t * 1.2);
+    ctx.strokeStyle = COLOR.emberBright; ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -9); ctx.lineTo(9, 0); ctx.lineTo(0, 9); ctx.lineTo(-9, 0);
+    ctx.closePath(); ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = COLOR.emberBright;
+    ctx.font = "9px " + getComputedStyle(document.body).getPropertyValue("--font-mono");
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("¥", sx, o.y + 0.5);
+    ctx.textBaseline = "alphabetic";
+  } else {
+    // いいね
+    ctx.fillStyle = COLOR.cyan;
+    ctx.font = `${Math.round(10 * pulse)}px sans-serif`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("♥", sx, o.y);
+    ctx.textBaseline = "alphabetic";
+  }
+}
+
+function draw(time) {
+  const t = time / 1000;
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (Math.abs(S.tiltCur) > 0.001) {
+    ctx.translate(W / 2, H / 2);
+    ctx.rotate(S.tiltCur);
+    ctx.translate(-W / 2, -H / 2);
+  }
+
+  // 星
+  ctx.fillStyle = "rgba(243,236,220,.35)";
+  for (const st of S.stars) {
+    let x = (st.x - S.camX * st.spd) % W;
+    if (x < 0) x += W;
+    ctx.fillRect(x, st.y, st.r, st.r);
+  }
+
+  // 設計図グリッド: 進捗とともに空に図面が浮かび上がる
+  const gridA = (S.progress / 100) * 0.12 + (S.released ? 0.05 : 0);
+  if (gridA > 0.005) {
+    ctx.strokeStyle = `rgba(105,191,255,${gridA})`;
+    ctx.lineWidth = 1;
+    const gs = 64;
+    const offX = -(S.camX * 0.25) % gs;
+    const gridH = H * 0.55 * (S.progress / 100);
+    for (let gx = offX; gx < W; gx += gs) {
+      ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, gridH); ctx.stroke();
+    }
+    for (let gy2 = 0; gy2 < gridH; gy2 += gs) {
+      ctx.beginPath(); ctx.moveTo(0, gy2); ctx.lineTo(W, gy2); ctx.stroke();
+    }
+  }
+
+  // 〆切が近い: 巨大な〆切が空から迫る
+  if (evt("moon")) {
+    const k = 1 - S.event.t / EVENT_LEN;
+    const R = Math.min(W, H) * 0.42;
+    const my = -R + (H * 0.34 + R) * Math.min(1, k * 1.6);
+    ctx.fillStyle = "rgba(224,106,74,.10)";
+    ctx.beginPath(); ctx.arc(W * 0.72, my, R, 0, TAU); ctx.fill();
+    ctx.strokeStyle = "rgba(224,106,74,.4)";
+    ctx.beginPath(); ctx.arc(W * 0.72, my, R, 0, TAU); ctx.stroke();
+    ctx.fillStyle = "rgba(224,106,74,.55)";
+    ctx.font = `700 ${Math.round(R * 0.5)}px 'Shippori Mincho', serif`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("〆", W * 0.72, my);
+    ctx.textBaseline = "alphabetic";
+  }
+
+  // 地面（坂あり）
+  for (const s of S.segs) {
+    const x1w = Math.max(S.camX - 20, s.x);
+    const x2w = Math.min(S.camX + W + 20, s.x + s.w);
+    if (x2w <= x1w) continue;
+    const yAt = wxx => s.y0 + (s.y1 - s.y0) * ((wxx - s.x) / s.w);
+    const x1 = x1w - S.camX, x2 = x2w - S.camX;
+    ctx.strokeStyle = "rgba(243,236,220,.8)";
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(x1, yAt(x1w)); ctx.lineTo(x2, yAt(x2w)); ctx.stroke();
+    // ハッチング
+    ctx.strokeStyle = "rgba(243,236,220,.14)";
+    ctx.lineWidth = 1;
+    const start = Math.ceil(x1w / 26) * 26;
+    for (let hx = start; hx < x2w; hx += 26) {
+      const sx = hx - S.camX, sy = yAt(hx);
+      ctx.beginPath(); ctx.moveTo(sx, sy + 3); ctx.lineTo(sx - 8, sy + 14); ctx.stroke();
+    }
+  }
+
+  // 収集物・障害物・飛来物
+  for (const o of S.orbs) { if (!o.got) drawOrb(o, t); }
+  for (const o of S.obs) drawObstacle(o, t);
+  for (const f of S.flies) {
+    const sx = f.x - S.camX, sy = f.y + Math.sin(f.ph) * 22;
+    if (sx < -60 || sx > W + 80) continue;
+    ctx.save();
+    ctx.translate(sx, sy);
+    ctx.scale(0.78, 0.78);
+    if (f.type === "alert") {
+      const blink = Math.sin(t * 14) > 0;
+      ctx.strokeStyle = blink ? COLOR.risk : "rgba(224,106,74,.4)";
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(0, -11); ctx.lineTo(10, 8); ctx.lineTo(-10, 8); ctx.closePath(); ctx.stroke();
+      ctx.fillStyle = blink ? COLOR.risk : "rgba(224,106,74,.5)";
+      ctx.font = "10px " + getComputedStyle(document.body).getPropertyValue("--font-mono");
+      ctx.textAlign = "center";
+      ctx.fillText("!", 0, 5);
+      ctx.fillStyle = "rgba(184,184,184,.45)";
+      ctx.font = "9px " + getComputedStyle(document.body).getPropertyValue("--font-mono");
+      ctx.fillText("アラート", 0, 22);
+    } else {
+      // 旧式の電話が飛んでくる
+      ctx.strokeStyle = COLOR.silver; ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-12, -4); ctx.quadraticCurveTo(0, -14, 12, -4);
+      ctx.stroke();
+      ctx.beginPath(); ctx.arc(-12, -2, 4, 0, TAU); ctx.stroke();
+      ctx.beginPath(); ctx.arc(12, -2, 4, 0, TAU); ctx.stroke();
+      ctx.fillStyle = "rgba(184,184,184,.9)";
+      ctx.fillRect(-8, 2, 16, 6);
+      const rr = Math.sin(t * 30) * 2;
+      ctx.translate(rr, 0);
+      ctx.fillStyle = "rgba(184,184,184,.45)";
+      ctx.font = "9px " + getComputedStyle(document.body).getPropertyValue("--font-mono");
+      ctx.textAlign = "center";
+      ctx.fillText("電話", 0, 22);
+    }
+    ctx.restore();
+  }
+
+  // スピードライン（フィーバー / 加速中）
+  if (S.mode === "play" && (S.feverT > 0 || evt("ai") || evt("speed"))) {
+    ctx.strokeStyle = S.feverT > 0 ? "rgba(246,207,134,.14)" : "rgba(243,236,220,.10)";
+    ctx.lineWidth = 1.5;
+    for (let i = 0; i < 6; i++) {
+      const ly = Math.random() * H, lx = Math.random() * W, ll = rand(50, 130);
+      ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(lx - ll, ly); ctx.stroke();
+    }
+  }
+
+  // プレイヤー
+  if (S.mode !== "title") drawRack(t);
+
+  // パーティクル
+  for (const p of S.particles) {
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+
+  // フロート
+  ctx.textAlign = "center";
+  for (const f of S.floats) {
+    const fx = f.world ? f.x - S.camX : f.x;
+    if (fx < -120 || fx > W + 120) continue;
+    const k = f.age / f.life;
+    ctx.globalAlpha = k < 0.1 ? k / 0.1 : 1 - Math.max(0, (k - 0.6) / 0.4);
+    ctx.fillStyle = f.color;
+    ctx.font = (f.world ? "13px " : "12px ") + getComputedStyle(document.body).getPropertyValue("--font-body");
+    ctx.fillText(f.text, fx, f.y);
+  }
+  ctx.globalAlpha = 1;
+
+  // バナー
+  if (S.banner) {
+    const k = S.banner.age / S.banner.life;
+    const a = k < 0.12 ? k / 0.12 : k > 0.55 ? Math.max(0, 1 - (k - 0.55) / 0.45) : 1;
+    ctx.globalAlpha = a;
+    ctx.fillStyle = COLOR.cream;
+    ctx.font = `700 ${Math.round(Math.min(40, W * 0.065))}px 'Shippori Mincho', serif`;
+    ctx.fillText(S.banner.text, W / 2, H * 0.28);
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.restore();
+}
+
+/* ---------------- HUD / 画面 ---------------- */
+const hud = document.getElementById("hud");
+const distEl = document.getElementById("dist");
+const bestEl = document.getElementById("best");
+const buildEl = document.getElementById("build");
+const buildLabel = buildEl.querySelector(".label");
+const buildFill = buildEl.querySelector(".fill");
+const screenTitle = document.getElementById("screen-title");
+const screenResult = document.getElementById("screen-result");
+
+function bestText() {
+  if (!S.best) return "BEST —";
+  return S.best.u > 0
+    ? `BEST リリース済・稼働 ${S.best.u}s`
+    : `BEST ${S.best.p}%・${S.best.d}m`;
+}
+
+function updateHUD() {
+  distEl.innerHTML = Math.floor(S.camX / METER) + " <small>m</small>";
+  if (S.released) {
+    buildEl.classList.add("released");
+    buildLabel.textContent = "稼働 " + S.uptime.toFixed(1) + "s";
+    buildFill.style.width = "100%";
+  } else {
+    buildEl.classList.remove("released");
+    buildLabel.textContent = `${S.phase} ${Math.floor(S.progress)}%`;
+    buildFill.style.width = S.progress + "%";
+  }
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  resetGame();
+  S.mode = "play";
+  screenTitle.classList.add("hidden");
+  screenResult.classList.add("hidden");
+  hud.classList.add("on");
+  bestEl.textContent = bestText();
+}
+
+function showResult() {
+  if (S.mode !== "dead") return;
+  const dist = Math.floor(S.camX / METER);
+  const p = Math.round(S.progress);
+  document.getElementById("cause").textContent = S.cause;
+  document.getElementById("r-progress").textContent =
+    S.released ? `リリース済・稼働 ${Math.round(S.uptime)}s` : p + "%（" + S.phase + "）";
+  document.getElementById("r-dist").textContent = dist + " m ／ 承認 " + S.approvals;
+  document.getElementById("r-best").textContent = bestText();
+  const [rk, sub] = judge(p, S.uptime, S.released);
+  document.getElementById("rank").textContent = rk;
+  document.getElementById("rank-sub").innerHTML = sub;
+  hud.classList.remove("on");
+  screenResult.classList.remove("hidden");
+  const fill = document.getElementById("r-fill");
+  fill.style.width = "0%";
+  requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = p + "%"; }));
+}
+
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+window.addEventListener("keydown", e => {
+  if (e.code === "Space" && S.mode === "dead" && S.deadT > 0.6 && !screenResult.classList.contains("hidden")) {
+    e.preventDefault(); startGame();
+  }
+}, { passive: false });
+screenResult.addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.deadT > 0.6) startGame();
+});
+
+/* ---------------- ループ ---------------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (S.mode === "play") {
+    update(dt);
+    updateHUD();
+  } else if (S.mode === "dead") {
+    S.deadT += dt;
+    S.py += S.vy * dt; S.vy += GRAV * dt;
+    updateFx(dt);
+  } else {
+    S.camX += 60 * dt;
+    S.wheelAng += 60 * dt / 7;
+    genWorld();
+    updateFx(dt);
+    S.narrTimer -= dt;
+    if (S.narrTimer <= 0) { S.narrTimer = rand(4, 7); narrate(); }
+  }
+  draw(now);
+}
+resetGame();
+S.mode = "title";
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

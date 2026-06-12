@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>調査 | GAME — 坂江 俊輔</title>
+<meta name="description" content="ログの海に潜む本番削除クエリを避けて原因を特定する、調査ゲーム。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a; --green: #2ecc71;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 440px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin: 16px 0 22px; line-height: 1.8; max-width: 420px; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #timer { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 18px; letter-spacing: .15em; color: var(--cream); }
+  #best { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #mines { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 11px; letter-spacing: .2em; color: var(--magenta); }
+
+  #btn-flagmode { position: fixed; bottom: max(22px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); z-index: 7;
+    font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--cream-dim);
+    background: rgba(42,42,42,.65); border: 1px solid var(--slate); border-radius: 999px;
+    padding: 12px 30px; cursor: pointer; transition: background .2s, color .2s, border-color .2s; display: none; }
+  #btn-flagmode.show { display: block; }
+  #btn-flagmode.active { background: var(--ember); color: var(--black); border-color: var(--ember); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">BEST --</div>
+  <div id="timer">00:00</div>
+  <div id="mines">DELETE 残 10</div>
+</div>
+
+<button id="btn-flagmode" type="button">🚩 調査メモ</button>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Incident Investigation — Log Sweeper</div>
+  <h1 class="title">調査</h1>
+  <div class="title-en">C H O U S A</div>
+  <p class="tagline">ログの海に、削除クエリが10本。</p>
+  <p class="hint">
+    深夜、本番DBの様子がおかしい。9×9のログを精査しろ。<br>
+    <em>タップで開く。長押しで目印</em>（または下の 🚩調査メモ モード）。<br>
+    数字は隣接する<em>本番削除クエリ</em>の数。踏めば本番が消える。<br>
+    安全なログをすべて開けば<em>原因特定</em>だ。最初の1タップは保証する。
+  </p>
+  <button class="btn" id="btn-start">調査開始</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">INCIDENT REPORT</div>
+  <div class="cause" id="cause">原因特定</div>
+  <div class="dist-line">調査時間 <b id="r-time">--</b></div>
+  <div class="dist-line" id="r-best">BEST --</div>
+  <div class="rank-sub" id="r-sub"></div>
+  <button class="btn" id="btn-retry">再調査する</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP でも再調査できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   調査 / CHOUSA — 本番障害インシデント・マインスイーパ
+   9×9 のログから本番削除クエリ 10 本を避けて原因を特定する。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const N = 9, MINES = 10, SAFE = N * N - MINES;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8", slate: "#3a3a3a", green: "#2ecc71",
+};
+// マインスイーパ古典配色をパレットに翻訳（1=cyan, 2=green, 3=risk, 4=magenta...）
+const NUM_COLOR = [null, COLOR.cyan, COLOR.green, COLOR.risk, COLOR.magenta,
+                   COLOR.ember, COLOR.emberBright, COLOR.cream, COLOR.silver];
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+resize();
+window.addEventListener("resize", resize);
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.16;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  open(n)  { this.blip(440 + Math.min(n, 8) * 40, 0.07, "sine", 0.35, 60); },
+  flagOn() { this.blip(740, 0.09, "sine", 0.4, 80); },
+  flagOff(){ this.blip(520, 0.09, "sine", 0.3, -60); },
+  win()    { this.blip(659, 0.2, "sine", 0.55, 200); this.blip(988, 0.35, "sine", 0.4, 220); },
+  lose()   { this.blip(150, 0.5, "sawtooth", 0.55, -80); this.blip(110, 0.7, "sawtooth", 0.4, -40); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",       // title | play | over
+  grid: [],            // [r][c] = {state:0隠れ/1開示/2目印, num, revealT, hitMine}
+  mines: [],           // [r][c] = true/false（初手後に配置）
+  placed: false,
+  revealed: 0, flags: 0,
+  time: 0, timerOn: false, now: 0,
+  flagMode: false,
+  win: false, shake: 0, overT: 0,
+  press: null,         // 長押し中 {x, y, t0}
+  particles: [],
+  best: Number(localStorage.getItem("chousa-best") || 0),  // 秒。0 = 記録なし
+};
+
+const inB = (r, c) => r >= 0 && r < N && c >= 0 && c < N;
+function neighbors(r, c) {
+  const out = [];
+  for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+    if (!dr && !dc) continue;
+    if (inB(r + dr, c + dc)) out.push([r + dr, c + dc]);
+  }
+  return out;
+}
+
+function freshBoard() {
+  S.grid = []; S.mines = [];
+  for (let r = 0; r < N; r++) {
+    const gr = [], mr = [];
+    for (let c = 0; c < N; c++) { gr.push({ state: 0, num: 0, revealT: -1, hitMine: false }); mr.push(false); }
+    S.grid.push(gr); S.mines.push(mr);
+  }
+  S.placed = false; S.revealed = 0; S.flags = 0;
+}
+
+/* 初手の周囲 3×3 を除外して地雷を配置（初手は常に安全） */
+function placeMines(r0, c0) {
+  const pool = [];
+  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+    if (Math.abs(r - r0) <= 1 && Math.abs(c - c0) <= 1) continue;
+    pool.push([r, c]);
+  }
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  for (let i = 0; i < MINES; i++) S.mines[pool[i][0]][pool[i][1]] = true;
+  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+    S.grid[r][c].num = neighbors(r, c).filter(([nr, nc]) => S.mines[nr][nc]).length;
+  }
+  S.placed = true;
+  S.timerOn = true;
+}
+
+/* ---------- 開示 ---------- */
+function reveal(r, c) {
+  if (S.mode !== "play" || !inB(r, c)) return;
+  const cell = S.grid[r][c];
+  if (cell.state === 2) return;                  // 目印は守る
+  if (!S.placed) placeMines(r, c);
+  if (cell.state === 1) return;
+  if (S.mines[r][c]) return boom(r, c);
+  flood(r, c);
+  AudioFX.open(S.grid[r][c].num);
+  checkWin();
+}
+
+/* ゼロ連鎖はBFSで開き、波紋のように時間差で表示する */
+function flood(r0, c0) {
+  const q = [[r0, c0, 0]];
+  const seen = new Set([r0 + "," + c0]);
+  while (q.length) {
+    const [r, c, d] = q.shift();
+    const cell = S.grid[r][c];
+    if (cell.state === 1 || cell.state === 2) continue;
+    cell.state = 1;
+    cell.revealT = S.now + d * 0.045;
+    S.revealed++;
+    if (cell.num === 0) {
+      for (const [nr, nc] of neighbors(r, c)) {
+        const key = nr + "," + nc;
+        if (!seen.has(key) && S.grid[nr][nc].state === 0) { seen.add(key); q.push([nr, nc, d + 1]); }
+      }
+    }
+  }
+}
+
+/* 数字を満たしたマスの周囲一括開示（コード） */
+function chord(r, c) {
+  if (S.mode !== "play" || !inB(r, c)) return;
+  const cell = S.grid[r][c];
+  if (cell.state !== 1 || cell.num === 0) return;
+  const ns = neighbors(r, c);
+  const flagged = ns.filter(([nr, nc]) => S.grid[nr][nc].state === 2).length;
+  if (flagged !== cell.num) return;
+  for (const [nr, nc] of ns) {
+    if (S.grid[nr][nc].state === 0) {
+      reveal(nr, nc);
+      if (S.mode !== "play") return;             // 途中で地雷を踏んだら即終了
+    }
+  }
+}
+
+function flag(r, c) {
+  if (S.mode !== "play" || !inB(r, c)) return;
+  const cell = S.grid[r][c];
+  if (cell.state === 1) return;
+  if (cell.state === 2) { cell.state = 0; S.flags--; AudioFX.flagOff(); }
+  else { cell.state = 2; S.flags++; AudioFX.flagOn(); if (navigator.vibrate) navigator.vibrate(12); }
+  updateHUD();
+}
+
+function boom(r, c) {
+  const cell = S.grid[r][c];
+  cell.state = 1; cell.hitMine = true; cell.revealT = S.now;
+  // 全地雷を波紋状に開示する
+  for (let mr = 0; mr < N; mr++) for (let mc = 0; mc < N; mc++) {
+    if (!S.mines[mr][mc]) continue;
+    const m = S.grid[mr][mc];
+    if (m.state !== 1) { m.state = 1; m.revealT = S.now + Math.hypot(mr - r, mc - c) * 0.07; }
+  }
+  S.mode = "over"; S.win = false; S.overT = 0; S.timerOn = false;
+  S.shake = 14;
+  burstAtCell(r, c, COLOR.risk, 30, 280);
+  AudioFX.lose();
+  setTimeout(() => showResult(), 1200);
+}
+
+function checkWin() {
+  if (S.revealed < SAFE || S.mode !== "play") return;
+  S.mode = "over"; S.win = true; S.overT = 0; S.timerOn = false;
+  if (S.best === 0 || S.time < S.best) { S.best = S.time; localStorage.setItem("chousa-best", String(S.time)); }
+  AudioFX.win();
+  burstAtCell(4, 4, COLOR.emberBright, 36, 300);
+  setTimeout(() => showResult(), 700);
+}
+
+function fmt(t) {
+  const m = Math.floor(t / 60), s = Math.floor(t % 60);
+  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+}
+
+function showResult() {
+  document.getElementById("cause").textContent = S.win ? "原因特定" : "本番が消えた";
+  document.getElementById("r-time").textContent = S.time.toFixed(1) + " 秒";
+  document.getElementById("r-best").textContent = "BEST " + (S.best > 0 ? S.best.toFixed(1) + " 秒" : "--");
+  document.getElementById("r-sub").textContent = S.win
+    ? "削除クエリは本番に届く前に、すべて隔離された。今夜は眠れる。"
+    : "DROP ではない。WHERE 句のない DELETE だった。バックアップはどこだ。";
+  document.getElementById("hud").classList.remove("on");
+  document.getElementById("btn-flagmode").classList.remove("show");
+  document.getElementById("screen-result").classList.remove("hidden");
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  freshBoard();
+  S.mode = "play"; S.win = false;
+  S.time = 0; S.timerOn = false; S.overT = 0;
+  S.shake = 0; S.particles = []; S.press = null;
+  S.flagMode = false;
+  document.getElementById("btn-flagmode").classList.remove("active");
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  document.getElementById("btn-flagmode").classList.add("show");
+  document.getElementById("best").textContent = "BEST " + (S.best > 0 ? fmt(S.best) : "--");
+  updateHUD();
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.6) startGame();
+});
+document.getElementById("btn-flagmode").addEventListener("click", () => {
+  S.flagMode = !S.flagMode;
+  document.getElementById("btn-flagmode").classList.toggle("active", S.flagMode);
+  AudioFX.init();
+});
+
+function updateHUD() {
+  document.getElementById("mines").textContent = "DELETE 残 " + (MINES - S.flags);
+  document.getElementById("timer").textContent = fmt(S.time);
+}
+
+/* ---------- 入力 ---------- */
+const LONG_PRESS = 350;     // ms
+let pressTimer = 0;
+
+function cellAt(px, py) {
+  const g = geom();
+  const c = Math.floor((px - g.x) / g.cs), r = Math.floor((py - g.y) / g.cs);
+  return inB(r, c) ? [r, c] : null;
+}
+
+canvas.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  if (S.mode === "over" && S.overT > 0.6) return;
+  if (S.mode !== "play") return;
+  const hit = cellAt(e.clientX, e.clientY);
+  if (!hit) return;
+  S.press = { x: e.clientX, y: e.clientY, r: hit[0], c: hit[1], t0: S.now, fired: false };
+  clearTimeout(pressTimer);
+  pressTimer = setTimeout(() => {
+    if (!S.press) return;
+    S.press.fired = true;
+    if (S.grid[S.press.r][S.press.c].state !== 1) flag(S.press.r, S.press.c);
+    S.press = null;
+  }, LONG_PRESS);
+});
+canvas.addEventListener("pointermove", e => {
+  if (!S.press) return;
+  if (Math.hypot(e.clientX - S.press.x, e.clientY - S.press.y) > 12) {
+    clearTimeout(pressTimer); S.press = null;
+  }
+});
+function endPress(e) {
+  if (!S.press) return;
+  clearTimeout(pressTimer);
+  const { r, c, fired } = S.press;
+  S.press = null;
+  if (fired) return;
+  const cell = S.grid[r][c];
+  if (S.flagMode) { if (cell.state !== 1) flag(r, c); else chord(r, c); return; }
+  if (cell.state === 0) reveal(r, c);
+  else if (cell.state === 1 && cell.num > 0) chord(r, c);
+}
+canvas.addEventListener("pointerup", e => { e.preventDefault(); endPress(e); });
+canvas.addEventListener("pointercancel", () => { clearTimeout(pressTimer); S.press = null; });
+canvas.addEventListener("contextmenu", e => {
+  e.preventDefault();
+  clearTimeout(pressTimer); S.press = null;
+  if (S.mode !== "play") return;
+  const hit = cellAt(e.clientX, e.clientY);
+  if (hit && S.grid[hit[0]][hit[1]].state !== 1) flag(hit[0], hit[1]);
+});
+
+/* ---------- 盤面ジオメトリ ---------- */
+function geom() {
+  const size = Math.min(W * 0.94, H * 0.62, 470);
+  const cs = size / N;
+  return { x: (W - size) / 2, y: (H - size) / 2 + H * 0.015, size, cs };
+}
+
+function burstAtCell(r, c, color, n, speed = 180) {
+  const g = geom();
+  const x = g.x + (c + 0.5) * g.cs, y = g.y + (r + 0.5) * g.cs;
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.3, 0.7), age: 0, color, r: rand(1, 3) });
+  }
+}
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+
+function update(dt) {
+  S.now += dt;
+  if (S.timerOn && S.mode === "play") { S.time += dt; updateHUD(); }
+  if (S.shake > 0) S.shake = Math.max(0, S.shake - dt * 26);
+  if (S.mode === "over") S.overT += dt;
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 300 * dt;
+  }
+}
+
+/* 本番削除クエリ＝小さなDBシリンダー＋DELETEラベル */
+function drawMine(cx, cy, s, hit) {
+  const col = hit ? COLOR.risk : "rgba(224,106,74,.9)";
+  const rx = s * 0.30, ry = s * 0.115, h = s * 0.36, top = cy - h / 2 - s * 0.06;
+  ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.fillStyle = "rgba(224,106,74,.14)";
+  ctx.beginPath();
+  ctx.ellipse(cx, top, rx, ry, 0, 0, TAU); ctx.fill(); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx - rx, top); ctx.lineTo(cx - rx, top + h);
+  ctx.ellipse(cx, top + h, rx, ry, 0, Math.PI, 0, true);
+  ctx.lineTo(cx + rx, top); ctx.stroke();
+  // どくろ風の×目
+  ctx.lineWidth = 1.4;
+  const ey = top + h * 0.55, ex = rx * 0.42, es = s * 0.05;
+  for (const sx of [-ex, ex]) {
+    ctx.beginPath();
+    ctx.moveTo(cx + sx - es, ey - es); ctx.lineTo(cx + sx + es, ey + es);
+    ctx.moveTo(cx + sx + es, ey - es); ctx.lineTo(cx + sx - es, ey + es);
+    ctx.stroke();
+  }
+  ctx.fillStyle = col;
+  ctx.font = `700 ${Math.max(7, s * 0.17)}px ${MONO}`;
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText("DELETE", cx, cy + s * 0.36);
+}
+
+function drawFlag(cx, cy, s) {
+  const px = cx - s * 0.12, top = cy - s * 0.26, bot = cy + s * 0.26;
+  ctx.strokeStyle = COLOR.cream; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.moveTo(px, top); ctx.lineTo(px, bot); ctx.stroke();
+  ctx.fillStyle = COLOR.ember;
+  ctx.beginPath();
+  ctx.moveTo(px, top); ctx.lineTo(px + s * 0.34, top + s * 0.14); ctx.lineTo(px, top + s * 0.28);
+  ctx.closePath(); ctx.fill();
+}
+
+const MONO = "ui-monospace, SFMono-Regular, Menlo, monospace";
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (S.shake > 0.3) ctx.translate(rand(-S.shake, S.shake) * 0.5, rand(-S.shake, S.shake) * 0.5);
+
+  if (S.mode !== "title" && S.grid.length) {
+    const g = geom();
+
+    // 盤の見出しラベル
+    ctx.font = "10px " + MONO;
+    ctx.textBaseline = "alphabetic";
+    ctx.textAlign = "left";
+    ctx.fillStyle = "rgba(184,184,184,.5)";
+    ctx.fillText("prod-db / query_log — grep 中", g.x, g.y - 14);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "rgba(224,106,74,.6)";
+    ctx.fillText("SEV-1 調査中", g.x + g.size, g.y - 14);
+
+    for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+      const cell = S.grid[r][c];
+      const x = g.x + c * g.cs, y = g.y + r * g.cs, cs = g.cs;
+      const shown = cell.state === 1 && S.now >= cell.revealT;
+
+      if (!shown) {
+        // 未調査のログタイル（少し盛り上がった質感）
+        ctx.fillStyle = "#1b1611";
+        ctx.fillRect(x + 1, y + 1, cs - 2, cs - 2);
+        ctx.fillStyle = "rgba(243,236,220,.05)";
+        ctx.fillRect(x + 1, y + 1, cs - 2, 2);
+        ctx.strokeStyle = "rgba(243,236,220,.10)";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x + 1.5, y + 1.5, cs - 3, cs - 3);
+        if (cell.state === 2) drawFlag(x + cs / 2, y + cs / 2, cs);
+      } else {
+        // 開示済み＝精査済みのクリーンなログ
+        const k = clamp((S.now - cell.revealT) / 0.16, 0, 1);
+        ctx.globalAlpha = k;
+        ctx.fillStyle = S.mines[r][c]
+          ? (cell.hitMine ? "rgba(224,106,74,.22)" : "rgba(224,106,74,.10)")
+          : "rgba(243,236,220,.045)";
+        const pad = 1 + (1 - k) * cs * 0.18;
+        ctx.fillRect(x + pad, y + pad, cs - pad * 2, cs - pad * 2);
+        ctx.strokeStyle = "rgba(243,236,220,.06)";
+        ctx.strokeRect(x + 1.5, y + 1.5, cs - 3, cs - 3);
+        if (S.mines[r][c]) {
+          drawMine(x + cs / 2, y + cs / 2, cs, cell.hitMine);
+        } else if (cell.num > 0) {
+          ctx.fillStyle = NUM_COLOR[cell.num];
+          ctx.font = `700 ${Math.round(cs * 0.46)}px ${MONO}`;
+          ctx.textAlign = "center"; ctx.textBaseline = "middle";
+          ctx.fillText(String(cell.num), x + cs / 2, y + cs / 2 + 1);
+        }
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    // 長押し中のリング（目印になるまでの進行表示）
+    if (S.press && !S.press.fired) {
+      const k = clamp((S.now - S.press.t0) / (LONG_PRESS / 1000), 0, 1);
+      if (k > 0.12) {
+        ctx.strokeStyle = `rgba(224,164,90,${0.25 + k * 0.6})`;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(S.press.x, S.press.y, 10 + k * 16, -Math.PI / 2, -Math.PI / 2 + k * TAU);
+        ctx.stroke();
+      }
+    }
+
+    // 操作ヒント
+    ctx.fillStyle = "rgba(216,205,182,.5)";
+    ctx.font = "12px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+    ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+    ctx.fillText("タップで開く。長押しで目印。", W / 2, g.y + g.size + 30);
+  }
+
+  for (const p of S.particles) {
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  update(dt);
+  draw();
+}
+requestAnimationFrame(loop);
+
+window.__G = { S, startGame, reveal, flag, chord, placeMines, checkWin };
+</script>
+</body>
+</html>

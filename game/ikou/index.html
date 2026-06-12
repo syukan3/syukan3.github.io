@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>移行 | GAME — 坂江 俊輔</title>
+<meta name="description" content="サーバーを押してラックへ納める、データセンター移行パズル。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a; --green: #2ecc71;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 440px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .btn.small { font-size: 11px; padding: 9px 20px; margin-top: 0; letter-spacing: .2em; text-indent: .2em; }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(26px, 6vw, 40px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 8px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin: 8px 0 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #room { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 15px; letter-spacing: .25em; color: var(--cream); }
+  #moves { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 11px; letter-spacing: .2em; color: var(--silver); text-align: right; }
+  #best { position: absolute; top: calc(max(16px, env(safe-area-inset-top)) + 18px); right: 18px; font-size: 10px; letter-spacing: .2em; color: var(--ember); text-align: right; }
+
+  #controls { position: fixed; bottom: max(18px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%);
+    z-index: 7; display: flex; flex-direction: column; align-items: center; gap: 10px;
+    opacity: 0; pointer-events: none; transition: opacity .4s; }
+  #controls.on { opacity: 1; pointer-events: auto; }
+  #lv-strip { display: flex; gap: 6px; }
+  .lv-btn { font-family: var(--font-mono); font-size: 11px; width: 30px; height: 30px;
+    color: var(--silver); background: transparent; border: 1px solid var(--slate); border-radius: 7px;
+    cursor: pointer; transition: color .2s, border-color .2s; }
+  .lv-btn:hover:not(:disabled) { color: var(--cream); border-color: var(--silver); }
+  .lv-btn.current { color: var(--black); background: var(--ember); border-color: var(--ember); }
+  .lv-btn.done:not(.current) { color: var(--cyan); border-color: rgba(105,191,255,.4); }
+  .lv-btn:disabled { opacity: .25; cursor: default; }
+  #action-row { display: flex; gap: 10px; }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="room">ROOM 1/8</div>
+  <div id="moves">MOVES 0</div>
+  <div id="best">BEST —</div>
+</div>
+
+<div id="controls">
+  <div id="lv-strip"></div>
+  <div id="action-row">
+    <button class="btn ghost small" id="btn-undo">戻す</button>
+    <button class="btn ghost small" id="btn-reset">やり直す</button>
+  </div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Datacenter Migration — Sokoban</div>
+  <h1 class="title">移行</h1>
+  <div class="title-en">I K O U</div>
+  <p class="tagline">スワイプで移動。サーバーを定位置へ。</p>
+  <p class="hint">
+    深夜2時、旧データセンター。最後の移行作業が始まる。<br>
+    スワイプ / 矢印キーで移動。<em>サーバーは押せるが、引けない。</em><br>
+    点線の<em>ラック枠</em>にすべてのサーバーを納めれば、その部屋は移行完了。<br>
+    角に押し込んだら詰みだ。詰んだら<em>「戻す」</em>。<br>
+    手戻りを認める勇気も、エンジニアの仕事である。
+  </p>
+  <button class="btn" id="btn-start">移行作業を開始</button>
+</div>
+
+<div class="screen hidden" id="screen-clear">
+  <div class="bracket">MIGRATION LOG</div>
+  <div class="cause">移行完了</div>
+  <div class="dist-line">手数 <b id="c-moves">0</b></div>
+  <div class="dist-line" id="c-best">BEST —</div>
+  <div class="rank-sub" id="c-sub">ダウンタイム、0秒。誰にも気づかれずに終わった。</div>
+  <button class="btn" id="btn-next">次のサーバー室へ</button>
+  <div class="retry-hint">TAP でも次へ進める</div>
+</div>
+
+<div class="screen hidden" id="screen-finale">
+  <div class="bracket">ALL SYSTEMS GREEN</div>
+  <div class="cause">全システム移行完了</div>
+  <div class="dist-line">総手数 <b id="f-moves">0</b></div>
+  <div class="rank-sub">全8室、すべてのサーバーが新天地で稼働中。<br>障害報告、ゼロ。朝日が眩しい。</div>
+  <button class="btn" id="btn-again">もう一度 最初から</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   移行 / IKOU — データセンター移行倉庫番
+   サーバーを押して、ラックの定位置へ納める。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8", slate: "#3a3a3a", green: "#2ecc71",
+};
+
+/* ---------- レベル ----------
+   # 壁(ケーブルトレイ/ラック列)  . ラック定位置  $ サーバー  @ 作業員
+   各レベルは BFS ソルバーで解の存在を検証済み。
+   SOLUTIONS は検証用の既知解（テストデータ）。 */
+const LEVELS = [
+  [ "#######",
+    "#     #",
+    "# @$. #",
+    "#     #",
+    "#######" ],
+  [ "#######",
+    "#     #",
+    "# #$# #",
+    "# # @ #",
+    "# .   #",
+    "#######" ],
+  [ "########",
+    "#      #",
+    "#.$ @$.#",
+    "#      #",
+    "########" ],
+  [ "#######",
+    "#  .  #",
+    "# $$  #",
+    "# . @ #",
+    "#     #",
+    "#######" ],
+  [ "########",
+    "#      #",
+    "# $$$  #",
+    "# ...  #",
+    "#   @  #",
+    "########" ],
+  [ "########",
+    "#   #  #",
+    "# $ $  #",
+    "#. #.  #",
+    "# $  . #",
+    "#   @  #",
+    "########" ],
+  [ "#########",
+    "#       #",
+    "# $ $ $ #",
+    "# . . . #",
+    "#   $   #",
+    "#   .@  #",
+    "#########" ],
+  [ "#########",
+    "#   #   #",
+    "# $ $ $ #",
+    "# .#.#. #",
+    "#  $ $  #",
+    "# . @ . #",
+    "#########" ],
+];
+const SOLUTIONS = [
+  "R",
+  "RUULLDDRDL",
+  "RLLL",
+  "LUDLLUURD",
+  "URUULDULDULD",
+  "ULLULUURDDURRDDDLLLURRDRURURUULDD",
+  "UULDULUULDURRDURRD",
+  "LLUULUURDDDRDRURDRRUULDURUULDLLLULD",
+];
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+resize();
+window.addEventListener("resize", resize);
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.16;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0, at = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime + at;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  step()  { this.blip(240, 0.05, "triangle", 0.22, 30); },
+  thunk() { this.blip(95, 0.14, "triangle", 0.65, -35); this.blip(60, 0.1, "sine", 0.4); },
+  hum()   { this.blip(262, 0.35, "sine", 0.4); this.blip(330, 0.35, "sine", 0.28); this.blip(524, 0.25, "sine", 0.18); },
+  bump()  { this.blip(80, 0.05, "square", 0.15); },
+  undo()  { this.blip(330, 0.07, "sine", 0.22, -80); },
+  jingle(){ this.blip(523, 0.18, "sine", 0.5); this.blip(659, 0.18, "sine", 0.5, 0, 0.12);
+            this.blip(784, 0.2, "sine", 0.5, 0, 0.24); this.blip(1047, 0.42, "sine", 0.5, 0, 0.38); },
+  finale(){ this.jingle(); this.blip(1319, 0.5, "sine", 0.45, 0, 0.56); this.blip(1568, 0.7, "sine", 0.4, 0, 0.74); },
+};
+
+/* ---------- 状態 ---------- */
+const DIRS = { U: [0, -1], D: [0, 1], L: [-1, 0], R: [1, 0] };
+
+const S = {
+  mode: "title",      // title | play
+  level: 1,
+  cols: 0, rows: 0,
+  walls: new Set(), targets: new Set(),
+  boxes: [],          // {x,y,rx,ry}
+  player: { x: 0, y: 0, rx: 0, ry: 0 },
+  moves: 0, totalMoves: 0,
+  history: [],
+  cleared: false,
+  particles: [],
+  progress: clamp(Number(localStorage.getItem("ikou-progress") || 1), 1, 8),
+};
+
+const key = (x, y) => x + "," + y;
+const isWall = (x, y) => S.walls.has(key(x, y));
+const boxAt = (x, y) => S.boxes.findIndex(b => b.x === x && b.y === y);
+const bestOf = n => Number(localStorage.getItem("ikou-best-" + n) || 0);
+
+function isSolved() {
+  return S.boxes.length > 0 && S.boxes.every(b => S.targets.has(key(b.x, b.y)));
+}
+
+function loadLevel(n) {
+  n = clamp(n | 0, 1, LEVELS.length);
+  const rows = LEVELS[n - 1];
+  S.level = n;
+  S.cols = Math.max(...rows.map(r => r.length));
+  S.rows = rows.length;
+  S.walls = new Set(); S.targets = new Set(); S.boxes = [];
+  for (let y = 0; y < rows.length; y++) for (let x = 0; x < rows[y].length; x++) {
+    const c = rows[y][x];
+    if (c === "#") S.walls.add(key(x, y));
+    if (c === "." || c === "*" || c === "+") S.targets.add(key(x, y));
+    if (c === "$" || c === "*") S.boxes.push({ x, y, rx: x, ry: y });
+    if (c === "@" || c === "+") { S.player.x = x; S.player.y = y; S.player.rx = x; S.player.ry = y; }
+  }
+  S.moves = 0; S.history = []; S.cleared = false; S.particles = [];
+  document.getElementById("screen-clear").classList.add("hidden");
+  document.getElementById("screen-finale").classList.add("hidden");
+  updateHUD();
+  renderLevelButtons();
+}
+
+function snapshot() {
+  S.history.push({ px: S.player.x, py: S.player.y, boxes: S.boxes.map(b => [b.x, b.y]), moves: S.moves });
+  if (S.history.length > 2000) S.history.shift();
+}
+
+function undo() {
+  if (S.mode !== "play" || S.cleared || !S.history.length) return false;
+  const h = S.history.pop();
+  S.player.x = h.px; S.player.y = h.py;
+  h.boxes.forEach((b, i) => { S.boxes[i].x = b[0]; S.boxes[i].y = b[1]; });
+  S.moves = h.moves;
+  AudioFX.undo();
+  updateHUD();
+  return true;
+}
+
+function step(d) {
+  if (S.mode !== "play" || S.cleared || !DIRS[d]) return false;
+  const [dx, dy] = DIRS[d];
+  const nx = S.player.x + dx, ny = S.player.y + dy;
+  if (isWall(nx, ny)) { AudioFX.bump(); return false; }
+  const bi = boxAt(nx, ny);
+  if (bi >= 0) {
+    const bx = nx + dx, by = ny + dy;
+    if (isWall(bx, by) || boxAt(bx, by) >= 0) { AudioFX.bump(); return false; }
+    snapshot();
+    const b = S.boxes[bi];
+    b.x = bx; b.y = by;
+    S.player.x = nx; S.player.y = ny;
+    S.moves++;
+    if (S.targets.has(key(bx, by))) {
+      AudioFX.hum();
+      const g = geom(), c = cellCenter(g, bx, by);
+      burst(c.x, c.y, COLOR.cyan, 16, 130);
+    } else {
+      AudioFX.thunk();
+    }
+    updateHUD();
+    if (isSolved()) onClear();
+  } else {
+    snapshot();
+    S.player.x = nx; S.player.y = ny;
+    S.moves++;
+    AudioFX.step();
+    updateHUD();
+  }
+  return true;
+}
+
+function onClear() {
+  S.cleared = true;
+  S.totalMoves += S.moves;
+  const prev = bestOf(S.level);
+  if (!prev || S.moves < prev) localStorage.setItem("ikou-best-" + S.level, String(S.moves));
+  if (S.level >= S.progress && S.level < LEVELS.length) {
+    S.progress = S.level + 1;
+    localStorage.setItem("ikou-progress", String(S.progress));
+  }
+  const g = geom();
+  for (const t of S.targets) {
+    const [tx, ty] = t.split(",").map(Number);
+    const c = cellCenter(g, tx, ty);
+    burst(c.x, c.y, COLOR.emberBright, 10, 150);
+  }
+  if (S.level >= LEVELS.length) {
+    AudioFX.finale();
+    document.getElementById("f-moves").textContent = S.totalMoves;
+    setTimeout(() => document.getElementById("screen-finale").classList.remove("hidden"), 700);
+  } else {
+    AudioFX.jingle();
+    document.getElementById("c-moves").textContent = S.moves;
+    document.getElementById("c-best").textContent = "BEST " + bestOf(S.level);
+    document.getElementById("c-sub").textContent = CLEAR_SUBS[(S.level - 1) % CLEAR_SUBS.length];
+    setTimeout(() => document.getElementById("screen-clear").classList.remove("hidden"), 700);
+  }
+  renderLevelButtons();
+}
+
+const CLEAR_SUBS = [
+  "ダウンタイム、0秒。誰にも気づかれずに終わった。",
+  "ケーブルは一本も抜けていない。奇跡ではなく、段取りだ。",
+  "監視ダッシュボードは緑一色。良い夜だ。",
+  "「動いてるものは触るな」？ 動かしながら触るのがプロだ。",
+  "ラックの中で、LED が静かに瞬いている。",
+  "手順書通り。つまり、退屈なほど完璧。",
+  "切り戻し手順は、今夜も出番なし。",
+];
+
+function updateHUD() {
+  document.getElementById("room").textContent = "ROOM " + S.level + "/" + LEVELS.length;
+  document.getElementById("moves").textContent = "MOVES " + S.moves;
+  const b = bestOf(S.level);
+  document.getElementById("best").textContent = b ? "BEST " + b : "BEST —";
+}
+
+function renderLevelButtons() {
+  const strip = document.getElementById("lv-strip");
+  strip.innerHTML = "";
+  for (let i = 1; i <= LEVELS.length; i++) {
+    const btn = document.createElement("button");
+    btn.className = "lv-btn";
+    btn.textContent = i;
+    if (i === S.level) btn.classList.add("current");
+    if (bestOf(i)) btn.classList.add("done");
+    if (i > S.progress) btn.disabled = true;
+    btn.addEventListener("click", () => { AudioFX.init(); loadLevel(i); });
+    strip.appendChild(btn);
+  }
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  S.mode = "play";
+  S.totalMoves = 0;
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  document.getElementById("controls").classList.add("on");
+  loadLevel(Math.min(S.progress, LEVELS.length));
+}
+
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-undo").addEventListener("click", () => undo());
+document.getElementById("btn-reset").addEventListener("click", () => loadLevel(S.level));
+document.getElementById("btn-next").addEventListener("click", () => loadLevel(S.level + 1));
+document.getElementById("btn-again").addEventListener("click", () => { S.totalMoves = 0; loadLevel(1); });
+document.getElementById("screen-clear").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  loadLevel(S.level + 1);
+});
+
+/* ---------- 入力 ---------- */
+window.addEventListener("keydown", e => {
+  const map = { ArrowUp: "U", ArrowDown: "D", ArrowLeft: "L", ArrowRight: "R",
+                KeyW: "U", KeyS: "D", KeyA: "L", KeyD: "R" };
+  const d = map[e.code];
+  if (!d) {
+    if (e.code === "KeyZ" && !e.repeat) undo();
+    return;
+  }
+  e.preventDefault();
+  AudioFX.init();
+  step(d);
+}, { passive: false });
+
+let swipe = null;
+canvas.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  swipe = { x: e.clientX, y: e.clientY };
+});
+canvas.addEventListener("pointerup", e => {
+  if (!swipe) return;
+  const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+  swipe = null;
+  const dist = Math.hypot(dx, dy);
+  if (dist >= 24) {
+    step(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "R" : "L") : (dy > 0 ? "D" : "U"));
+  } else {
+    // タップ: プレイヤーの隣接セルなら、その方向へ1歩
+    const g = geom();
+    const cx = Math.floor((e.clientX - g.ox) / g.cell);
+    const cy = Math.floor((e.clientY - g.oy) / g.cell);
+    const ddx = cx - S.player.x, ddy = cy - S.player.y;
+    if (Math.abs(ddx) + Math.abs(ddy) === 1) {
+      step(ddx === 1 ? "R" : ddx === -1 ? "L" : ddy === 1 ? "D" : "U");
+    }
+  }
+});
+canvas.addEventListener("pointercancel", () => { swipe = null; });
+
+/* ---------- パーティクル ---------- */
+function burst(x, y, color, n, speed = 180) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.3, 0.7), age: 0, color, r: rand(1, 3) });
+  }
+}
+
+/* ---------- 盤面ジオメトリ ---------- */
+function geom() {
+  const cell = Math.floor(Math.min((W * 0.92) / S.cols, (H * 0.58) / S.rows, 64));
+  const bw = cell * S.cols, bh = cell * S.rows;
+  return { cell, ox: (W - bw) / 2, oy: H * 0.47 - bh / 2, bw, bh };
+}
+const cellCenter = (g, x, y) => ({ x: g.ox + (x + 0.5) * g.cell, y: g.oy + (y + 0.5) * g.cell });
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+
+function update(dt) {
+  const k = Math.min(1, dt * 15);
+  const lerp = (a, b) => Math.abs(b - a) < 0.004 ? b : a + (b - a) * k;
+  S.player.rx = lerp(S.player.rx, S.player.x);
+  S.player.ry = lerp(S.player.ry, S.player.y);
+  for (const b of S.boxes) { b.rx = lerp(b.rx, b.x); b.ry = lerp(b.ry, b.y); }
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 300 * dt;
+  }
+}
+
+function rrect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function draw(time) {
+  const t = time / 1000;
+  ctx.clearRect(0, 0, W, H);
+  if (S.mode === "title") return;
+  const g = geom();
+  const mono = getComputedStyle(document.body).getPropertyValue("--font-mono");
+
+  // 床: フリーアクセスフロア
+  for (let y = 0; y < S.rows; y++) for (let x = 0; x < S.cols; x++) {
+    if (isWall(x, y)) continue;
+    const px = g.ox + x * g.cell, py = g.oy + y * g.cell;
+    ctx.fillStyle = (x + y) % 2 ? "#13110e" : "#15130f";
+    ctx.fillRect(px, py, g.cell, g.cell);
+    ctx.strokeStyle = "rgba(243,236,220,.05)";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(px + 0.5, py + 0.5, g.cell - 1, g.cell - 1);
+    // タイルの吸着穴
+    ctx.fillStyle = "rgba(243,236,220,.05)";
+    ctx.beginPath(); ctx.arc(px + g.cell * 0.5, py + g.cell * 0.5, 1.2, 0, TAU); ctx.fill();
+  }
+
+  // 壁: ケーブルトレイ / ラック列
+  for (let y = 0; y < S.rows; y++) for (let x = 0; x < S.cols; x++) {
+    if (!isWall(x, y)) continue;
+    const px = g.ox + x * g.cell, py = g.oy + y * g.cell;
+    ctx.fillStyle = "#1d1a15";
+    ctx.fillRect(px, py, g.cell, g.cell);
+    ctx.strokeStyle = "rgba(184,184,184,.10)";
+    ctx.lineWidth = 1;
+    for (let i = 1; i <= 3; i++) {
+      const ly = py + (g.cell * i) / 4;
+      ctx.beginPath(); ctx.moveTo(px + 3, ly); ctx.lineTo(px + g.cell - 3, ly); ctx.stroke();
+    }
+    ctx.strokeStyle = "rgba(224,164,90,.16)";
+    ctx.strokeRect(px + 1.5, py + 1.5, g.cell - 3, g.cell - 3);
+    // 稼働中ラックのLED
+    if ((x * 7 + y * 13) % 5 === 0) {
+      ctx.fillStyle = Math.sin(t * 3 + x + y) > 0 ? "rgba(46,204,113,.5)" : "rgba(46,204,113,.12)";
+      ctx.beginPath(); ctx.arc(px + g.cell - 7, py + 7, 1.6, 0, TAU); ctx.fill();
+    }
+  }
+
+  // 定位置: ラック枠
+  for (const tk of S.targets) {
+    const [tx, ty] = tk.split(",").map(Number);
+    const px = g.ox + tx * g.cell, py = g.oy + ty * g.cell;
+    const inset = g.cell * 0.14;
+    ctx.strokeStyle = "rgba(105,191,255,.45)";
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([4, 3]);
+    rrect(px + inset, py + inset, g.cell - inset * 2, g.cell - inset * 2, 4);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "rgba(105,191,255,.06)";
+    ctx.fillRect(px + inset, py + inset, g.cell - inset * 2, g.cell - inset * 2);
+  }
+
+  // サーバー (箱)
+  for (let i = 0; i < S.boxes.length; i++) {
+    const b = S.boxes[i];
+    const onT = S.targets.has(key(b.x, b.y));
+    const px = g.ox + b.rx * g.cell, py = g.oy + b.ry * g.cell;
+    const inset = g.cell * 0.1;
+    const bw = g.cell - inset * 2;
+    ctx.save();
+    if (onT) { ctx.shadowColor = "rgba(105,191,255,.8)"; ctx.shadowBlur = 14; }
+    const grd = ctx.createLinearGradient(px, py + inset, px, py + inset + bw);
+    grd.addColorStop(0, onT ? "#28333d" : "#322b21");
+    grd.addColorStop(1, onT ? "#161d24" : "#1e1913");
+    ctx.fillStyle = grd;
+    rrect(px + inset, py + inset, bw, bw, 5);
+    ctx.fill();
+    ctx.restore();
+    ctx.strokeStyle = onT ? "rgba(105,191,255,.85)" : "rgba(224,164,90,.55)";
+    ctx.lineWidth = 1.4;
+    rrect(px + inset, py + inset, bw, bw, 5);
+    ctx.stroke();
+    // 通気スリット
+    ctx.strokeStyle = onT ? "rgba(105,191,255,.25)" : "rgba(243,236,220,.14)";
+    ctx.lineWidth = 1;
+    for (let s = 1; s <= 3; s++) {
+      const ly = py + inset + bw * 0.3 + s * bw * 0.16;
+      ctx.beginPath(); ctx.moveTo(px + inset + bw * 0.16, ly); ctx.lineTo(px + inset + bw * 0.84, ly); ctx.stroke();
+    }
+    // LED ドット
+    for (let l = 0; l < 3; l++) {
+      const blink = Math.sin(t * (2.2 + l * 0.9) + i * 2 + l * 1.7) > -0.2;
+      ctx.fillStyle = onT
+        ? (blink ? "rgba(105,191,255,.95)" : "rgba(105,191,255,.25)")
+        : (blink ? (l === 2 ? "rgba(224,164,90,.9)" : "rgba(46,204,113,.85)") : "rgba(46,204,113,.15)");
+      ctx.beginPath();
+      ctx.arc(px + inset + bw * 0.2 + l * bw * 0.16, py + inset + bw * 0.18, Math.max(1.4, bw * 0.035), 0, TAU);
+      ctx.fill();
+    }
+  }
+
+  // 作業員
+  {
+    const px = g.ox + (S.player.rx + 0.5) * g.cell;
+    const py = g.oy + (S.player.ry + 0.5) * g.cell;
+    const r = g.cell * 0.3;
+    ctx.fillStyle = "rgba(243,236,220,.12)";
+    ctx.beginPath(); ctx.ellipse(px, py + r * 0.95, r * 0.85, r * 0.3, 0, 0, TAU); ctx.fill();
+    // 体
+    ctx.fillStyle = COLOR.cream;
+    rrect(px - r * 0.55, py - r * 0.15, r * 1.1, r * 1.05, r * 0.35);
+    ctx.fill();
+    // 頭
+    ctx.beginPath(); ctx.arc(px, py - r * 0.5, r * 0.42, 0, TAU); ctx.fill();
+    // ヘッドランプ
+    ctx.fillStyle = COLOR.ember;
+    ctx.beginPath(); ctx.arc(px + r * 0.18, py - r * 0.58, r * 0.12, 0, TAU); ctx.fill();
+  }
+
+  // 盤面ラベル
+  ctx.font = "10px " + mono;
+  ctx.textAlign = "center";
+  ctx.fillStyle = "rgba(184,184,184,.4)";
+  ctx.fillText("OLD DC — RACK ROOM " + String(S.level).padStart(2, "0"), W / 2, g.oy - 14);
+  ctx.fillStyle = "rgba(216,205,182,.45)";
+  ctx.font = "11px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+  ctx.fillText("スワイプ / 矢印キーで移動 ・ Z で戻す", W / 2, g.oy + g.bh + 26);
+
+  // パーティクル
+  for (const p of S.particles) {
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  update(dt);
+  draw(now);
+}
+requestAnimationFrame(loop);
+
+window.__G = { S, startGame, step, loadLevel, undo, resetLevel: () => loadLevel(S.level), isSolved, LEVELS, SOLUTIONS };
+</script>
+</body>
+</html>

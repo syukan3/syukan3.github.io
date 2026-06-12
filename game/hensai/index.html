@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>返済 — HENSAI | 技術的負債を、打ち返せ。</title>
+<meta name="description" content="リファクタの球で技術的負債を返済するブロック崩し。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 460px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(30px, 7vw, 46px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #paid { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 17px; letter-spacing: .12em; color: var(--ember-bright); }
+  #term { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #lives { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 13px; letter-spacing: .2em; color: var(--magenta); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="term">第1期</div>
+  <div id="paid">返済 ¥0</div>
+  <div id="lives">気力 ♥♥♥</div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Debt Breakout — Arcade</div>
+  <h1 class="title">返済</h1>
+  <div class="title-en">H E N S A I</div>
+  <p class="tagline">技術的負債を、打ち返せ。</p>
+  <p class="hint">
+    パドルは<em>スプリント</em>、球は<em>リファクタリング</em>。<br>
+    マウス / 指でパドルを動かし、タップで発射。<br>
+    積もった負債（TODO・旧仕様・密結合・レガシー・属人化）を砕いて返済する。<br>
+    落ちてくる<em>自動化</em>や<em>テスト</em>を拾うと強くなる。「仕様変更」は拾うな。
+  </p>
+  <button class="btn" id="btn-start">返済開始</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">SETTLEMENT</div>
+  <div class="cause" id="cause">気力が尽きた</div>
+  <div class="dist-line">総返済額 <b id="r-paid">¥0</b></div>
+  <div class="dist-line" id="r-term">到達: 第1期</div>
+  <div class="dist-line" id="r-best">BEST ¥0</div>
+  <div class="rank-label">財務評価</div>
+  <div class="rank" id="rank">利息だけ返した</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">追加リファイナンス</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP / SPACE でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   返済 / HENSAI — 技術的負債ブロック崩し
+   パドル=スプリント、球=リファクタ。負債を砕いて返済する。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8", slate: "#3a3a3a", green: "#2ecc71",
+};
+
+// 負債の種類: hp / 色 / 返済額(万)
+const BRICK_TYPES = {
+  todo:    { hp: 1, color: "#8a8a8a", label: "TODO",   value: 10 },
+  oldspec: { hp: 1, color: "#d8cdb6", label: "旧仕様", value: 20 },
+  coupled: { hp: 2, color: "#e0a45a", label: "密結合", value: 40 },
+  human:   { hp: 2, color: "#ff69bf", label: "属人化", value: 50 },
+  legacy:  { hp: 3, color: "#e06a4a", label: "レガシー", value: 80 },
+};
+
+const POWERUPS = [
+  { id: "auto", label: "自動化", color: "#2ecc71", good: true },   // ボール分裂
+  { id: "doc",  label: "文書化", color: "#69bfff", good: true },   // パドル拡大
+  { id: "test", label: "テスト", color: "#f6cf86", good: true },   // 貫通
+  { id: "spec", label: "仕様変更", color: "#e06a4a", good: false }, // パドル縮小
+];
+
+const RANKS = [
+  [300,  "利息だけ返した", "元本は、まだそこにある。"],
+  [800,  "元本に届いた",   "返している実感が出てきた。"],
+  [1500, "財務健全化",     "監査も頷く返済ペース。"],
+  [3000, "無借金経営",     "負債ゼロ。眩しい資産表だ。"],
+  [Infinity, "債権者側になった", "もはや他社の負債を査定する側。"],
+];
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+window.addEventListener("resize", resize);
+resize();
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.15;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  paddle()  { this.blip(300, 0.05, "square", 0.3, 60); },
+  wall()    { this.blip(220, 0.04, "square", 0.2, 0); },
+  brick(hp) { this.blip(hp > 0 ? 380 : 520, 0.07, "square", 0.35, hp > 0 ? -60 : 120); },
+  power(g)  { g ? this.blip(660, 0.18, "sine", 0.5, 220) : this.blip(240, 0.25, "sawtooth", 0.4, -90); },
+  lose()    { this.blip(180, 0.4, "sawtooth", 0.45, -120); },
+  clear()   { this.blip(523, 0.3, "sine", 0.5); this.blip(659, 0.4, "sine", 0.4); this.blip(784, 0.55, "sine", 0.35); },
+  over()    { this.blip(220, 0.7, "sawtooth", 0.5, -170); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",          // title | play | over
+  paddle: { x: 0, w: 120, baseW: 120 },
+  balls: [],              // {x,y,vx,vy,stuck,pierce}
+  bricks: [],             // {x,y,w,h,hp,type}
+  drops: [], particles: [], floats: [],
+  paid: 0, lives: 3, term: 1,
+  effects: { doc: 0, spec: 0, test: 0 },
+  shake: 0, overT: 0,
+  best: Number(localStorage.getItem("hensai-best") || 0),
+};
+const PADDLE_Y = () => H - Math.max(56, H * 0.08);
+const BALL_R = 7;
+
+function buildBricks() {
+  S.bricks = [];
+  const cols = clamp(Math.floor((W - 32) / 66), 5, 11);
+  const rows = Math.min(4 + S.term, 8);
+  const bw = (Math.min(W - 32, cols * 66) - (cols - 1) * 6) / cols;
+  const bh = 24;
+  const ox = (W - (cols * bw + (cols - 1) * 6)) / 2;
+  const oy = Math.max(64, H * 0.12);
+  const rowTypes = ["legacy", "human", "coupled", "coupled", "oldspec", "oldspec", "todo", "todo"];
+  for (let r = 0; r < rows; r++) {
+    const type = rowTypes[Math.max(0, rowTypes.length - rows + r)];
+    for (let c = 0; c < cols; c++) {
+      const def = BRICK_TYPES[type];
+      S.bricks.push({
+        x: ox + c * (bw + 6), y: oy + r * (bh + 6), w: bw, h: bh,
+        hp: def.hp, type,
+      });
+    }
+  }
+}
+
+function newBall(stuck = true) {
+  S.balls.push({
+    x: S.paddle.x, y: PADDLE_Y() - 14,
+    vx: 0, vy: 0, stuck, pierce: 0,
+  });
+}
+
+function resetTerm() {
+  S.balls = []; S.drops = [];
+  S.effects = { doc: 0, spec: 0, test: 0 };
+  S.paddle.w = S.paddle.baseW;
+  buildBricks();
+  newBall(true);
+}
+
+function resetGame() {
+  S.paid = 0; S.lives = 3; S.term = 1;
+  S.paddle.x = W / 2;
+  S.paddle.baseW = Math.max(96, Math.min(W * 0.18, 150));
+  S.particles = []; S.floats = [];
+  S.shake = 0; S.overT = 0;
+  resetTerm();
+}
+
+/* ---------- エフェクト ---------- */
+function burst(x, y, color, n, speed = 150) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.25, 0.6), age: 0, color, r: rand(1, 2.6) });
+  }
+}
+function floatAdd(x, y, text, color, life = 1.0) {
+  S.floats.push({ x, y, text, color, age: 0, life });
+}
+
+/* ---------- 入力 ---------- */
+function movePaddle(x) { S.paddle.x = clamp(x, S.paddle.w / 2 + 8, W - S.paddle.w / 2 - 8); }
+window.addEventListener("pointermove", e => { if (S.mode === "play") movePaddle(e.clientX); });
+window.addEventListener("pointerdown", e => {
+  if (S.mode === "over") { if (S.overT > 0.6) startGame(); return; }
+  if (S.mode !== "play") return;
+  movePaddle(e.clientX);
+  launch();
+});
+window.addEventListener("keydown", e => {
+  if (e.code !== "Space") return;
+  e.preventDefault();
+  if (S.mode === "play") launch();
+  else if (S.mode === "over" && S.overT > 0.6) startGame();
+}, { passive: false });
+
+function launch() {
+  for (const b of S.balls) {
+    if (b.stuck) {
+      b.stuck = false;
+      const a = rand(-0.5, 0.5);
+      const spd = ballSpeed();
+      b.vx = Math.sin(a) * spd; b.vy = -Math.cos(a) * spd;
+    }
+  }
+}
+function ballSpeed() { return Math.min(560, 360 + S.term * 24); }
+
+/* ---------- 進行 ---------- */
+function update(dt) {
+  // 効果タイマー
+  for (const k of ["doc", "spec", "test"]) {
+    if (S.effects[k] > 0) S.effects[k] -= dt;
+  }
+  const targetW = S.paddle.baseW * (S.effects.doc > 0 ? 1.5 : 1) * (S.effects.spec > 0 ? 0.68 : 1);
+  S.paddle.w += (targetW - S.paddle.w) * Math.min(1, dt * 8);
+
+  // ボール
+  for (let i = S.balls.length - 1; i >= 0; i--) {
+    const b = S.balls[i];
+    if (b.stuck) { b.x = S.paddle.x; b.y = PADDLE_Y() - 14; continue; }
+    b.x += b.vx * dt; b.y += b.vy * dt;
+    // 壁
+    if (b.x < BALL_R) { b.x = BALL_R; b.vx = Math.abs(b.vx); AudioFX.wall(); }
+    if (b.x > W - BALL_R) { b.x = W - BALL_R; b.vx = -Math.abs(b.vx); AudioFX.wall(); }
+    if (b.y < BALL_R + 40) { b.y = BALL_R + 40; b.vy = Math.abs(b.vy); AudioFX.wall(); }
+    // パドル
+    const py = PADDLE_Y();
+    if (b.vy > 0 && b.y > py - 10 && b.y < py + 14 && Math.abs(b.x - S.paddle.x) < S.paddle.w / 2 + BALL_R) {
+      const rel = clamp((b.x - S.paddle.x) / (S.paddle.w / 2), -1, 1);
+      const a = rel * 1.05;
+      const spd = ballSpeed();
+      b.vx = Math.sin(a) * spd; b.vy = -Math.cos(a) * spd;
+      b.y = py - 11;
+      AudioFX.paddle();
+    }
+    // 落下
+    if (b.y > H + 30) {
+      S.balls.splice(i, 1);
+      if (S.balls.length === 0) {
+        S.lives--;
+        document.getElementById("lives").textContent = "気力 " + "♥".repeat(Math.max(0, S.lives));
+        AudioFX.lose();
+        S.shake = 8;
+        if (S.lives <= 0) return gameOver("気力が尽きた");
+        floatAdd(W / 2, H * 0.5, "リファクタ消失 — 仕切り直し", COLOR.magenta, 1.4);
+        newBall(true);
+      }
+      continue;
+    }
+    // ブロック
+    for (let j = S.bricks.length - 1; j >= 0; j--) {
+      const br = S.bricks[j];
+      if (b.x + BALL_R < br.x || b.x - BALL_R > br.x + br.w ||
+          b.y + BALL_R < br.y || b.y - BALL_R > br.y + br.h) continue;
+      const def = BRICK_TYPES[br.type];
+      br.hp--;
+      if (b.pierce <= 0) {
+        // 反射方向: 浅い方を返す
+        const ox = Math.min(b.x + BALL_R - br.x, br.x + br.w - (b.x - BALL_R));
+        const oy = Math.min(b.y + BALL_R - br.y, br.y + br.h - (b.y - BALL_R));
+        if (ox < oy) b.vx = b.x < br.x + br.w / 2 ? -Math.abs(b.vx) : Math.abs(b.vx);
+        else b.vy = b.y < br.y + br.h / 2 ? -Math.abs(b.vy) : Math.abs(b.vy);
+      }
+      if (br.hp <= 0) {
+        S.bricks.splice(j, 1);
+        S.paid += def.value;
+        burst(br.x + br.w / 2, br.y + br.h / 2, def.color, 12, 170);
+        floatAdd(br.x + br.w / 2, br.y, `¥${def.value}万 返済`, COLOR.emberBright, 0.8);
+        document.getElementById("paid").textContent = "返済 ¥" + S.paid + "万";
+        // パワーアップ排出
+        if (Math.random() < 0.22) {
+          const pu = Math.random() < 0.78 ? pick(POWERUPS.filter(p => p.good)) : POWERUPS[3];
+          S.drops.push({ x: br.x + br.w / 2, y: br.y + br.h / 2, vy: 120, def: pu });
+        }
+      } else {
+        burst(br.x + br.w / 2, br.y + br.h / 2, def.color, 5, 90);
+      }
+      AudioFX.brick(br.hp);
+      if (b.pierce <= 0) break;
+    }
+    if (b.pierce > 0) b.pierce -= dt;
+  }
+
+  // 全返済 → 次の期
+  if (S.bricks.length === 0 && S.mode === "play") {
+    S.term++;
+    document.getElementById("term").textContent = "第" + S.term + "期";
+    floatAdd(W / 2, H * 0.45, `第${S.term - 1}期 完済 — 次の期へ`, COLOR.cyan, 1.8);
+    AudioFX.clear();
+    resetTerm();
+  }
+
+  // パワーアップ落下
+  for (let i = S.drops.length - 1; i >= 0; i--) {
+    const d = S.drops[i];
+    d.y += d.vy * dt;
+    if (d.y > H + 20) { S.drops.splice(i, 1); continue; }
+    const py = PADDLE_Y();
+    if (d.y > py - 8 && d.y < py + 18 && Math.abs(d.x - S.paddle.x) < S.paddle.w / 2 + 12) {
+      S.drops.splice(i, 1);
+      applyPower(d.def);
+    }
+  }
+
+  // パーティクル / フロート
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt;
+    p.vy += 500 * dt;
+  }
+  for (let i = S.floats.length - 1; i >= 0; i--) {
+    const f = S.floats[i];
+    f.age += dt; f.y -= 22 * dt;
+    if (f.age >= f.life) S.floats.splice(i, 1);
+  }
+  if (S.shake > 0) S.shake = Math.max(0, S.shake - dt * 24);
+  if (S.mode === "over") S.overT += dt;
+}
+
+function applyPower(def) {
+  AudioFX.power(def.good);
+  floatAdd(S.paddle.x, PADDLE_Y() - 30, def.label + (def.good ? "！" : "…"), def.color, 1.1);
+  if (def.id === "auto") {
+    // ボール分裂（最大4個）
+    const src = S.balls.filter(b => !b.stuck)[0] || S.balls[0];
+    if (src && S.balls.length < 4) {
+      for (let i = 0; i < 2 && S.balls.length < 4; i++) {
+        const a = rand(0, TAU);
+        const spd = ballSpeed();
+        S.balls.push({ x: src.x, y: src.y, vx: Math.sin(a) * spd, vy: -Math.abs(Math.cos(a) * spd) - 80, stuck: false, pierce: 0 });
+      }
+    }
+  } else if (def.id === "doc") {
+    S.effects.doc = 10;
+  } else if (def.id === "test") {
+    for (const b of S.balls) b.pierce = 6;
+  } else if (def.id === "spec") {
+    S.effects.spec = 8;
+  }
+}
+
+function gameOver(cause) {
+  S.mode = "over"; S.overT = 0;
+  AudioFX.over();
+  if (S.paid > S.best) { S.best = S.paid; localStorage.setItem("hensai-best", String(S.paid)); }
+  setTimeout(() => {
+    document.getElementById("cause").textContent = cause;
+    document.getElementById("r-paid").textContent = "¥" + S.paid + "万";
+    document.getElementById("r-term").textContent = "到達: 第" + S.term + "期";
+    document.getElementById("r-best").textContent = "BEST ¥" + S.best + "万";
+    const r = RANKS.find(r => S.paid < r[0]);
+    document.getElementById("rank").textContent = r[1];
+    document.getElementById("rank-sub").innerHTML = r[2];
+    document.getElementById("hud").classList.remove("on");
+    document.getElementById("screen-result").classList.remove("hidden");
+  }, 700);
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  resetGame();
+  S.mode = "play";
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  document.getElementById("paid").textContent = "返済 ¥0万";
+  document.getElementById("term").textContent = "第1期";
+  document.getElementById("lives").textContent = "気力 ♥♥♥";
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.6) startGame();
+});
+
+/* ---------- 描画 ---------- */
+function draw(time) {
+  const t = time / 1000;
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (S.shake > 0.3) ctx.translate(rand(-S.shake, S.shake) * 0.5, rand(-S.shake, S.shake) * 0.5);
+
+  // 上枠
+  ctx.strokeStyle = "rgba(243,236,220,.18)";
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, 40); ctx.lineTo(W, 40); ctx.stroke();
+
+  // ブロック
+  ctx.font = "9px " + getComputedStyle(document.body).getPropertyValue("--font-mono");
+  ctx.textAlign = "center";
+  for (const br of S.bricks) {
+    const def = BRICK_TYPES[br.type];
+    const dim = br.hp < def.hp;
+    ctx.globalAlpha = dim ? 0.55 + 0.2 * br.hp : 0.92;
+    ctx.fillStyle = def.color;
+    ctx.fillRect(br.x, br.y, br.w, br.h);
+    ctx.globalAlpha = 1;
+    if (br.w > 52) {
+      ctx.fillStyle = "rgba(16,11,5,.7)";
+      ctx.fillText(def.label, br.x + br.w / 2, br.y + br.h / 2 + 3);
+    }
+  }
+
+  // パドル
+  const py = PADDLE_Y();
+  ctx.fillStyle = S.effects.spec > 0 ? COLOR.risk : COLOR.cream;
+  ctx.fillRect(S.paddle.x - S.paddle.w / 2, py, S.paddle.w, 10);
+  ctx.fillStyle = "rgba(184,184,184,.5)";
+  ctx.fillText("スプリント", S.paddle.x, py + 24);
+
+  // ボール
+  for (const b of S.balls) {
+    const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 16);
+    const c = b.pierce > 0 ? "246,207,134" : "243,236,220";
+    g.addColorStop(0, `rgba(${c},.6)`);
+    g.addColorStop(1, `rgba(${c},0)`);
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(b.x, b.y, 16, 0, TAU); ctx.fill();
+    ctx.fillStyle = b.pierce > 0 ? COLOR.emberBright : COLOR.cream;
+    ctx.beginPath(); ctx.arc(b.x, b.y, BALL_R, 0, TAU); ctx.fill();
+  }
+
+  // パワーアップ
+  ctx.font = "10px " + getComputedStyle(document.body).getPropertyValue("--font-mono");
+  for (const d of S.drops) {
+    ctx.strokeStyle = d.def.color;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(d.x - 26, d.y - 10, 52, 20);
+    ctx.fillStyle = d.def.color;
+    ctx.fillText(d.def.label, d.x, d.y + 4);
+  }
+
+  // パーティクル / フロート
+  for (const p of S.particles) {
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+  ctx.font = "12px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+  for (const f of S.floats) {
+    ctx.globalAlpha = 1 - f.age / f.life;
+    ctx.fillStyle = f.color;
+    ctx.fillText(f.text, f.x, f.y);
+  }
+  ctx.globalAlpha = 1;
+
+  // 発射ガイド
+  if (S.mode === "play" && S.balls.some(b => b.stuck)) {
+    ctx.fillStyle = "rgba(216,205,182,.6)";
+    ctx.font = "12px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+    ctx.fillText("タップ / SPACE で発射", W / 2, H * 0.6);
+  }
+
+  ctx.restore();
+}
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (S.mode === "play" || S.mode === "over") update(dt);
+  draw(now);
+}
+resetGame();
+S.mode = "title";
+requestAnimationFrame(loop);
+window.__G = { S, startGame, launch };
+</script>
+</body>
+</html>

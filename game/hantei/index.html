@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>判定 — HANTEI | デプロイ窓は、一瞬だ。</title>
+<meta name="description" content="針が緑の窓にいる瞬間にリリースする、タイミングゲーム。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0a0a0a; --black: #100b05; --smoke: #2a2a2a; --slate: #3a3a3a;
+    --silver: #b8b8b8; --cream: #f3ecdc; --cream-dim: #d8cdb6;
+    --ember: #e0a45a; --ember-bright: #f6cf86; --cyan: #69bfff; --magenta: #ff69bf; --risk: #e06a4a; --green: #2ecc71;
+    --font-display: 'Shippori Mincho', serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--noir); color: var(--cream); font-family: var(--font-body); overscroll-behavior: none;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  .leaks, .vignette, .grain { position: fixed; inset: 0; pointer-events: none; }
+  .leaks { background:
+      radial-gradient(60% 50% at 8% 0%, rgba(255,191,105,.10), transparent 70%),
+      radial-gradient(55% 45% at 100% 12%, rgba(105,191,255,.07), transparent 70%),
+      radial-gradient(50% 40% at 92% 100%, rgba(255,105,191,.05), transparent 70%); }
+  .vignette { background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%); }
+  .grain { opacity: .07; z-index: 5; }
+  .grain::before { content: ""; position: absolute; inset: -100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-6%,4%)} 40%{transform:translate(4%,-7%)} 60%{transform:translate(-3%,-3%)} 80%{transform:translate(6%,5%)} }
+  @media (prefers-reduced-motion: reduce) { .grain::before { animation: none; } }
+
+  .screen { position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; background: rgba(10,10,10,.78);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: opacity .35s ease; }
+  .screen.hidden { opacity: 0; pointer-events: none; }
+  .bracket { font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em; color: var(--ember); text-transform: uppercase; }
+  .bracket::before { content: "[ "; color: var(--slate); }
+  .bracket::after  { content: " ]"; color: var(--slate); }
+  h1.title { font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(56px, 14vw, 104px); line-height: 1.1; color: var(--cream);
+    letter-spacing: .08em; margin: 18px 0 4px; text-shadow: 0 0 50px rgba(224,164,90,.25); }
+  .title-en { font-family: var(--font-mono); font-size: 12px; letter-spacing: .6em; color: var(--silver); margin-bottom: 22px; text-indent: .6em; }
+  .tagline { font-family: var(--font-display); font-size: clamp(15px, 3.6vw, 19px); color: var(--cream-dim); letter-spacing: .12em; margin-bottom: 28px; }
+  .hint { font-size: 13px; color: var(--silver); line-height: 2; margin-bottom: 30px; max-width: 440px; }
+  .hint em { font-style: normal; color: var(--ember-bright); }
+  .btn { font-family: var(--font-body); font-weight: 600; font-size: 15px;
+    letter-spacing: .25em; text-indent: .25em; color: var(--black); background: var(--ember);
+    border: none; border-radius: 999px; padding: 16px 52px; cursor: pointer; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--ember-bright); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--cream-dim); border: 1px solid var(--slate); font-size: 12px; padding: 11px 30px; margin-top: 14px; }
+  .btn.ghost:hover { color: var(--cream); border-color: var(--silver); }
+  .back-link { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 20px; z-index: 11;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .15em; color: var(--silver); text-decoration: none; }
+  .back-link:hover { color: var(--ember); }
+
+  .cause { font-family: var(--font-display); font-size: clamp(22px, 5.4vw, 34px); color: var(--cream); letter-spacing: .12em; margin: 14px 0 4px; }
+  .dist-line { font-family: var(--font-mono); font-size: 13px; letter-spacing: .2em; color: var(--silver); margin-bottom: 4px; }
+  .dist-line b { color: var(--ember-bright); font-weight: 400; font-size: 26px; }
+  .rank-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .3em; color: var(--ember); margin-top: 22px; }
+  .rank { font-family: var(--font-display); font-size: clamp(30px, 7vw, 46px); color: var(--cream); letter-spacing: .14em; margin: 4px 0 2px; }
+  .rank-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: .06em; margin-bottom: 22px; line-height: 1.8; }
+  .retry-hint { font-family: var(--font-mono); font-size: 10px; letter-spacing: .25em; color: var(--slate); margin-top: 20px; }
+
+  #hud { position: fixed; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity .4s; font-family: var(--font-mono); }
+  #hud.on { opacity: 1; }
+  #ver { position: absolute; top: max(14px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    font-size: 18px; letter-spacing: .15em; color: var(--cream); }
+  #best { position: absolute; top: max(16px, env(safe-area-inset-top)); left: 18px; font-size: 10px; letter-spacing: .2em; color: var(--silver); }
+  #rollback { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px; font-size: 11px; letter-spacing: .2em; color: var(--magenta); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div class="leaks"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<a class="back-link" href="/game/">← ゲーム一覧</a>
+
+<div id="hud">
+  <div id="best">BEST 0</div>
+  <div id="ver">v1.0</div>
+  <div id="rollback">ロールバック残 ●●●</div>
+</div>
+
+<div class="screen" id="screen-title">
+  <div class="bracket">Release Window — Timing</div>
+  <h1 class="title">判定</h1>
+  <div class="title-en">H A N T E I</div>
+  <p class="tagline">デプロイ窓は、一瞬だ。</p>
+  <p class="hint">
+    リリース判定会議。針が<em>緑のデプロイ窓</em>にいる瞬間にタップ / SPACE。<br>
+    窓のド真ん中なら<em>無風リリース</em>でボーナス。<br>
+    外せば障害発生 — ロールバックは<em>3回</em>まで。<br>
+    リリースを重ねるほど、窓は狭く、針は速くなる。<br>
+    そして5回ごとに来る、<em>金曜デプロイ</em>に気をつけろ。
+  </p>
+  <button class="btn" id="btn-start">判定会議へ</button>
+</div>
+
+<div class="screen hidden" id="screen-result">
+  <div class="bracket">POSTMORTEM</div>
+  <div class="cause" id="cause">ロールバックを使い切った</div>
+  <div class="dist-line">リリース <b id="r-count">0</b> 本</div>
+  <div class="dist-line" id="r-perfect">無風リリース 0 ／ 金曜デプロイ成功 0</div>
+  <div class="dist-line" id="r-best">BEST 0</div>
+  <div class="rank-label">現場格付け</div>
+  <div class="rank" id="rank">個人開発</div>
+  <div class="rank-sub" id="rank-sub"></div>
+  <button class="btn" id="btn-retry">次の判定会議へ</button>
+  <button class="btn ghost" onclick="location.href='/game/'">ゲーム一覧へ戻る</button>
+  <div class="retry-hint">TAP / SPACE でも再開できる</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   判定 / HANTEI — リリース判定タイミングゲーム
+   針がデプロイ窓にいる瞬間に、リリースボタンを押す。
+   ============================================================ */
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const rand = (a, b) => a + Math.random() * (b - a);
+
+const COLOR = {
+  cream: "#f3ecdc", creamDim: "#d8cdb6", ember: "#e0a45a", emberBright: "#f6cf86",
+  cyan: "#69bfff", magenta: "#ff69bf", risk: "#e06a4a", silver: "#b8b8b8", slate: "#3a3a3a", green: "#2ecc71",
+};
+
+const RANKS = [
+  [5,  "個人開発", "自分しか困らない。気楽で良い。"],
+  [10, "受託の現場", "お客様は見ている。手は震える。"],
+  [15, "SaaSの現場", "ユーザー数万人。でも窓は守った。"],
+  [20, "金融基盤", "1秒の障害が新聞に載る世界。"],
+  [Infinity, "人類のインフラ", "あなたが止まると、世界が止まる。"],
+];
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+resize();
+window.addEventListener("resize", resize);
+
+/* ---------- audio ---------- */
+const AudioFX = {
+  ctx: null, gain: null,
+  init() {
+    if (this.ctx) return;
+    try {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.gain = this.ctx.createGain();
+      this.gain.gain.value = 0.16;
+      this.gain.connect(this.ctx.destination);
+    } catch (e) {}
+  },
+  blip(f, d, t = "sine", v = 1, s = 0) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = t; o.frequency.setValueAtTime(f, now);
+    if (s) o.frequency.exponentialRampToValueAtTime(Math.max(40, f + s), now + d);
+    g.gain.setValueAtTime(v * 0.5, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + d);
+    o.connect(g); g.connect(this.gain);
+    o.start(now); o.stop(now + d + 0.02);
+  },
+  ok(n)    { this.blip(523 * Math.pow(1.05, Math.min(n, 10)), 0.16, "sine", 0.5, 160); },
+  perfect(){ this.blip(659, 0.2, "sine", 0.55, 200); this.blip(988, 0.3, "sine", 0.4, 220); },
+  friday() { this.blip(784, 0.25, "sine", 0.55); this.blip(1175, 0.4, "sine", 0.4); },
+  fail()   { this.blip(150, 0.5, "sawtooth", 0.55, -80); this.blip(110, 0.6, "sawtooth", 0.4, -40); },
+  over()   { this.blip(220, 0.7, "sawtooth", 0.5, -170); },
+};
+
+/* ---------- 状態 ---------- */
+const S = {
+  mode: "title",     // title | play | over
+  pos: 0,            // 針 0..1
+  t: 0, speed: 0.55, // 往復速度
+  winC: 0.5, winW: 0.24,
+  releases: 0, perfects: 0, fridays: 0,
+  lives: 3,
+  friday: false,
+  lock: 0,           // 演出中
+  flash: 0, shake: 0, overT: 0,
+  msg: null,         // {text, sub, color, age, life}
+  particles: [],
+  best: Number(localStorage.getItem("hantei-best") || 0),
+};
+
+function nextRound(first = false) {
+  S.friday = !first && (S.releases + 1) % 5 === 0;
+  const shrink = Math.max(0.07, 0.24 - S.releases * 0.0085);
+  S.winW = S.friday ? Math.max(0.05, shrink * 0.55) : shrink;
+  S.winC = rand(0.16 + S.winW, 0.84 - S.winW);
+  S.speed = (0.55 + S.releases * 0.028) * (S.friday ? 1.15 : 1);
+  S.t = rand(0, 10);
+  S.lock = 0;
+  if (S.friday) {
+    msg("金曜デプロイ", "窓は狭い。報酬は3倍。やるのか？", COLOR.emberBright, 1.6);
+  }
+}
+
+function msg(text, sub, color, life = 1.3) {
+  S.msg = { text, sub, color, age: 0, life };
+}
+
+function burst(x, y, color, n, speed = 180) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = rand(speed * 0.3, speed);
+    S.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rand(0.3, 0.7), age: 0, color, r: rand(1, 3) });
+  }
+}
+
+/* ---------- ゲージ座標 ---------- */
+const gauge = () => {
+  const gw = Math.min(W * 0.84, 520);
+  return { x: (W - gw) / 2, y: H * 0.5, w: gw };
+};
+
+/* ---------- 判定 ---------- */
+function release() {
+  if (S.mode === "over") { if (S.overT > 0.6) startGame(); return; }
+  if (S.mode !== "play" || S.lock > 0) return;
+  S.lock = 0.9;
+  const g = gauge();
+  const px = g.x + S.pos * g.w;
+  const inWin = Math.abs(S.pos - S.winC) <= S.winW / 2;
+  if (inWin) {
+    const acc = 1 - Math.abs(S.pos - S.winC) / (S.winW / 2);   // 0..1
+    const perfect = acc > 0.7;
+    S.releases++;
+    if (perfect) S.perfects++;
+    if (S.friday) S.fridays++;
+    burst(px, g.y, S.friday ? COLOR.emberBright : perfect ? COLOR.cyan : COLOR.green, perfect ? 26 : 14, perfect ? 240 : 160);
+    if (S.friday) { msg("金曜、生還。", "+3 リリース扱い", COLOR.emberBright, 1.4); S.releases += 2; AudioFX.friday(); }
+    else if (perfect) { msg("無風リリース", "誰も気づかないうちに、世界が変わった", COLOR.cyan, 1.4); AudioFX.perfect(); }
+    else { msg("リリース成功", "監視ダッシュボードは静かだ", COLOR.green, 1.1); AudioFX.ok(S.releases); }
+    S.flash = 0.25;
+    updateHUD();
+    setTimeout(() => { if (S.mode === "play") nextRound(); }, 850);
+  } else {
+    S.lives--;
+    S.shake = 12;
+    burst(px, g.y, COLOR.risk, 28, 260);
+    AudioFX.fail();
+    updateHUD();
+    if (S.lives <= 0) {
+      msg("本番障害", "深夜のアラートが鳴り止まない", COLOR.risk, 1.6);
+      return setTimeout(() => gameOver("ロールバックを使い切った"), 1100);
+    }
+    msg("障害発生 — ロールバック", `残り ${S.lives} 回`, COLOR.risk, 1.4);
+    setTimeout(() => { if (S.mode === "play") nextRound(); }, 950);
+  }
+}
+canvas.addEventListener("pointerdown", e => { e.preventDefault(); release(); });
+window.addEventListener("keydown", e => {
+  if (e.code === "Space") { e.preventDefault(); if (!e.repeat) release(); }
+}, { passive: false });
+
+function updateHUD() {
+  document.getElementById("ver").textContent = "v" + (1 + Math.floor(S.releases / 10)) + "." + (S.releases % 10);
+  document.getElementById("rollback").textContent = "ロールバック残 " + "●".repeat(Math.max(0, S.lives)) + "○".repeat(3 - Math.max(0, S.lives));
+}
+
+function gameOver(cause) {
+  if (S.mode === "over") return;
+  S.mode = "over"; S.overT = 0;
+  AudioFX.over();
+  if (S.releases > S.best) { S.best = S.releases; localStorage.setItem("hantei-best", String(S.releases)); }
+  document.getElementById("cause").textContent = cause;
+  document.getElementById("r-count").textContent = S.releases;
+  document.getElementById("r-perfect").textContent = `無風リリース ${S.perfects} ／ 金曜デプロイ成功 ${S.fridays}`;
+  document.getElementById("r-best").textContent = "BEST " + S.best;
+  const r = RANKS.find(r => S.releases < r[0]);
+  document.getElementById("rank").textContent = r[1];
+  document.getElementById("rank-sub").innerHTML = r[2];
+  document.getElementById("hud").classList.remove("on");
+  document.getElementById("screen-result").classList.remove("hidden");
+}
+
+function startGame() {
+  AudioFX.init();
+  if (AudioFX.ctx && AudioFX.ctx.state === "suspended") AudioFX.ctx.resume();
+  S.releases = 0; S.perfects = 0; S.fridays = 0;
+  S.lives = 3; S.particles = []; S.msg = null;
+  S.flash = 0; S.shake = 0; S.overT = 0;
+  S.mode = "play";
+  nextRound(true);
+  document.getElementById("screen-title").classList.add("hidden");
+  document.getElementById("screen-result").classList.add("hidden");
+  document.getElementById("hud").classList.add("on");
+  document.getElementById("best").textContent = "BEST " + S.best;
+  updateHUD();
+}
+document.getElementById("btn-start").addEventListener("click", startGame);
+document.getElementById("btn-retry").addEventListener("click", startGame);
+document.getElementById("screen-result").addEventListener("pointerdown", e => {
+  if (e.target.closest("button") || e.target.closest("a")) return;
+  if (S.overT > 0.6) startGame();
+});
+
+/* ---------- ループ ---------- */
+let last = performance.now();
+let paused = false;
+document.addEventListener("visibilitychange", () => {
+  paused = document.hidden;
+  if (!paused) last = performance.now();
+});
+
+function update(dt) {
+  if (S.mode === "play" && S.lock <= 0) {
+    S.t += dt * S.speed;
+    S.pos = (Math.sin(S.t * TAU * 0.5) + 1) / 2;
+  }
+  if (S.lock > 0) S.lock -= dt;
+  if (S.flash > 0) S.flash -= dt;
+  if (S.shake > 0) S.shake = Math.max(0, S.shake - dt * 26);
+  if (S.msg && (S.msg.age += dt) >= S.msg.life) S.msg = null;
+  for (let i = S.particles.length - 1; i >= 0; i--) {
+    const p = S.particles[i];
+    p.age += dt;
+    if (p.age >= p.life) { S.particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 300 * dt;
+  }
+  if (S.mode === "over") S.overT += dt;
+}
+
+function draw(time) {
+  const t = time / 1000;
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (S.shake > 0.3) ctx.translate(rand(-S.shake, S.shake) * 0.5, rand(-S.shake, S.shake) * 0.5);
+
+  const g = gauge();
+  const mono = getComputedStyle(document.body).getPropertyValue("--font-mono");
+
+  if (S.mode !== "title") {
+    // 環境ラベル
+    ctx.font = "10px " + mono;
+    ctx.textAlign = "left";
+    ctx.fillStyle = "rgba(184,184,184,.5)";
+    ctx.fillText("STG ✓ 全テスト PASS", g.x, g.y - 58);
+    ctx.textAlign = "right";
+    ctx.fillStyle = S.friday ? COLOR.emberBright : "rgba(184,184,184,.5)";
+    ctx.fillText(S.friday ? "本番環境 — 金曜 17:55" : "本番環境 — 平日 10:00", g.x + g.w, g.y - 58);
+
+    // ゲージ
+    ctx.strokeStyle = "rgba(243,236,220,.25)";
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(g.x, g.y); ctx.lineTo(g.x + g.w, g.y); ctx.stroke();
+    // 目盛り
+    ctx.strokeStyle = "rgba(243,236,220,.12)";
+    for (let i = 0; i <= 20; i++) {
+      const x = g.x + (i / 20) * g.w;
+      ctx.beginPath(); ctx.moveTo(x, g.y - 5); ctx.lineTo(x, g.y + 5); ctx.stroke();
+    }
+    // デプロイ窓
+    const wx = g.x + (S.winC - S.winW / 2) * g.w;
+    const ww = S.winW * g.w;
+    const winColor = S.friday ? "246,207,134" : "46,204,113";
+    const grd = ctx.createLinearGradient(wx, 0, wx + ww, 0);
+    grd.addColorStop(0, `rgba(${winColor},.06)`);
+    grd.addColorStop(0.5, `rgba(${winColor},.35)`);
+    grd.addColorStop(1, `rgba(${winColor},.06)`);
+    ctx.fillStyle = grd;
+    ctx.fillRect(wx, g.y - 30, ww, 60);
+    ctx.strokeStyle = `rgba(${winColor},.7)`;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(wx, g.y - 30, ww, 60);
+    ctx.fillStyle = `rgba(${winColor},.9)`;
+    ctx.font = "9px " + mono;
+    ctx.textAlign = "center";
+    ctx.fillText("DEPLOY WINDOW", wx + ww / 2, g.y - 38);
+
+    // 針
+    const px = g.x + S.pos * g.w;
+    const glow = ctx.createRadialGradient(px, g.y, 0, px, g.y, 30);
+    glow.addColorStop(0, "rgba(243,236,220,.5)");
+    glow.addColorStop(1, "rgba(243,236,220,0)");
+    ctx.fillStyle = glow;
+    ctx.beginPath(); ctx.arc(px, g.y, 30, 0, TAU); ctx.fill();
+    ctx.strokeStyle = COLOR.cream;
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(px, g.y - 42); ctx.lineTo(px, g.y + 42); ctx.stroke();
+    ctx.lineWidth = 1;
+
+    // ボタン表示
+    ctx.fillStyle = "rgba(216,205,182,.55)";
+    ctx.font = "12px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+    ctx.fillText("タップ / SPACE でリリース", W / 2, g.y + 88);
+  }
+
+  // フラッシュ
+  if (S.flash > 0) {
+    ctx.fillStyle = `rgba(243,236,220,${S.flash * 0.25})`;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // メッセージ
+  if (S.msg) {
+    const k = S.msg.age / S.msg.life;
+    const a = k < 0.12 ? k / 0.12 : k > 0.6 ? Math.max(0, 1 - (k - 0.6) / 0.4) : 1;
+    ctx.globalAlpha = a;
+    ctx.textAlign = "center";
+    ctx.fillStyle = S.msg.color;
+    ctx.font = `700 ${Math.round(Math.min(38, W * 0.06))}px 'Shippori Mincho', serif`;
+    ctx.fillText(S.msg.text, W / 2, H * 0.3);
+    ctx.fillStyle = "rgba(216,205,182,.85)";
+    ctx.font = "12px " + getComputedStyle(document.body).getPropertyValue("--font-body");
+    ctx.fillText(S.msg.sub, W / 2, H * 0.3 + 28);
+    ctx.globalAlpha = 1;
+  }
+
+  // パーティクル
+  for (const p of S.particles) {
+    ctx.globalAlpha = 1 - p.age / p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.r / 2, p.y - p.r / 2, p.r, p.r);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (paused) return;
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  update(dt);
+  draw(now);
+}
+requestAnimationFrame(loop);
+window.__G = { S, startGame, release, nextRound };
+</script>
+</body>
+</html>
