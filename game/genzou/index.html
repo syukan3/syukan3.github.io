@@ -847,6 +847,8 @@ function publish() {
   }
   const bonus = 500 + Math.floor(Math.random() * 500);
   S.likes += bonus;
+  const prevBest = Number(localStorage.getItem("genzou-best") || 0);
+  if (S.likes > prevBest) localStorage.setItem("genzou-best", String(S.likes));
   document.getElementById("done-likes").textContent = `♥ ${S.likes}（特集ボーナス +${bonus}）`;
   document.getElementById("screen-done").classList.remove("hidden");
   hud.classList.remove("on");

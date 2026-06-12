@@ -37,6 +37,71 @@
     .error-description { font-size: var(--text-lg); color: var(--color-text-secondary); margin-bottom: var(--space-8); line-height: var(--leading-relaxed); }
     .error-actions { display: flex; flex-direction: column; gap: var(--space-3); align-items: center; }
     @media (min-width: 540px) { .error-actions { flex-direction: row; justify-content: center; } }
+
+    /* ---- 信号探索 (SIGNAL SEARCH) — 404ミニゲーム ---- */
+    .radar {
+      margin-top: var(--space-12);
+      border-top: 1px dashed var(--color-border);
+      padding-top: var(--space-8);
+    }
+    .radar-kicker {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: .35em;
+      color: var(--color-ember); text-transform: uppercase;
+      margin-bottom: var(--space-3);
+    }
+    .radar-intro {
+      font-size: var(--text-sm); color: var(--color-text-secondary);
+      line-height: var(--leading-relaxed); margin-bottom: var(--space-5);
+    }
+    .radar-status {
+      display: flex; justify-content: space-between; align-items: baseline;
+      width: min(336px, 100%); margin: 0 auto var(--space-3);
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em;
+      color: var(--color-text-secondary); min-height: 1.5em;
+    }
+    .radar-status .reading { color: var(--color-cream); }
+    .radar-grid {
+      display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px;
+      width: min(336px, 100%); margin: 0 auto;
+    }
+    .radar-cell {
+      aspect-ratio: 1; border: 1px solid var(--color-border);
+      background: rgba(20, 18, 14, .6); cursor: pointer; padding: 0;
+      font-family: var(--font-mono); font-size: 13px; color: var(--color-text-muted);
+      transition: border-color .15s, background .15s;
+    }
+    .radar-cell:hover:not(:disabled) { border-color: var(--color-ember); background: rgba(28, 24, 18, .8); }
+    .radar-cell:disabled { cursor: default; }
+    .radar-cell.hot   { color: var(--color-ember-bright); border-color: var(--color-ember-bright); text-shadow: 0 0 12px rgba(246, 207, 134, .8); }
+    .radar-cell.warm  { color: var(--color-ember); border-color: var(--color-ember); }
+    .radar-cell.cool  { color: var(--color-cyan-leak); }
+    .radar-cell.cold  { color: var(--color-slate); }
+    .radar-cell.found {
+      color: var(--color-noir-black); background: var(--color-ember-bright);
+      border-color: var(--color-ember-bright); font-weight: 700;
+      animation: radar-found .5s ease-out;
+    }
+    @keyframes radar-found {
+      0% { transform: scale(.6); box-shadow: 0 0 0 rgba(246, 207, 134, .9); }
+      60% { transform: scale(1.25); box-shadow: 0 0 40px rgba(246, 207, 134, .9); }
+      100% { transform: scale(1); box-shadow: 0 0 16px rgba(246, 207, 134, .5); }
+    }
+    .radar-result {
+      margin-top: var(--space-5); font-size: var(--text-sm);
+      color: var(--color-cream); line-height: var(--leading-relaxed); min-height: 1.5em;
+    }
+    .radar-result .sub { display: block; margin-top: var(--space-1); color: var(--color-text-secondary); font-size: 12px; }
+    .radar-retry {
+      margin-top: var(--space-4); font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .25em; color: var(--color-ember); background: none;
+      border: 1px solid var(--color-border); padding: 10px 20px; cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .radar-retry:hover { border-color: var(--color-ember); color: var(--color-ember-bright); }
+    .radar-best {
+      margin-top: var(--space-3); font-family: var(--font-mono);
+      font-size: 10px; letter-spacing: .25em; color: var(--color-text-muted);
+    }
   </style>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-QLXJBRYZZ8"></script>
@@ -67,6 +132,23 @@
               <a href="/" class="btn btn-primary">ホームへ戻る</a>
               <a href="/contact/" class="btn btn-secondary">お問い合わせ</a>
             </div>
+
+            <section class="radar" aria-label="信号探索ミニゲーム">
+              <p class="radar-kicker">[ Signal Search — 信号探索 ]</p>
+              <p class="radar-intro">
+                ──と、諦めるのはまだ早い。<br>
+                消えたページの信号が、まだこの画面のどこかに残っている。<br>
+                マスをタップしてスキャンせよ。反応が強いほど、信号源は近い。
+              </p>
+              <div class="radar-status">
+                <span class="reading" id="radar-reading">SCANNING...</span>
+                <span id="radar-pings">SCAN 8/8</span>
+              </div>
+              <div class="radar-grid" id="radar-grid" role="group" aria-label="スキャングリッド"></div>
+              <p class="radar-result" id="radar-result" aria-live="polite"></p>
+              <button type="button" class="radar-retry" id="radar-retry" hidden>RESCAN — もう一度探す</button>
+              <p class="radar-best" id="radar-best"></p>
+            </section>
           </div>
         </div>
       </section>
@@ -74,6 +156,96 @@
     <div id="site-footer"></div>
   </div>
 
-  <script src="/js/main.js?v=20260615"></script>
+  <script>
+  (() => {
+    const COLS = 8, ROWS = 6, MAX_PINGS = 8;
+    const grid = document.getElementById('radar-grid');
+    const readingEl = document.getElementById('radar-reading');
+    const pingsEl = document.getElementById('radar-pings');
+    const resultEl = document.getElementById('radar-result');
+    const retryBtn = document.getElementById('radar-retry');
+    const bestEl = document.getElementById('radar-best');
+
+    let target, pings, over, cells;
+
+    const showBest = () => {
+      const best = Number(localStorage.getItem('lost-best') || 0);
+      bestEl.textContent = best ? `BEST: ${best} SCAN${best > 1 ? 'S' : ''}` : '';
+    };
+
+    const reset = () => {
+      target = { x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS) };
+      pings = MAX_PINGS;
+      over = false;
+      cells = [];
+      grid.innerHTML = '';
+      resultEl.textContent = '';
+      retryBtn.hidden = true;
+      readingEl.textContent = 'SCANNING...';
+      pingsEl.textContent = `SCAN ${pings}/${MAX_PINGS}`;
+      for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'radar-cell';
+          btn.setAttribute('aria-label', `スキャン地点 ${x + 1}-${y + 1}`);
+          btn.addEventListener('click', () => ping(x, y, btn));
+          grid.appendChild(btn);
+          cells.push(btn);
+        }
+      }
+      showBest();
+    };
+
+    const finish = (won, usedPings) => {
+      over = true;
+      cells.forEach(c => { c.disabled = true; });
+      retryBtn.hidden = false;
+      if (won) {
+        readingEl.textContent = 'SIGNAL LOCKED';
+        resultEl.innerHTML = 'PAGE FOUND — 信号源を特定した。<br>そこにあったのは「このページは存在しない」という事実だけだった。' +
+          '<span class="sub">せっかくなので <a href="/game/">遊び場</a> に寄っていきませんか。</span>';
+        const best = Number(localStorage.getItem('lost-best') || 0);
+        if (!best || usedPings < best) {
+          localStorage.setItem('lost-best', String(usedPings));
+          resultEl.innerHTML += `<span class="sub">NEW RECORD — ${usedPings}スキャンで発見。</span>`;
+        }
+      } else {
+        readingEl.textContent = 'SIGNAL LOST';
+        resultEl.innerHTML = 'LOST — 捜索打ち切り。<br>ページは電波の海に消えた。<span class="sub">電波状況の良い日に、もう一度。</span>';
+        cells[target.y * COLS + target.x].classList.add('cold');
+        cells[target.y * COLS + target.x].textContent = '·';
+      }
+      showBest();
+    };
+
+    const ping = (x, y, btn) => {
+      if (over || btn.disabled) return;
+      btn.disabled = true;
+      pings--;
+      pingsEl.textContent = `SCAN ${pings}/${MAX_PINGS}`;
+      if (x === target.x && y === target.y) {
+        btn.classList.add('found');
+        btn.textContent = '404';
+        finish(true, MAX_PINGS - pings);
+        return;
+      }
+      const d = Math.max(Math.abs(x - target.x), Math.abs(y - target.y));
+      let cls, mark, label;
+      if (d <= 1)      { cls = 'hot';  mark = '◉'; label = '強い反応'; }
+      else if (d <= 2) { cls = 'warm'; mark = '◎'; label = '反応あり'; }
+      else if (d <= 4) { cls = 'cool'; mark = '○'; label = '微弱な反応'; }
+      else             { cls = 'cold'; mark = '·'; label = 'ノイズのみ'; }
+      btn.classList.add(cls);
+      btn.textContent = mark;
+      readingEl.textContent = `READING: ${label}`;
+      if (pings <= 0) finish(false, MAX_PINGS);
+    };
+
+    retryBtn.addEventListener('click', reset);
+    reset();
+  })();
+  </script>
+  <script src="/js/main.js?v=20260616"></script>
 </body>
 </html>

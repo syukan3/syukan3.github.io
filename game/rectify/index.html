@@ -1141,6 +1141,9 @@ function showResult() {
     S.stats.forged * 6 + aliveLights * 8 + S.stats.idea * 3 + S.maxCombo * 2
   );
 
+  const prevBest = Number(localStorage.getItem("rectify-best") || 0);
+  if (score > prevBest) localStorage.setItem("rectify-best", String(score));
+
   document.getElementById("result-reason").textContent = S.endReason;
   document.getElementById("verdict").textContent = v;
   document.getElementById("verdict-sub").innerHTML = sub;

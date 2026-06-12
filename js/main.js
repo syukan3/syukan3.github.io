@@ -105,7 +105,7 @@ const Site = {
             <p>
               <a href="${IS_EN ? '/en/privacy/' : '/privacy/'}" class="footer-link">${IS_EN ? 'Privacy Policy' : 'プライバシーポリシー'}</a>
             </p>
-            <p>&copy; ${new Date().getFullYear()} Sakae Shunsuke. All rights reserved.</p>
+            <p class="footer-copyright">&copy; ${new Date().getFullYear()} Sakae Shunsuke. All rights reserved.</p>
           </div>
         </div>
       </footer>
@@ -169,6 +169,160 @@ Site.renderChrome();
 document.addEventListener('DOMContentLoaded', () => {
   Site.initNav();
 });
+
+// ---------------------------------------------------------------------------
+// Easter egg — 障害発生モード (Incident Mode)
+// 起動: コナミコマンド（↑↑↓↓←→←→BA）/ フッターの©を5連打（モバイル用）
+// 鎮火は /game/chinka/ で。閉じると「自然復旧」する。
+// ---------------------------------------------------------------------------
+const Incident = {
+  active: false,
+  KONAMI: ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a'],
+  buffer: [],
+  clicks: 0,
+  clickTimer: null,
+
+  init() {
+    document.addEventListener('keydown', (e) => {
+      if (this.active) {
+        if (e.key === 'Escape') this.resolve();
+        return;
+      }
+      this.buffer.push(e.key.toLowerCase());
+      if (this.buffer.length > this.KONAMI.length) this.buffer.shift();
+      if (this.buffer.length === this.KONAMI.length && this.KONAMI.every((k, i) => this.buffer[i] === k)) {
+        this.buffer = [];
+        this.trigger();
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (this.active || !e.target.closest('.footer-copyright')) return;
+      clearTimeout(this.clickTimer);
+      this.clickTimer = setTimeout(() => { this.clicks = 0; }, 1500);
+      if (++this.clicks >= 5) {
+        this.clicks = 0;
+        this.trigger();
+      }
+    });
+  },
+
+  injectStyle() {
+    if (document.getElementById('incident-style')) return;
+    const style = document.createElement('style');
+    style.id = 'incident-style';
+    style.textContent = `
+      @keyframes incident-flash { 0%, 100% { opacity: .25; } 50% { opacity: .65; } }
+      @keyframes incident-shake {
+        0%, 100% { transform: translate(0, 0); }
+        20% { transform: translate(-3px, 1px); } 40% { transform: translate(3px, -1px); }
+        60% { transform: translate(-2px, -1px); } 80% { transform: translate(2px, 1px); }
+      }
+      @keyframes incident-pop { from { transform: scale(.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      .incident-overlay {
+        position: fixed; inset: 0; z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        padding: 24px; background: rgba(10, 6, 4, .82);
+        backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+        animation: incident-shake .35s linear 2;
+      }
+      .incident-overlay::before {
+        content: ''; position: absolute; inset: 0; pointer-events: none;
+        box-shadow: inset 0 0 140px rgba(220, 60, 40, .8);
+        animation: incident-flash 1.1s ease-in-out infinite;
+      }
+      .incident-overlay::after {
+        content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .35;
+        background: repeating-linear-gradient(0deg, transparent 0 2px, rgba(0, 0, 0, .35) 2px 4px);
+      }
+      .incident-panel {
+        position: relative; max-width: 460px; width: 100%;
+        border: 1px solid rgba(224, 106, 74, .7); background: #140b08;
+        padding: 28px 28px 24px; text-align: left;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        color: #f3ecdc; animation: incident-pop .25s ease-out;
+        box-shadow: 0 0 60px rgba(220, 60, 40, .35);
+      }
+      .incident-sev {
+        font-size: 11px; letter-spacing: .35em; color: #ff6a4a; margin-bottom: 14px;
+      }
+      .incident-title {
+        font-size: 18px; font-weight: 700; letter-spacing: .08em;
+        margin-bottom: 16px; line-height: 1.5;
+      }
+      .incident-metrics {
+        font-size: 11px; line-height: 2; letter-spacing: .08em;
+        color: #d8cdb6; border-top: 1px dashed #3a2a22; border-bottom: 1px dashed #3a2a22;
+        padding: 10px 0; margin-bottom: 20px; white-space: pre-line;
+      }
+      .incident-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+      .incident-actions a, .incident-actions button {
+        font-family: inherit; font-size: 11px; letter-spacing: .15em;
+        padding: 10px 16px; cursor: pointer; text-decoration: none;
+      }
+      .incident-actions a {
+        background: #e06a4a; color: #140b08; border: 1px solid #e06a4a; font-weight: 700;
+      }
+      .incident-actions button {
+        background: transparent; color: #b8b8b8; border: 1px solid #3a3a3a;
+      }
+      .incident-actions a:hover { background: #f6cf86; border-color: #f6cf86; }
+      .incident-actions button:hover { color: #f3ecdc; border-color: #b8b8b8; }
+      .incident-resolved {
+        position: fixed; left: 50%; bottom: 36px; transform: translateX(-50%);
+        z-index: 9999; padding: 12px 20px;
+        background: #0c1410; border: 1px solid #3a6a4a; color: #8fd6a0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 11px; letter-spacing: .12em;
+        animation: incident-pop .25s ease-out;
+      }
+    `;
+    document.head.appendChild(style);
+  },
+
+  trigger() {
+    if (this.active) return;
+    this.active = true;
+    this.injectStyle();
+    const en = IS_EN;
+    const overlay = document.createElement('div');
+    overlay.className = 'incident-overlay';
+    overlay.setAttribute('role', 'alertdialog');
+    overlay.setAttribute('aria-label', en ? 'Incident alert' : '障害アラート');
+    overlay.innerHTML = `
+      <div class="incident-panel">
+        <div class="incident-sev">SEV-1 INCIDENT DETECTED</div>
+        <div class="incident-title">${en ? 'A critical incident has occurred<br>in production.' : '本番環境で重大な障害が<br>発生しました。'}</div>
+        <div class="incident-metrics">ERROR RATE ......... 99.97%
+LATENCY ............ ∞ ms
+${en ? 'IMPACT ............. this entire site' : '影響範囲 ........... このサイト全体'}
+${en ? 'ROOT CAUSE ......... you (Konami code)' : '原因 ............... あなた（コナミコマンド）'}</div>
+        <div class="incident-actions">
+          <a href="/game/chinka/">${en ? 'RESPOND ▸ 鎮火' : '鎮火に向かう ▸'}</a>
+          <button type="button" data-incident-close>${en ? 'PRETEND I SAW NOTHING [ESC]' : '見なかったことにする [ESC]'}</button>
+        </div>
+      </div>
+    `;
+    overlay.querySelector('[data-incident-close]').addEventListener('click', () => this.resolve());
+    document.body.appendChild(overlay);
+    this.overlay = overlay;
+  },
+
+  resolve() {
+    if (!this.active) return;
+    this.active = false;
+    this.overlay?.remove();
+    this.overlay = null;
+    const toast = document.createElement('div');
+    toast.className = 'incident-resolved';
+    toast.textContent = IS_EN
+      ? 'INCIDENT RESOLVED — recovered on its own. Root cause: unknown.'
+      : 'INCIDENT RESOLVED — 自然復旧しました。原因は不明です。';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+  }
+};
+
+Incident.init();
 
 // Expose to global scope
 window.Site = Site;
