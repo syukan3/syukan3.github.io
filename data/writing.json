@@ -1,6 +1,24 @@
 {
   "writing": [
     {
+      "id": "qiita-2025-summary",
+      "title": "Qiita 2025年 年間まとめ — 年間174万PV・1,555 LGTM",
+      "pinned": false,
+      "date": "2025-12-25",
+      "summary": "2025年だけで年間閲覧数174万PV・獲得LGTM1,555・新規102記事を記録した年間サマリー",
+      "url": "https://qiita.com/syukan3/yearly-summary/2025",
+      "type": "summary"
+    },
+    {
+      "id": "qiita-2024-summary",
+      "title": "Qiita 2024年 年間まとめ",
+      "pinned": false,
+      "date": "2024-12-25",
+      "summary": "技術記事の発信を加速させた2024年の活動を振り返る年間サマリー",
+      "url": "https://qiita.com/syukan3/yearly-summary/2024",
+      "type": "summary"
+    },
+    {
       "id": "qiita-bash-2025",
       "title": "Qiita Bash - MCPで広がる生成AI活用の可能性",
       "pinned": true,

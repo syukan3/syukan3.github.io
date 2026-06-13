@@ -1,6 +1,24 @@
 {
   "writing": [
     {
+      "id": "qiita-2025-summary",
+      "title": "Qiita 2025 Year in Review — 1.74M Views, 1,555 Likes",
+      "pinned": false,
+      "date": "2025-12-25",
+      "summary": "Year-end summary: 1.74M views, 1,555 likes, and 102 new articles in 2025 alone (in Japanese)",
+      "url": "https://qiita.com/syukan3/yearly-summary/2025",
+      "type": "summary"
+    },
+    {
+      "id": "qiita-2024-summary",
+      "title": "Qiita 2024 Year in Review",
+      "pinned": false,
+      "date": "2024-12-25",
+      "summary": "A look back at a year of accelerating technical writing on Qiita (in Japanese)",
+      "url": "https://qiita.com/syukan3/yearly-summary/2024",
+      "type": "summary"
+    },
+    {
       "id": "qiita-bash-2025",
       "title": "Qiita Bash — How MCP Expands What Generative AI Can Do",
       "pinned": true,

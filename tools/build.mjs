@@ -54,7 +54,7 @@ const DATA = {
 // 言語別UI文字列（旧 js/components.js の STR を踏襲）
 const STR = {
   ja: {
-    talk: '登壇', article: '記事', role: '役割', privateCode: 'コード非公開',
+    talk: '登壇', article: '記事', summary: '年間まとめ', role: '役割', privateCode: 'コード非公開',
     caseLabels: ['背景 / Background', '制約 / Constraints', '打ち手 / Approach', '実装 / Implementation', '成果 / Results', '学び / Learnings'],
     workBase: '/work/',
     skillGroups: ['言語', 'フレームワーク', 'インフラ / DB'],
@@ -67,7 +67,7 @@ const STR = {
     contactHref: '/contact/'
   },
   en: {
-    talk: 'Talk', article: 'Article', role: 'Role', privateCode: 'Private codebase',
+    talk: 'Talk', article: 'Article', summary: 'Year in Review', role: 'Role', privateCode: 'Private codebase',
     caseLabels: ['Background', 'Constraints', 'Approach', 'Implementation', 'Results', 'Learnings'],
     workBase: '/en/work/',
     skillGroups: ['Languages', 'Frameworks', 'Infrastructure / DB'],
@@ -165,7 +165,7 @@ function projectCard(project, lang) {
 }
 
 function writingItem(item, lang) {
-  const typeLabel = item.type === 'talk' ? STR[lang].talk : STR[lang].article;
+  const typeLabel = STR[lang][item.type] || STR[lang].article;
   return `
       <a href="${safeUrl(item.url)}" target="_blank" rel="noopener noreferrer" class="writing-row card-link" data-reveal>
         <div class="writing-meta">
@@ -683,7 +683,7 @@ This site is available in Japanese (${SITE}/) and English (${SITE}/en/).
 - [Home](${SITE}/): 概要と主要な実績 / EN: ${SITE}/en/
 - [Work](${SITE}/work/): ケーススタディ一覧 / EN: ${SITE}/en/work/
 - [Projects](${SITE}/projects/): プロダクト・OSS・社内システム / EN: ${SITE}/en/projects/
-- [Writing](${SITE}/writing/): 技術記事・登壇（Qiita 累計143万PV・270記事超） / EN: ${SITE}/en/writing/
+- [Writing](${SITE}/writing/): 技術記事・登壇（Qiita は2025年だけで年間174万PV・累計252記事） / EN: ${SITE}/en/writing/
 - [About](${SITE}/about/): 経歴・スキル・資格 / EN: ${SITE}/en/about/
 - [Favorite](${SITE}/favorite/): 好きな本・漫画・音楽、旅の記録、これまでの道のり（日本語のみ / Japanese only）
 - [Contact](${SITE}/contact/): お問い合わせ / EN: ${SITE}/en/contact/

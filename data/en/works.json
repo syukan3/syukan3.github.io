@@ -54,10 +54,10 @@
     },
     {
       "id": "work-qiita",
-      "title": "Growing a Tech Blog to 1.43M Views",
+      "title": "Growing a Tech Blog to 1.74M Views a Year",
       "slug": "qiita-growth",
       "featured": true,
-      "summary": "Reached 1.43M cumulative views on Qiita through a deliberate growth strategy, growing daily views 7×",
+      "summary": "Grew a Qiita tech blog deliberately — 1.74M views and 1,555 likes in 2025 alone",
       "thumbnail": "/images/blog_mosaicai.webp",
       "background": "I run a tech blog to share knowledge and build my personal brand. It stood at 400K views in November 2024 and needed a deliberate push to grow.",
       "constraints": [
@@ -68,10 +68,10 @@
       "approach": "Focused on high-demand topics such as AI and cloud, identified through trend analysis. Applied thorough SEO (titles, tags, structure) and aimed for one high-quality article per day.",
       "implementation": "Used analytics to study what made articles popular and fed it back into the writing. Prioritized reader relationships through comment responses and feedback.",
       "results": [
-        "1.43M cumulative views (+1M in 8 months)",
-        "~5,000 daily views (7× growth)",
-        "270+ articles published",
-        "Top article on 'Deep Research' exceeded 250K views and 100 likes"
+        "1.74M views in 2025 alone (1,745,233 PV)",
+        "1,555 likes and 1,088 stocks earned in 2025",
+        "102 articles published in 2025 (252 total)",
+        "Top article 'Cline vs Roo Code vs CoolCline' earned 164 likes; 'Deep Research' exceeded 250K views"
       ],
       "learnings": "Consistency matters most in technical writing. Combining timely coverage of trends with genuinely deep explanations is what earns reader trust.",
       "tags": ["Qiita", "SEO", "Analytics", "Tech writing"],

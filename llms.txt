@@ -1,6 +1,6 @@
 # 栄 俊介 / Sakae Shunsuke — Portfolio
 
-> AIガバナンス・アーキテクト / システム部長。金融グレードのガバナンス（FISC安全基準・J-SOX IT全般統制・個人情報保護法）の下で、生成AIの全社導入を統制ごと設計・推進するAIガバナンス・アーキテクト。フィンテック企業のシステム部長として4名のチームを統括し、技術選定・採用・育成から内部監査対応までを主導しています。土台にあるのは Ruby on Rails、Python、React/Next.js、AWS による要件定義から運用までの一貫した開発力。技術発信にも積極的で、Qiita 累計143万PV・270記事超を達成しました（2026年時点）。
+> AIガバナンス・アーキテクト / システム部長。金融グレードのガバナンス（FISC安全基準・J-SOX IT全般統制・個人情報保護法）の下で、生成AIの全社導入を統制ごと設計・推進するAIガバナンス・アーキテクト。フィンテック企業のシステム部長として4名のチームを統括し、技術選定・採用・育成から内部監査対応までを主導しています。土台にあるのは Ruby on Rails、Python、React/Next.js、AWS による要件定義から運用までの一貫した開発力。技術発信にも積極的で、Qiita では2025年だけで年間174万PV・獲得LGTM1,555を記録しました（累計252記事）。
 
 このサイトは日本語（https://syukan3.github.io/）と英語（https://syukan3.github.io/en/）で提供しています。
 This site is available in Japanese (https://syukan3.github.io/) and English (https://syukan3.github.io/en/).
@@ -10,7 +10,7 @@ This site is available in Japanese (https://syukan3.github.io/) and English (htt
 - [Home](https://syukan3.github.io/): 概要と主要な実績 / EN: https://syukan3.github.io/en/
 - [Work](https://syukan3.github.io/work/): ケーススタディ一覧 / EN: https://syukan3.github.io/en/work/
 - [Projects](https://syukan3.github.io/projects/): プロダクト・OSS・社内システム / EN: https://syukan3.github.io/en/projects/
-- [Writing](https://syukan3.github.io/writing/): 技術記事・登壇（Qiita 累計143万PV・270記事超） / EN: https://syukan3.github.io/en/writing/
+- [Writing](https://syukan3.github.io/writing/): 技術記事・登壇（Qiita は2025年だけで年間174万PV・累計252記事） / EN: https://syukan3.github.io/en/writing/
 - [About](https://syukan3.github.io/about/): 経歴・スキル・資格 / EN: https://syukan3.github.io/en/about/
 - [Favorite](https://syukan3.github.io/favorite/): 好きな本・漫画・音楽、旅の記録、これまでの道のり（日本語のみ / Japanese only）
 - [Contact](https://syukan3.github.io/contact/): お問い合わせ / EN: https://syukan3.github.io/en/contact/
@@ -20,7 +20,7 @@ This site is available in Japanese (https://syukan3.github.io/) and English (htt
 
 - [生成AIの全社導入とガバナンス整備](https://syukan3.github.io/work/genai-governance/): 金融グレードの統制を効かせ、生成AIを全社へ安全に導入。業務自動化で運用工数とコストを削減（2024-現在） / EN: [Company-Wide Generative-AI Adoption & Governance](https://syukan3.github.io/en/work/genai-governance/)
 - [オンラインファンド販売事業の基盤 HiJoJo.com](https://syukan3.github.io/work/hijojo-system/): 会社の収益を生む販売チャネルそのものを少人数で支え、パートナー連携など販路を広げる機能開発で事業拡大に貢献（2022-現在） / EN: [HiJoJo.com — Online Fund-Distribution Platform](https://syukan3.github.io/en/work/hijojo-system/)
-- [技術ブログ143万PV達成](https://syukan3.github.io/work/qiita-growth/): 戦略的アプローチで Qiita 累計143万PVを達成。日間PVを7倍に成長（2019-現在） / EN: [Growing a Tech Blog to 1.43M Views](https://syukan3.github.io/en/work/qiita-growth/)
+- [技術ブログ 年間174万PV達成](https://syukan3.github.io/work/qiita-growth/): 戦略的アプローチで Qiita を成長させ、2025年だけで年間174万PV・1,555 LGTMを獲得（2019-現在） / EN: [Growing a Tech Blog to 1.74M Views a Year](https://syukan3.github.io/en/work/qiita-growth/)
 - [IoT×AI 視聴者計測の新規事業立ち上げ](https://syukan3.github.io/work/iot-vision-system/): 社内にML知見ゼロの状態から独学でAIモデル開発を立ち上げ、デジタルサイネージ広告効果測定の新規事業をゼロから事業化（2020-2022） / EN: [IoT × AI Audience Measurement — A New Business from Zero](https://syukan3.github.io/en/work/iot-vision-system/)
 
 ## 主要プロジェクト / Featured Projects
@@ -28,7 +28,7 @@ This site is available in Japanese (https://syukan3.github.io/) and English (htt
 - 通話録音 一次評価自動化システム: コンプラ通話の録音を文字起こしし、LLMで一次評価を自動化。FISC内部統制対応と地続きの自社稼働システム
 - 生成AIプロンプト全量モニタリング: 社員の生成AIへの入力プロンプトを全量モニタリングし、機密情報の取り扱いリスクを可視化・統制するガバナンス基盤
 - AI仕様書自動生成: 既存システムのソースから仕様書を全自動生成し、ドキュメント整備の工数を大幅に削減
-- 技術ブログ143万PV獲得戦略: 戦略的アプローチで143万PV達成。日間PVを7倍に成長させ、270記事超を公開
+- 技術ブログ 年間174万PV獲得戦略: 戦略的アプローチで2025年だけで年間174万PV・1,555 LGTMを獲得。累計252記事を公開
 - Censify: 不適切な表現を検出するAPIサービス。LLMを活用した高精度な判定を実現
 - Gaugenix: IoTデバイスで計器の画像を撮影し、AI解析で値を取得するシステム
 - MosaicAI: 複数のAI言語モデルを統一的に利用できるオープンソースPythonライブラリ
