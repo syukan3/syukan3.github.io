@@ -19,13 +19,17 @@ const Site = {
     { key: 'projects', label: 'Projects', href: '/projects/' },
     { key: 'writing', label: 'Writing', href: '/writing/' },
     { key: 'photo', label: 'Photo', href: '/photo/' },
+    { key: 'favorite', label: 'Favorite', href: '/favorite/' },
     { key: 'game', label: 'Game', href: '/game/' },
     { key: 'about', label: 'About', href: '/about/' },
     { key: 'contact', label: 'Contact', href: '/contact/' }
   ],
 
+  // 言語共通（日本語のみ）のセクション。/en/ 配下のページが存在しない
+  langCommon: ['/game/', '/favorite/'],
+
   localizeHref(href) {
-    if (href.startsWith('/game/')) return href; // 遊び場は言語共通（日本語のみ）
+    if (this.langCommon.some(p => href.startsWith(p))) return href;
     return IS_EN ? `/en${href}` : href;
   },
 
@@ -52,6 +56,8 @@ const Site = {
 
     const switchLabel = IS_EN ? '日本語' : 'EN';
     const switchTitle = IS_EN ? 'このページを日本語で読む' : 'Read this page in English';
+    // 言語共通ページには英語版が存在しないため、言語切替は表示しない
+    const showSwitch = !this.langCommon.some(p => window.location.pathname.startsWith(p));
 
     return `
       <header class="header">
@@ -64,7 +70,7 @@ const Site = {
             <ul class="nav-list">${items}</ul>
           </nav>
           <div class="header-tools">
-            <a href="${this.altLangHref()}" class="lang-switch" lang="${IS_EN ? 'ja' : 'en'}" title="${switchTitle}">${switchLabel}</a>
+            ${showSwitch ? `<a href="${this.altLangHref()}" class="lang-switch" lang="${IS_EN ? 'ja' : 'en'}" title="${switchTitle}">${switchLabel}</a>` : ''}
             <button class="menu-toggle" aria-label="${IS_EN ? 'Open menu' : 'メニューを開く'}" aria-expanded="false">
               <span class="menu-icon" aria-hidden="true"></span>
             </button>

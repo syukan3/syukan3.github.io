@@ -27,7 +27,7 @@ const TODAY = new Date().toISOString().slice(0, 10);
 
 // ページが参照しているアセットのバージョン（キャッシュバスター）。
 // CSS/JS を変更したらここも更新し、build を実行して全ページへ反映する。
-const V = { css: '20260611', components: '20260613', mainjs: '20260616', hero: '20260614' };
+const V = { css: '20260611', components: '20260613', mainjs: '20260618', hero: '20260614' };
 
 // ---------------------------------------------------------------------------
 // データ読み込み
@@ -47,7 +47,8 @@ const DATA = {
     writing: loadJson('data/en/writing.json').writing,
     profile: loadJson('data/en/profile.json')
   },
-  photos: loadJson('data/photos.json').photos
+  photos: loadJson('data/photos.json').photos,
+  favorite: loadJson('data/favorite.json')
 };
 
 // 言語別UI文字列（旧 js/components.js の STR を踏襲）
@@ -218,6 +219,80 @@ function photoItem(photo) {
         <div class="photo-media">${media}</div>
         ${caption}
       </figure>`;
+}
+
+// ---------------------------------------------------------------------------
+// Favorite ページ（/favorite/ 日本語のみ）
+// ---------------------------------------------------------------------------
+// タイルグリッド型日本地図の都道府県座標 [grid-column, grid-row]（14列×13行）
+const PREF_GRID = {
+  '北海道': [14, 1],
+  '青森': [13, 2],
+  '秋田': [12, 3], '岩手': [13, 3],
+  '山形': [12, 4], '宮城': [13, 4],
+  '新潟': [11, 5], '福島': [12, 5],
+  '石川': [9, 6], '富山': [10, 6], '長野': [11, 6], '群馬': [12, 6], '栃木': [13, 6],
+  '福井': [9, 7], '岐阜': [10, 7], '山梨': [11, 7], '埼玉': [12, 7], '茨城': [13, 7],
+  '島根': [5, 8], '鳥取': [6, 8], '京都': [8, 8], '滋賀': [9, 8], '愛知': [10, 8], '静岡': [11, 8], '東京': [12, 8], '千葉': [13, 8],
+  '山口': [4, 9], '広島': [5, 9], '岡山': [6, 9], '兵庫': [7, 9], '大阪': [8, 9], '奈良': [9, 9], '三重': [10, 9], '神奈川': [12, 9],
+  '長崎': [1, 10], '佐賀': [2, 10], '福岡': [3, 10], '大分': [4, 10], '愛媛': [5, 10], '香川': [6, 10], '徳島': [7, 10], '和歌山': [8, 10],
+  '熊本': [3, 11], '宮崎': [4, 11], '高知': [6, 11],
+  '鹿児島': [3, 12],
+  '沖縄': [1, 13]
+};
+
+function japanMapBlock(japan) {
+  const visited = new Set(japan.visited);
+  for (const name of visited) {
+    if (!PREF_GRID[name]) throw new Error(`data/favorite.json: 未知の都道府県 "${name}"`);
+  }
+  const tiles = Object.entries(PREF_GRID).map(([name, [col, row]]) => {
+    const isVisited = visited.has(name);
+    return `<li class="jp-tile${isVisited ? ' is-visited' : ''}" style="grid-column:${col};grid-row:${row};">${esc(name)}${isVisited ? '<span class="sr-only">（訪問済）</span>' : ''}</li>`;
+  }).join('\n          ');
+  return `
+      <div class="jp-map-block" data-reveal>
+        <div class="jp-map-stats">
+          <span class="jp-map-count"><strong>${visited.size}</strong> / 47</span>
+          <span class="jp-map-count-label">都道府県を制覇</span>
+        </div>
+        <p class="sr-only">旅した都道府県マップ。訪問済みの都道府県に「（訪問済）」を付けています。</p>
+        <ul class="jp-map">
+          ${tiles}
+        </ul>
+      </div>`;
+}
+
+function overseasStamps(list) {
+  return `
+      <div class="stamp-row" data-reveal>
+        ${list.map(p => `<span class="stamp">${esc(p)}</span>`).join('\n        ')}
+      </div>`;
+}
+
+function bookList(list) {
+  return list.map(b => `
+      <li class="book-row" data-reveal>
+        <span class="book-title">${esc(b.title)}</span>
+        ${b.author ? `<span class="book-author">${esc(b.author)}</span>` : ''}
+        ${b.comment ? `<span class="book-comment">${esc(b.comment)}</span>` : ''}
+      </li>`).join('');
+}
+
+function musicBlock(music) {
+  // 曲に順位はないので番号は振らない
+  const tracks = music.songs.map(s => `
+          <li><span class="tr-title">♪ ${esc(s.title)}</span>${s.comment ? `<span class="tr-comment">${esc(s.comment)}</span>` : ''}</li>`).join('');
+  return `
+      <div class="mixtape" data-reveal>
+        <div class="mixtape-head">
+          <span class="mixtape-side">SIDE A</span>
+          <span class="mixtape-artist">${esc(music.artist)}</span>
+        </div>
+        ${music.comment ? `<p class="mixtape-comment">${esc(music.comment)}</p>` : ''}
+        <ol class="tracklist">${tracks}
+        </ol>
+      </div>`;
 }
 
 function skillsBlock(skills, lang) {
@@ -507,7 +582,24 @@ function pageInjections(lang) {
       'timeline': (d.profile.timeline || []).map(t => timelineItem(t)).join('\n'),
       'aws-services': awsBlock(d.profile.skills?.awsServices, lang),
       'certifications': certList(d.profile.certifications)
-    }]
+    }],
+    // Favorite ページは言語共通（日本語のみ）
+    ...(lang === 'ja' ? [
+      ['favorite/index.html', {
+        'fav-intro': esc(DATA.favorite.intro),
+        'fav-books': bookList(DATA.favorite.books),
+        'fav-manga': bookList(DATA.favorite.manga),
+        'fav-movies': bookList(DATA.favorite.movies),
+        'fav-anime': bookList(DATA.favorite.anime),
+        'fav-dramas': bookList(DATA.favorite.dramas),
+        'fav-music': musicBlock(DATA.favorite.music),
+        'fav-foods': bookList(DATA.favorite.foods),
+        'fav-hobbies': bookList(DATA.favorite.hobbies),
+        'fav-japan': japanMapBlock(DATA.favorite.travel.japan),
+        'fav-overseas': overseasStamps(DATA.favorite.travel.overseas),
+        'fav-story': esc(DATA.favorite.story)
+      }]
+    ] : [])
   ];
 }
 
@@ -538,6 +630,7 @@ function buildSitemap(outputs) {
     { loc: '/writing/', file: 'writing/index.html', changefreq: 'weekly', priority: '0.8' },
     { loc: '/photo/', file: 'photo/index.html', changefreq: 'monthly', priority: '0.6' },
     { loc: '/about/', file: 'about/index.html', changefreq: 'monthly', priority: '0.7' },
+    { loc: '/favorite/', file: 'favorite/index.html', changefreq: 'monthly', priority: '0.5' },
     { loc: '/contact/', file: 'contact/index.html', changefreq: 'monthly', priority: '0.6' },
     { loc: '/game/', file: 'game/index.html', changefreq: 'monthly', priority: '0.5' },
     { loc: '/privacy/', file: 'privacy/index.html', changefreq: 'yearly', priority: '0.3' },
@@ -592,6 +685,7 @@ This site is available in Japanese (${SITE}/) and English (${SITE}/en/).
 - [Projects](${SITE}/projects/): プロダクト・OSS・社内システム / EN: ${SITE}/en/projects/
 - [Writing](${SITE}/writing/): 技術記事・登壇（Qiita 累計143万PV・270記事超） / EN: ${SITE}/en/writing/
 - [About](${SITE}/about/): 経歴・スキル・資格 / EN: ${SITE}/en/about/
+- [Favorite](${SITE}/favorite/): 好きな本・漫画・音楽、旅の記録、これまでの道のり（日本語のみ / Japanese only）
 - [Contact](${SITE}/contact/): お問い合わせ / EN: ${SITE}/en/contact/
 - [Privacy Policy](${SITE}/privacy/): プライバシーポリシー / EN: ${SITE}/en/privacy/
 

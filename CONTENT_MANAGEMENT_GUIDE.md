@@ -26,7 +26,7 @@ node tools/build.mjs
 
 ビルドスクリプトは以下を自動生成します（生成されたHTMLもコミットします）:
 
-- 各ページの `<!-- build:〇〇 -->` マーカー内のコンテンツ（Home / Work / Projects / Writing / Photo / About）
+- 各ページの `<!-- build:〇〇 -->` マーカー内のコンテンツ（Home / Work / Projects / Writing / Photo / About / Favorite）
 - ケーススタディ詳細ページ `/work/<slug>/` と `/en/work/<slug>/`
 - `sitemap.xml` と `llms.txt`
 
@@ -39,8 +39,20 @@ data/
 ├── works.json      # Workのケーススタディ
 ├── projects.json   # Projects一覧
 ├── writing.json    # 記事・登壇一覧
-└── profile.json    # プロフィール情報
+├── profile.json    # プロフィール情報
+└── favorite.json   # Favoriteページ（好きな本・漫画・音楽、旅の記録、道のり。日本語のみ）
 ```
+
+`favorite.json` の補足:
+
+- `books[]` … 好きな本（title / author / comment。著者・一言コメント付きリストで表示）
+- `manga[]` / `movies[]` / `anime[]` / `dramas[]` / `foods[]` / `hobbies[]` … 各カテゴリの好きなもの
+  （title / comment。本と同じリストデザインで表示）
+- `music` … 好きな音楽（artist / comment / songs[]（title / comment）。番号なしのトラックリスト風に表示）
+- `travel.japan.visited[]` … 訪問済み都道府県名（タイルグリッド日本地図に塗りつぶしで反映。
+  都道府県名は `tools/build.mjs` の `PREF_GRID` のキーと一致させる）
+- `travel.overseas[]` … 海外の渡航先（スタンプ風に表示）
+- `story` … これまでの道のり（ひとつづきの文章）
 
 ---
 

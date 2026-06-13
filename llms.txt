@@ -12,6 +12,7 @@ This site is available in Japanese (https://syukan3.github.io/) and English (htt
 - [Projects](https://syukan3.github.io/projects/): プロダクト・OSS・社内システム / EN: https://syukan3.github.io/en/projects/
 - [Writing](https://syukan3.github.io/writing/): 技術記事・登壇（Qiita 累計143万PV・270記事超） / EN: https://syukan3.github.io/en/writing/
 - [About](https://syukan3.github.io/about/): 経歴・スキル・資格 / EN: https://syukan3.github.io/en/about/
+- [Favorite](https://syukan3.github.io/favorite/): 好きな本・漫画・音楽、旅の記録、これまでの道のり（日本語のみ / Japanese only）
 - [Contact](https://syukan3.github.io/contact/): お問い合わせ / EN: https://syukan3.github.io/en/contact/
 - [Privacy Policy](https://syukan3.github.io/privacy/): プライバシーポリシー / EN: https://syukan3.github.io/en/privacy/
 

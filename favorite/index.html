@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="栄 俊介 - 好きな本・漫画・映画・アニメ・ドラマ・音楽・食べ物・趣味、旅の記録（42都道府県・海外14の国と地域）、これまでの道のり。">
+  <meta name="keywords" content="栄俊介, 好きなもの, 旅行, 読書, Mr.Children">
+
+  <meta property="og:title" content="Favorite - 栄 俊介 | Sakae Shunsuke">
+  <meta property="og:description" content="好きな本・漫画・映画・アニメ・ドラマ・音楽・食べ物・趣味、旅の記録、これまでの道のり。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://syukan3.github.io/favorite/">
+  <meta property="og:image" content="https://syukan3.github.io/images/og-image.png">
+
+  <meta name="theme-color" content="#0b0a08">
+  <link rel="canonical" href="https://syukan3.github.io/favorite/">
+  <title>Favorite - 栄 俊介 | Sakae Shunsuke</title>
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- 構造化データ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://syukan3.github.io/#person",
+        "name": "栄 俊介",
+        "alternateName": [
+          "Sakae Shunsuke",
+          "syukan3"
+        ],
+        "jobTitle": "AIガバナンス・アーキテクト / システム部長",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "HiJoJo Partners株式会社"
+        },
+        "url": "https://syukan3.github.io/",
+        "image": "https://syukan3.github.io/images/profile.webp",
+        "sameAs": [
+          "https://github.com/syukan3",
+          "https://qiita.com/syukan3"
+        ],
+        "knowsLanguage": [
+          "ja",
+          "en"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://syukan3.github.io/#website",
+        "url": "https://syukan3.github.io/",
+        "name": "栄 俊介 | Sakae Shunsuke - Portfolio",
+        "inLanguage": "ja",
+        "publisher": {
+          "@id": "https://syukan3.github.io/#person"
+        }
+      },
+      {
+        "@type": "ProfilePage",
+        "url": "https://syukan3.github.io/favorite/",
+        "name": "Favorite - 栄 俊介 | Sakae Shunsuke",
+        "inLanguage": "ja",
+        "isPartOf": {
+          "@id": "https://syukan3.github.io/#website"
+        },
+        "mainEntity": {
+          "@id": "https://syukan3.github.io/#person"
+        }
+      }
+    ]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/reset.css?v=20260611">
+  <link rel="stylesheet" href="/css/variables.css?v=20260611">
+  <link rel="stylesheet" href="/css/base.css?v=20260611">
+  <link rel="stylesheet" href="/css/components.css?v=20260613">
+  <style>
+    /* ---- Favorite ページ専用スタイル ---- */
+    .fav-lead {
+      max-width: 640px;
+      color: var(--color-text-secondary);
+      line-height: var(--leading-relaxed);
+      margin-bottom: var(--space-16);
+    }
+
+    /* Books — 読書リスト */
+    .book-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-width: 560px;
+    }
+    .book-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--space-3);
+      padding: var(--space-4) 0;
+      border-bottom: 1px dashed var(--color-smoke);
+    }
+    .book-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      letter-spacing: 0.06em;
+      color: var(--color-cream);
+    }
+    .book-author {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.15em;
+      color: var(--color-text-muted);
+    }
+    .book-comment {
+      display: block;
+      width: 100%;
+      font-size: var(--text-sm);
+      color: rgba(184, 184, 184, 0.55);
+      margin-top: var(--space-1);
+      line-height: var(--leading-normal);
+    }
+
+    /* Music — ミックステープ */
+    .mixtape {
+      max-width: 560px;
+      border: 1px solid var(--color-slate);
+      background: rgba(20, 18, 14, 0.6);
+      padding: var(--space-6) var(--space-7);
+    }
+    .mixtape-head {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+      border-bottom: 1px dashed var(--color-slate);
+      padding-bottom: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+    .mixtape-side {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.35em;
+      color: var(--color-ember);
+    }
+    .mixtape-artist {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      letter-spacing: 0.08em;
+      color: var(--color-cream);
+    }
+    .mixtape-comment {
+      font-size: var(--text-sm);
+      color: var(--color-cream-dim);
+      margin-bottom: var(--space-4);
+      line-height: var(--leading-relaxed);
+    }
+    .tracklist {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      columns: 2;
+      column-gap: var(--space-8);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+    .tracklist li {
+      padding: var(--space-2) 0;
+      break-inside: avoid;
+    }
+    .tr-title { display: block; }
+    .tr-comment {
+      display: block;
+      font-size: var(--text-xs);
+      color: rgba(184, 184, 184, 0.55);
+      margin-top: 2px;
+      padding-left: var(--space-5);
+    }
+
+    /* Japan — タイルグリッド日本地図 */
+    .jp-map-block { max-width: 760px; }
+    .jp-map-stats {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+    .jp-map-count {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      color: var(--color-text-muted);
+    }
+    .jp-map-count strong {
+      font-size: var(--text-5xl);
+      font-weight: var(--font-semibold);
+      color: var(--color-ember-bright);
+      margin-right: var(--space-1);
+    }
+    .jp-map-count-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.2em;
+      color: var(--color-text-muted);
+    }
+    .jp-map {
+      display: grid;
+      grid-template-columns: repeat(14, minmax(0, 1fr));
+      gap: 4px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .jp-tile {
+      position: relative;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(7px, 1.3vw, 11px);
+      letter-spacing: 0.05em;
+      background: var(--color-charcoal);
+      border: 1px solid var(--color-smoke);
+      color: var(--color-ash);
+      white-space: nowrap;
+    }
+    .jp-tile.is-visited {
+      background: var(--color-ember);
+      border-color: var(--color-ember-bright);
+      color: var(--color-black);
+      font-weight: var(--font-semibold);
+      box-shadow: 0 0 10px rgba(224, 164, 90, 0.3);
+    }
+    /* モバイルは縦書きタイルにして14列を画面内に収める（横スクロールさせない） */
+    @media (max-width: 600px) {
+      .jp-map { gap: 3px; }
+      .jp-tile {
+        aspect-ratio: auto;
+        writing-mode: vertical-rl;
+        min-height: 44px;
+        padding: 5px 0;
+        font-size: 8.5px;
+        letter-spacing: 0.1em;
+      }
+    }
+
+    /* Overseas — パスポートスタンプ */
+    .stamp-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      max-width: 760px;
+    }
+    .stamp {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.2em;
+      padding: var(--space-3) var(--space-5);
+      border: 1.5px dashed var(--color-border-light);
+      border-radius: 999px;
+      color: var(--color-cream-dim);
+      transform: rotate(-2deg);
+    }
+    .stamp:nth-child(2n) {
+      transform: rotate(1.5deg);
+      border-color: var(--color-ember-dark);
+      color: var(--color-ember-bright);
+    }
+    .stamp:nth-child(3n) { transform: rotate(0.5deg); }
+
+    /* Story — これまでの道のり（ひとつづきの文章） */
+    .story-text {
+      max-width: 720px;
+      color: var(--color-text-secondary);
+      line-height: 2.1;
+      letter-spacing: 0.02em;
+    }
+    .story-text::first-letter {
+      font-family: var(--font-display);
+      font-size: 1.6em;
+      color: var(--color-ember-bright);
+    }
+
+    .fav-sub-block { margin-bottom: var(--space-12); }
+    .fav-sub-title {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--color-ember);
+      margin-bottom: var(--space-5);
+    }
+
+    @media (max-width: 540px) {
+      .tracklist { columns: 1; }
+      .spine-1 { min-height: 150px; }
+      .spine-2 { min-height: 138px; }
+      .spine-3 { min-height: 144px; }
+      .spine-featured { min-height: 195px; }
+    }
+  </style>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QLXJBRYZZ8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-QLXJBRYZZ8');
+  </script>
+</head>
+<body data-page="favorite">
+  <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+  <div id="site-header"></div>
+
+  <div class="noir-frame">
+    <main id="main-content">
+      <section class="section">
+        <div class="container container-lg">
+          <div class="section-header" data-reveal>
+            <span class="section-eyebrow">Favorite</span>
+            <h1 class="section-title">好きなもの</h1>
+          </div>
+
+          <p class="fav-lead" data-reveal>
+      <!-- build:fav-intro -->
+好きな本・漫画・映画・アニメ・ドラマ・音楽・食べ物・趣味。旅の記録と、これまでの道のり。
+      <!-- /build:fav-intro -->
+          </p>
+
+          <!-- Books -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Books / 本</h2>
+            <ul class="book-list">
+      <!-- build:fav-books -->
+
+      <li class="book-row" data-reveal>
+        <span class="book-title">羊と鋼の森</span>
+        <span class="book-author">宮下奈都</span>
+        <span class="book-comment">静かに、まっすぐ仕事と向き合いたくなる一冊</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">海賊とよばれた男</span>
+        <span class="book-author">百田尚樹</span>
+        <span class="book-comment">信念を貫く経営者の熱に圧倒される</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">君の膵臓をたべたい</span>
+        <span class="book-author">住野よる</span>
+        <span class="book-comment">タイトルの意味がわかった瞬間、涙腺が崩壊</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">メモの魔力</span>
+        <span class="book-author">前田裕二</span>
+        <span class="book-comment">メモが記録ではなく思考の道具になる</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">死ぬこと以外かすり傷</span>
+        <span class="book-author">箕輪厚介</span>
+        <span class="book-comment">迷ったら攻める、と背中を押してくれる</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">成長以外、全て死</span>
+        <span class="book-author">中野優作</span>
+        <span class="book-comment">タイトルどおりの覚悟をくれる一冊</span>
+      </li>
+      <!-- /build:fav-books -->
+            </ul>
+          </div>
+
+          <!-- Manga -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Manga / 漫画</h2>
+            <ul class="book-list">
+      <!-- build:fav-manga -->
+
+      <li class="book-row" data-reveal>
+        <span class="book-title">ONE PIECE</span>
+        
+        <span class="book-comment">仲間と冒険のすべてが詰まった人生のバイブル</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">バクマン。</span>
+        
+        <span class="book-comment">夢を仕事にする泥臭さと熱さ</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">DEATH NOTE</span>
+        
+        <span class="book-comment">頭脳戦の緊張感は唯一無二。夜神月が好きすぎる</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">金色のガッシュ!!</span>
+        
+        <span class="book-comment">何度読んでも泣ける友情の物語</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">HUNTER×HUNTER</span>
+        
+        <span class="book-comment">設定の作り込みと心理戦の深さが別格</span>
+      </li>
+      <!-- /build:fav-manga -->
+            </ul>
+          </div>
+
+          <!-- Movies -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Movies / 映画</h2>
+            <ul class="book-list">
+      <!-- build:fav-movies -->
+
+      <li class="book-row" data-reveal>
+        <span class="book-title">魔女の宅急便</span>
+        
+        <span class="book-comment">ジブリでいちばん好きな一本</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">もののけ姫</span>
+        
+        <span class="book-comment">圧倒される世界観。何度でも観たい</span>
+      </li>
+      <!-- /build:fav-movies -->
+            </ul>
+          </div>
+
+          <!-- Anime -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Anime / アニメ</h2>
+            <ul class="book-list">
+      <!-- build:fav-anime -->
+
+      <li class="book-row" data-reveal>
+        <span class="book-title">葬送のフリーレン</span>
+        
+        <span class="book-comment">人の一生を見送る視点に静かに感動</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">ヴァイオレット・エヴァーガーデン</span>
+        
+        <span class="book-comment">映像と感情の美しさは別格</span>
+      </li>
+      <!-- /build:fav-anime -->
+            </ul>
+          </div>
+
+          <!-- Drama -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Drama / ドラマ</h2>
+            <ul class="book-list">
+      <!-- build:fav-dramas -->
+
+      <li class="book-row" data-reveal>
+        <span class="book-title">アンメット ある脳外科医の日記</span>
+        
+        <span class="book-comment">目の前の患者に向き合い続ける姿に心を打たれる</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">JIN -仁-</span>
+        
+        <span class="book-comment">力を出し切る主人公の本気の姿にしびれる</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">義母と娘のブルース</span>
+        
+        <span class="book-comment">笑って泣ける家族の物語</span>
+      </li>
+      <!-- /build:fav-dramas -->
+            </ul>
+          </div>
+
+          <!-- Music -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Music / 音楽</h2>
+      <!-- build:fav-music -->
+
+      <div class="mixtape" data-reveal>
+        <div class="mixtape-head">
+          <span class="mixtape-side">SIDE A</span>
+          <span class="mixtape-artist">Mr.Children</span>
+        </div>
+        <p class="mixtape-comment">迷ったとき、歩き出すとき、いつもそばにある。順番はつけられない、全部好き。</p>
+        <ol class="tracklist">
+          <li><span class="tr-title">♪ 足音</span><span class="tr-comment">新しい一歩を踏み出すときに</span></li>
+          <li><span class="tr-title">♪ 終わりなき旅</span><span class="tr-comment">人生の節目にいつもこの曲</span></li>
+          <li><span class="tr-title">♪ 口笛</span><span class="tr-comment">やさしい気持ちになれる</span></li>
+          <li><span class="tr-title">♪ 365日</span><span class="tr-comment">まっすぐなラブソング</span></li>
+          <li><span class="tr-title">♪ GIFT</span><span class="tr-comment">白と黒のあいだの一番きれいな色</span></li>
+          <li><span class="tr-title">♪ ポケットカスタネット</span><span class="tr-comment">日常に小さな楽しみを</span></li>
+          <li><span class="tr-title">♪ 掌</span><span class="tr-comment">ひとつにならなくていい</span></li>
+          <li><span class="tr-title">♪ himawari</span><span class="tr-comment">暗闇で咲く強さ</span></li>
+          <li><span class="tr-title">♪ SINGLES</span><span class="tr-comment">知る人ぞ知る名曲</span></li>
+          <li><span class="tr-title">♪ ヒカリノアトリエ</span><span class="tr-comment">朝に聴きたい光の歌</span></li>
+          <li><span class="tr-title">♪ 家族</span><span class="tr-comment">大切な人を思い出す</span></li>
+        </ol>
+      </div>
+      <!-- /build:fav-music -->
+          </div>
+
+          <!-- Food -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Food / 食べ物</h2>
+            <ul class="book-list">
+      <!-- build:fav-foods -->
+
+      <li class="book-row" data-reveal>
+        <span class="book-title">焼肉</span>
+        
+        <span class="book-comment">ごほうびの定番</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">すき焼き</span>
+        
+        <span class="book-comment">家族が集まる日はだいたいこれ</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">ラーメン・つけ麺</span>
+        
+        <span class="book-comment">家族でふらっと行く休日の味</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">寿司</span>
+        
+        <span class="book-comment">特別な日のごちそう</span>
+      </li>
+      <!-- /build:fav-foods -->
+            </ul>
+          </div>
+
+          <!-- Hobby -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Hobby / 趣味</h2>
+            <ul class="book-list">
+      <!-- build:fav-hobbies -->
+
+      <li class="book-row" data-reveal>
+        <span class="book-title">旅行</span>
+        
+        <span class="book-comment">42都道府県と、14の国と地域。まだ途中</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">読書</span>
+        
+        <span class="book-comment">鞄にはいつも一冊</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">音楽</span>
+        
+        <span class="book-comment">イヤホンからはだいたいMr.Children</span>
+      </li>
+      <li class="book-row" data-reveal>
+        <span class="book-title">写真</span>
+        
+        <span class="book-comment">旅先の風景を切り取る</span>
+      </li>
+      <!-- /build:fav-hobbies -->
+            </ul>
+          </div>
+
+          <div class="filmstrip" aria-hidden="true"></div>
+
+          <!-- Travel -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Travel / 旅の記録</h2>
+
+            <div class="fav-sub-block">
+              <h3 class="fav-sub-title">Japan</h3>
+      <!-- build:fav-japan -->
+
+      <div class="jp-map-block" data-reveal>
+        <div class="jp-map-stats">
+          <span class="jp-map-count"><strong>42</strong> / 47</span>
+          <span class="jp-map-count-label">都道府県を制覇</span>
+        </div>
+        <p class="sr-only">旅した都道府県マップ。訪問済みの都道府県に「（訪問済）」を付けています。</p>
+        <ul class="jp-map">
+          <li class="jp-tile is-visited" style="grid-column:14;grid-row:1;">北海道<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile" style="grid-column:13;grid-row:2;">青森</li>
+          <li class="jp-tile" style="grid-column:12;grid-row:3;">秋田</li>
+          <li class="jp-tile is-visited" style="grid-column:13;grid-row:3;">岩手<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile" style="grid-column:12;grid-row:4;">山形</li>
+          <li class="jp-tile" style="grid-column:13;grid-row:4;">宮城</li>
+          <li class="jp-tile is-visited" style="grid-column:11;grid-row:5;">新潟<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:12;grid-row:5;">福島<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:9;grid-row:6;">石川<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:10;grid-row:6;">富山<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:11;grid-row:6;">長野<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:12;grid-row:6;">群馬<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:13;grid-row:6;">栃木<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:9;grid-row:7;">福井<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:10;grid-row:7;">岐阜<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:11;grid-row:7;">山梨<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:12;grid-row:7;">埼玉<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:13;grid-row:7;">茨城<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:5;grid-row:8;">島根<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:6;grid-row:8;">鳥取<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:8;grid-row:8;">京都<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:9;grid-row:8;">滋賀<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:10;grid-row:8;">愛知<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:11;grid-row:8;">静岡<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:12;grid-row:8;">東京<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:13;grid-row:8;">千葉<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:4;grid-row:9;">山口<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:5;grid-row:9;">広島<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:6;grid-row:9;">岡山<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:7;grid-row:9;">兵庫<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:8;grid-row:9;">大阪<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile" style="grid-column:9;grid-row:9;">奈良</li>
+          <li class="jp-tile is-visited" style="grid-column:10;grid-row:9;">三重<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:12;grid-row:9;">神奈川<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:1;grid-row:10;">長崎<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:2;grid-row:10;">佐賀<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:3;grid-row:10;">福岡<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:4;grid-row:10;">大分<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:5;grid-row:10;">愛媛<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:6;grid-row:10;">香川<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:7;grid-row:10;">徳島<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:8;grid-row:10;">和歌山<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:3;grid-row:11;">熊本<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:4;grid-row:11;">宮崎<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:6;grid-row:11;">高知<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:3;grid-row:12;">鹿児島<span class="sr-only">（訪問済）</span></li>
+          <li class="jp-tile is-visited" style="grid-column:1;grid-row:13;">沖縄<span class="sr-only">（訪問済）</span></li>
+        </ul>
+      </div>
+      <!-- /build:fav-japan -->
+            </div>
+
+            <div class="fav-sub-block">
+              <h3 class="fav-sub-title">Overseas — 14 destinations</h3>
+      <!-- build:fav-overseas -->
+
+      <div class="stamp-row" data-reveal>
+        <span class="stamp">ハワイ</span>
+        <span class="stamp">ニューヨーク</span>
+        <span class="stamp">イギリス</span>
+        <span class="stamp">フランス</span>
+        <span class="stamp">ドイツ</span>
+        <span class="stamp">イタリア</span>
+        <span class="stamp">タイ</span>
+        <span class="stamp">フィリピン</span>
+        <span class="stamp">香港</span>
+        <span class="stamp">マカオ</span>
+        <span class="stamp">オーストラリア</span>
+        <span class="stamp">グアム</span>
+        <span class="stamp">台湾</span>
+        <span class="stamp">シンガポール</span>
+      </div>
+      <!-- /build:fav-overseas -->
+            </div>
+          </div>
+
+          <div class="filmstrip" aria-hidden="true"></div>
+
+          <!-- Story -->
+          <div class="block">
+            <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Story / これまでの道のり</h2>
+            <p class="story-text" data-reveal>
+      <!-- build:fav-story -->
+岡山大学の大学院で太陽光発電や燃料電池車のエネルギー管理を研究し、IEEEの国際学会で発表したあと、新卒で入ったいすゞ自動車の生産現場で、独学で組んだRPAが入力業務の37%・年間775時間を削減して「技術が現場を楽にする」手応えを知り、思い切ってエンジニアに転身。ピーディーシーではML知見ゼロの社内で独学からモデルを開発してIoT×AIの視聴者計測という新規事業を技術面でリードし、2022年にフィンテックのHiJoJo Partnersへ移ってオンラインファンド販売システムの開発を主導、2024年からはシステム部長として金融グレードのガバナンスを効かせながら生成AIを全社に届けている。これまでに42の都道府県と14の国と地域を旅して、鞄にはいつも本が一冊、イヤホンからはだいたいMr.Children。仕事も人生も、まだ道の途中。
+      <!-- /build:fav-story -->
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="viewfinder" style="max-width: 760px; margin: 0 auto; text-align: center;" data-reveal>
+            <h2 class="section-title">仕事の話はこちら</h2>
+            <p class="section-subtitle" style="margin: 0 auto var(--space-8);">経歴・スキル・ケーススタディはAboutとWorkで。</p>
+            <a href="/about/" class="btn btn-primary">About</a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="/js/main.js?v=20260618"></script>
+</body>
+</html>

@@ -40,6 +40,6 @@ jobs:
         run: >
           npx --yes html-validate@9
           "index.html" "404.html"
-          "about/index.html" "contact/index.html" "privacy/index.html"
+          "about/index.html" "favorite/index.html" "contact/index.html" "privacy/index.html"
           "work/**/*.html" "projects/index.html" "writing/index.html" "photo/index.html"
           "en/**/*.html"
