@@ -26,6 +26,61 @@
   <title>栄 俊介 | Sakae Shunsuke - Portfolio</title>
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- 構造化データ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://syukan3.github.io/#person",
+        "name": "栄 俊介",
+        "alternateName": [
+          "Sakae Shunsuke",
+          "syukan3"
+        ],
+        "jobTitle": "AIガバナンス・アーキテクト / システム部長",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "HiJoJo Partners株式会社"
+        },
+        "url": "https://syukan3.github.io/",
+        "image": "https://syukan3.github.io/images/profile.webp",
+        "sameAs": [
+          "https://github.com/syukan3",
+          "https://qiita.com/syukan3"
+        ],
+        "knowsAbout": [
+          "生成AIガバナンス",
+          "FISC安全対策基準",
+          "J-SOX IT全般統制",
+          "個人情報保護法",
+          "AWS",
+          "Ruby on Rails",
+          "Python",
+          "React",
+          "Next.js"
+        ],
+        "knowsLanguage": [
+          "ja",
+          "en"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://syukan3.github.io/#website",
+        "url": "https://syukan3.github.io/",
+        "name": "栄 俊介 | Sakae Shunsuke - Portfolio",
+        "inLanguage": "ja",
+        "publisher": {
+          "@id": "https://syukan3.github.io/#person"
+        }
+      }
+    ]
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -72,7 +127,7 @@
           </div>
           <p class="hero-meta">
             <span>生成AI 全社導入 × 内部統制</span>
-            <span>Qiita 143万PV・270記事超</span>
+            <span>Qiita 年間174万PV・累計252記事</span>
             <span>要件定義から運用まで一気通貫</span>
           </p>
         </div>
@@ -92,7 +147,46 @@
             </div>
             <a href="/work/" class="view-all">すべての Work</a>
           </div>
-          <div id="featured-works" class="grid grid-3"></div>
+          <div id="featured-works" class="grid grid-3">
+      <!-- build:featured-works -->
+
+      <a href="/work/genai-governance/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/cover-genai.svg" alt="生成AIの全社導入とガバナンス整備" loading="lazy">
+          <span class="card-badge">2024-現在</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">生成AIの全社導入とガバナンス整備</h3>
+          <p class="card-description">金融グレードの統制を効かせ、生成AIを全社へ安全に導入。業務自動化で運用工数とコストを削減</p>
+          <div class="tag-list"><span class="tag">生成AI</span><span class="tag">ガバナンス</span><span class="tag">J-SOX</span><span class="tag">FISC</span></div>
+        </div>
+      </a>
+
+      <a href="/work/hijojo-system/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/hero.webp" alt="オンラインファンド販売事業の基盤 HiJoJo.com" loading="lazy">
+          <span class="card-badge">2022-現在</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">オンラインファンド販売事業の基盤 HiJoJo.com</h3>
+          <p class="card-description">会社の収益を生む販売チャネルそのものを少人数で支え、パートナー連携など販路を広げる機能開発で事業拡大に貢献</p>
+          <div class="tag-list"><span class="tag">事業基盤</span><span class="tag">Ruby on Rails</span><span class="tag">AWS</span><span class="tag">金融規制</span></div>
+        </div>
+      </a>
+
+      <a href="/work/qiita-growth/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/blog_mosaicai.webp" alt="技術ブログ 年間174万PV達成" loading="lazy">
+          <span class="card-badge">2019-現在</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">技術ブログ 年間174万PV達成</h3>
+          <p class="card-description">戦略的アプローチで Qiita を成長させ、2025年だけで年間174万PV・1,555 LGTMを獲得</p>
+          <div class="tag-list"><span class="tag">Qiita</span><span class="tag">SEO</span><span class="tag">Analytics</span><span class="tag">技術発信</span></div>
+        </div>
+      </a>
+      <!-- /build:featured-works -->
+          </div>
         </div>
       </section>
 
@@ -107,7 +201,52 @@
             </div>
             <a href="/projects/" class="view-all">すべての Projects</a>
           </div>
-          <div id="featured-projects" class="grid grid-3"></div>
+          <div id="featured-projects" class="grid grid-3">
+      <!-- build:featured-projects -->
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_ai_call_eval.webp" alt="通話録音 一次評価自動化システム" loading="lazy">
+          <span class="card-badge">2026</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">通話録音 一次評価自動化システム</h3>
+          <p class="card-description">コンプラ通話の録音を文字起こしし、LLMで一次評価を自動化。FISC内部統制対応と地続きの自社稼働システム</p>
+          <div class="tag-list"><span class="tag">生成AI</span><span class="tag">LLM</span><span class="tag">文字起こし</span><span class="tag">コンプライアンス</span></div>
+          <p class="card-meta">役割 / 設計/実装/運用</p>
+          <div class="card-actions"><span class="card-action card-action-muted">コード非公開</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_ai_prompt_monitor.webp" alt="生成AIプロンプト全量モニタリング" loading="lazy">
+          <span class="card-badge">2024-2025</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">生成AIプロンプト全量モニタリング</h3>
+          <p class="card-description">社員の生成AIへの入力プロンプトを全量モニタリングし、機密情報の取り扱いリスクを可視化・統制するガバナンス基盤</p>
+          <div class="tag-list"><span class="tag">生成AI</span><span class="tag">ガバナンス</span><span class="tag">セキュリティ</span></div>
+          <p class="card-meta">役割 / 設計/実装</p>
+          <div class="card-actions"><span class="card-action card-action-muted">コード非公開</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_ai_spec_gen.webp" alt="AI仕様書自動生成" loading="lazy">
+          <span class="card-badge">2024-2025</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">AI仕様書自動生成</h3>
+          <p class="card-description">既存システムのソースから仕様書を全自動生成し、ドキュメント整備の工数を大幅に削減</p>
+          <div class="tag-list"><span class="tag">生成AI</span><span class="tag">LLM</span><span class="tag">ドキュメント自動化</span></div>
+          <p class="card-meta">役割 / 設計/実装</p>
+          <div class="card-actions"><span class="card-action card-action-muted">コード非公開</span></div>
+        </div>
+      </article>
+      <!-- /build:featured-projects -->
+          </div>
         </div>
       </section>
 
@@ -118,11 +257,50 @@
             <div>
               <span class="section-eyebrow">Writing &amp; Talks</span>
               <h2 class="section-title">技術発信・登壇</h2>
-              <p class="section-subtitle">Qiita 累計143万PV・270記事超。トレンドと深い解説の両立。</p>
+              <p class="section-subtitle">Qiita は2025年だけで年間174万PV・累計252記事。トレンドと深い解説の両立。</p>
             </div>
             <a href="/writing/" class="view-all">すべての記事・登壇</a>
           </div>
-          <div id="pinned-writing" class="writing-list"></div>
+          <div id="pinned-writing" class="writing-list">
+      <!-- build:pinned-writing -->
+
+      <a href="https://www.youtube.com/watch?v=F57I8uMovBo" target="_blank" rel="noopener noreferrer" class="writing-row card-link" data-reveal>
+        <div class="writing-meta">
+          <span class="tag tag-accent">登壇</span>
+          <span class="writing-date">2025年6月1日</span>
+        </div>
+        <div class="writing-body">
+          <h3 class="writing-title">Qiita Bash - MCPで広がる生成AI活用の可能性</h3>
+          <p class="writing-summary">生成AIを活用したシステム開発の最新動向について登壇発表（登壇動画あり）</p>
+        </div>
+        <span class="writing-arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <a href="https://qiita.com/syukan3/items/b2bd98d2f61a75777d38" target="_blank" rel="noopener noreferrer" class="writing-row card-link" data-reveal>
+        <div class="writing-meta">
+          <span class="tag tag-accent">記事</span>
+          <span class="writing-date">2025年1月15日</span>
+        </div>
+        <div class="writing-body">
+          <h3 class="writing-title">ChatGPT 新機能「Deep Research」徹底解説＆使用レビュー</h3>
+          <p class="writing-summary">25万ビュー超の人気記事。$200の費用対効果を検証</p>
+        </div>
+        <span class="writing-arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <a href="https://qiita.com/syukan3/items/d810f727ad223e2d60d5" target="_blank" rel="noopener noreferrer" class="writing-row card-link" data-reveal>
+        <div class="writing-meta">
+          <span class="tag tag-accent">記事</span>
+          <span class="writing-date">2024年8月15日</span>
+        </div>
+        <div class="writing-body">
+          <h3 class="writing-title">【Python】MosaicAI：複数のLLMを統合する革新的インターフェイス</h3>
+          <p class="writing-summary">ChatGPT、Claude、Gemini等を統一インターフェースで利用できるライブラリの解説</p>
+        </div>
+        <span class="writing-arrow" aria-hidden="true">↗</span>
+      </a>
+      <!-- /build:pinned-writing -->
+          </div>
         </div>
       </section>
 
@@ -146,24 +324,7 @@
     <div id="site-footer"></div>
   </div>
 
-  <script src="/js/main.js?v=20260614"></script>
-  <script src="/js/components.js?v=20260612"></script>
+  <script src="/js/main.js?v=20260618"></script>
   <script src="/js/hero.js?v=20260614"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      Components.showSkeleton('featured-works', 3);
-      Components.showSkeleton('featured-projects', 3);
-
-      const [works, projects, writing] = await Promise.all([
-        DataLoader.getWorks(),
-        DataLoader.getProjects(),
-        DataLoader.getWriting()
-      ]);
-
-      Components.renderItems('featured-works', works.filter(w => w.featured).slice(0, 3), Components.createWorkCard);
-      Components.renderItems('featured-projects', projects.filter(p => p.featured).slice(0, 3), Components.createProjectCard);
-      Components.renderItems('pinned-writing', writing.filter(w => w.pinned).slice(0, 3), Components.createWritingItem);
-    });
-  </script>
 </body>
 </html>

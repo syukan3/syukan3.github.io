@@ -27,6 +27,61 @@
   <title>Sakae Shunsuke — AI Governance Architect | Portfolio</title>
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://syukan3.github.io/#person",
+        "name": "Sakae Shunsuke",
+        "alternateName": [
+          "栄 俊介",
+          "syukan3"
+        ],
+        "jobTitle": "AI Governance Architect / Head of Systems",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "HiJoJo Partners, Inc."
+        },
+        "url": "https://syukan3.github.io/en/",
+        "image": "https://syukan3.github.io/images/profile.webp",
+        "sameAs": [
+          "https://github.com/syukan3",
+          "https://qiita.com/syukan3"
+        ],
+        "knowsAbout": [
+          "Generative AI governance",
+          "FISC security guidelines",
+          "J-SOX IT general controls",
+          "APPI (Act on the Protection of Personal Information)",
+          "AWS",
+          "Ruby on Rails",
+          "Python",
+          "React",
+          "Next.js"
+        ],
+        "knowsLanguage": [
+          "ja",
+          "en"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://syukan3.github.io/#website",
+        "url": "https://syukan3.github.io/",
+        "name": "Sakae Shunsuke — Portfolio",
+        "inLanguage": "en",
+        "publisher": {
+          "@id": "https://syukan3.github.io/#person"
+        }
+      }
+    ]
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -73,7 +128,7 @@
           </div>
           <p class="hero-meta">
             <span>Company-wide GenAI × internal controls</span>
-            <span>Qiita: 1.43M views · 270+ articles</span>
+            <span>Qiita: 1.74M views/yr · 252 articles</span>
             <span>Requirements to operations, end to end</span>
           </p>
         </div>
@@ -93,7 +148,46 @@
             </div>
             <a href="/en/work/" class="view-all">All work</a>
           </div>
-          <div id="featured-works" class="grid grid-3"></div>
+          <div id="featured-works" class="grid grid-3">
+      <!-- build:featured-works -->
+
+      <a href="/en/work/genai-governance/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/cover-genai.svg" alt="Company-Wide Generative-AI Adoption &amp; Governance" loading="lazy">
+          <span class="card-badge">2024–present</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Company-Wide Generative-AI Adoption &amp; Governance</h3>
+          <p class="card-description">Rolled out generative AI across a financial-services company under financial-grade controls, cutting operational workload and cost through automation</p>
+          <div class="tag-list"><span class="tag">Generative AI</span><span class="tag">Governance</span><span class="tag">J-SOX</span><span class="tag">FISC</span></div>
+        </div>
+      </a>
+
+      <a href="/en/work/hijojo-system/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/hero.webp" alt="HiJoJo.com — Online Fund-Distribution Platform" loading="lazy">
+          <span class="card-badge">2022–present</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">HiJoJo.com — Online Fund-Distribution Platform</h3>
+          <p class="card-description">Sustained the company&#39;s revenue-generating sales channel with a small team, and expanded the business with features such as a site for distribution partners</p>
+          <div class="tag-list"><span class="tag">Business platform</span><span class="tag">Ruby on Rails</span><span class="tag">AWS</span><span class="tag">Financial regulation</span></div>
+        </div>
+      </a>
+
+      <a href="/en/work/qiita-growth/" class="card card-link" data-reveal>
+        <div class="card-media">
+          <img src="/images/blog_mosaicai.webp" alt="Growing a Tech Blog to 1.74M Views a Year" loading="lazy">
+          <span class="card-badge">2019–present</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Growing a Tech Blog to 1.74M Views a Year</h3>
+          <p class="card-description">Grew a Qiita tech blog deliberately — 1.74M views and 1,555 likes in 2025 alone</p>
+          <div class="tag-list"><span class="tag">Qiita</span><span class="tag">SEO</span><span class="tag">Analytics</span><span class="tag">Tech writing</span></div>
+        </div>
+      </a>
+      <!-- /build:featured-works -->
+          </div>
         </div>
       </section>
 
@@ -108,7 +202,52 @@
             </div>
             <a href="/en/projects/" class="view-all">All projects</a>
           </div>
-          <div id="featured-projects" class="grid grid-3"></div>
+          <div id="featured-projects" class="grid grid-3">
+      <!-- build:featured-projects -->
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_ai_call_eval.webp" alt="Call-Recording First-Pass Evaluation" loading="lazy">
+          <span class="card-badge">2026</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Call-Recording First-Pass Evaluation</h3>
+          <p class="card-description">Transcribes compliance call recordings and automates first-pass evaluation with an LLM. Runs in production, directly supporting FISC internal-control work</p>
+          <div class="tag-list"><span class="tag">Generative AI</span><span class="tag">LLM</span><span class="tag">Transcription</span><span class="tag">Compliance</span></div>
+          <p class="card-meta">Role / Design / Build / Operate</p>
+          <div class="card-actions"><span class="card-action card-action-muted">Private codebase</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_ai_prompt_monitor.webp" alt="GenAI Prompt Monitoring Platform" loading="lazy">
+          <span class="card-badge">2024–2025</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">GenAI Prompt Monitoring Platform</h3>
+          <p class="card-description">A governance platform that monitors 100% of employee prompts to generative AI, making confidential-data handling risk visible and controllable</p>
+          <div class="tag-list"><span class="tag">Generative AI</span><span class="tag">Governance</span><span class="tag">Security</span></div>
+          <p class="card-meta">Role / Design / Build</p>
+          <div class="card-actions"><span class="card-action card-action-muted">Private codebase</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_ai_spec_gen.webp" alt="AI Specification Generator" loading="lazy">
+          <span class="card-badge">2024–2025</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">AI Specification Generator</h3>
+          <p class="card-description">Generates system specifications fully automatically from existing source code, drastically reducing documentation effort</p>
+          <div class="tag-list"><span class="tag">Generative AI</span><span class="tag">LLM</span><span class="tag">Docs automation</span></div>
+          <p class="card-meta">Role / Design / Build</p>
+          <div class="card-actions"><span class="card-action card-action-muted">Private codebase</span></div>
+        </div>
+      </article>
+      <!-- /build:featured-projects -->
+          </div>
         </div>
       </section>
 
@@ -119,11 +258,50 @@
             <div>
               <span class="section-eyebrow">Writing &amp; Talks</span>
               <h2 class="section-title">Writing &amp; talks</h2>
-              <p class="section-subtitle">1.43M+ cumulative views and 270+ articles on Qiita.</p>
+              <p class="section-subtitle">1.74M views and 1,555 likes on Qiita in 2025 alone.</p>
             </div>
             <a href="/en/writing/" class="view-all">All writing &amp; talks</a>
           </div>
-          <div id="pinned-writing" class="writing-list"></div>
+          <div id="pinned-writing" class="writing-list">
+      <!-- build:pinned-writing -->
+
+      <a href="https://www.youtube.com/watch?v=F57I8uMovBo" target="_blank" rel="noopener noreferrer" class="writing-row card-link" data-reveal>
+        <div class="writing-meta">
+          <span class="tag tag-accent">Talk</span>
+          <span class="writing-date">June 1, 2025</span>
+        </div>
+        <div class="writing-body">
+          <h3 class="writing-title">Qiita Bash — How MCP Expands What Generative AI Can Do</h3>
+          <p class="writing-summary">Conference talk on the latest in generative-AI-powered system development (video available; in Japanese)</p>
+        </div>
+        <span class="writing-arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <a href="https://qiita.com/syukan3/items/b2bd98d2f61a75777d38" target="_blank" rel="noopener noreferrer" class="writing-row card-link" data-reveal>
+        <div class="writing-meta">
+          <span class="tag tag-accent">Article</span>
+          <span class="writing-date">January 15, 2025</span>
+        </div>
+        <div class="writing-body">
+          <h3 class="writing-title">ChatGPT &#39;Deep Research&#39; — In-Depth Review</h3>
+          <p class="writing-summary">250K+ views. A hands-on review weighing the $200 price tag (in Japanese)</p>
+        </div>
+        <span class="writing-arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <a href="https://qiita.com/syukan3/items/d810f727ad223e2d60d5" target="_blank" rel="noopener noreferrer" class="writing-row card-link" data-reveal>
+        <div class="writing-meta">
+          <span class="tag tag-accent">Article</span>
+          <span class="writing-date">August 15, 2024</span>
+        </div>
+        <div class="writing-body">
+          <h3 class="writing-title">MosaicAI: A Unified Python Interface for Multiple LLMs</h3>
+          <p class="writing-summary">Introducing a library that puts ChatGPT, Claude, Gemini and more behind one interface (in Japanese)</p>
+        </div>
+        <span class="writing-arrow" aria-hidden="true">↗</span>
+      </a>
+      <!-- /build:pinned-writing -->
+          </div>
         </div>
       </section>
 
@@ -147,24 +325,7 @@
     <div id="site-footer"></div>
   </div>
 
-  <script src="/js/main.js?v=20260614"></script>
-  <script src="/js/components.js?v=20260612"></script>
+  <script src="/js/main.js?v=20260618"></script>
   <script src="/js/hero.js?v=20260614"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      Components.showSkeleton('featured-works', 3);
-      Components.showSkeleton('featured-projects', 3);
-
-      const [works, projects, writing] = await Promise.all([
-        DataLoader.getWorks(),
-        DataLoader.getProjects(),
-        DataLoader.getWriting()
-      ]);
-
-      Components.renderItems('featured-works', works.filter(w => w.featured).slice(0, 3), Components.createWorkCard);
-      Components.renderItems('featured-projects', projects.filter(p => p.featured).slice(0, 3), Components.createProjectCard);
-      Components.renderItems('pinned-writing', writing.filter(w => w.pinned).slice(0, 3), Components.createWritingItem);
-    });
-  </script>
 </body>
 </html>

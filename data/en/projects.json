@@ -74,10 +74,10 @@
     },
     {
       "id": "qiita-growth",
-      "title": "Tech-Blog Growth Strategy: 1.43M Views",
+      "title": "Tech-Blog Growth Strategy: 1.74M Views a Year",
       "featured": true,
       "thumbnail": "/images/blog_mosaicai.webp",
-      "summary": "Reached 1.43M views through a deliberate strategy — 7× daily-view growth and 270+ articles published",
+      "summary": "1.74M views and 1,555 likes in 2025 alone through a deliberate strategy (252 articles total)",
       "role": "Writing / Strategy",
       "tags": ["Qiita", "SEO", "Analytics", "Growth"],
       "links": {
@@ -87,9 +87,9 @@
       },
       "year": "2019–present",
       "metrics": {
-        "totalViews": "1,434,762",
-        "articles": "270",
-        "dailyPV": "5,000",
+        "totalViews": "1,745,233",
+        "articles": "252",
+        "dailyPV": "4,800",
         "growthRate": "7×"
       }
     },

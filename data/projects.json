@@ -74,10 +74,10 @@
     },
     {
       "id": "qiita-growth",
-      "title": "技術ブログ143万PV獲得戦略",
+      "title": "技術ブログ 年間174万PV獲得戦略",
       "featured": true,
       "thumbnail": "/images/blog_mosaicai.webp",
-      "summary": "戦略的アプローチで143万PV達成。日間PVを7倍に成長させ、270記事超を公開",
+      "summary": "戦略的アプローチで2025年だけで年間174万PV・1,555 LGTMを獲得。累計252記事を公開",
       "role": "執筆/戦略設計",
       "tags": ["Qiita", "SEO", "Analytics", "Growth"],
       "links": {
@@ -87,9 +87,9 @@
       },
       "year": "2019-現在",
       "metrics": {
-        "totalViews": "1,434,762",
-        "articles": "270",
-        "dailyPV": "5,000",
+        "totalViews": "1,745,233",
+        "articles": "252",
+        "dailyPV": "4,800",
         "growthRate": "7倍"
       }
     },

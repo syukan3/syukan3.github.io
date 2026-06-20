@@ -20,6 +20,74 @@
   <title>Projects - 栄 俊介 | Sakae Shunsuke</title>
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- 構造化データ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://syukan3.github.io/#person",
+        "name": "栄 俊介",
+        "alternateName": [
+          "Sakae Shunsuke",
+          "syukan3"
+        ],
+        "jobTitle": "AIガバナンス・アーキテクト / システム部長",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "HiJoJo Partners株式会社"
+        },
+        "url": "https://syukan3.github.io/",
+        "image": "https://syukan3.github.io/images/profile.webp",
+        "sameAs": [
+          "https://github.com/syukan3",
+          "https://qiita.com/syukan3"
+        ],
+        "knowsAbout": [
+          "生成AIガバナンス",
+          "FISC安全対策基準",
+          "J-SOX IT全般統制",
+          "個人情報保護法",
+          "AWS",
+          "Ruby on Rails",
+          "Python",
+          "React",
+          "Next.js"
+        ],
+        "knowsLanguage": [
+          "ja",
+          "en"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://syukan3.github.io/#website",
+        "url": "https://syukan3.github.io/",
+        "name": "栄 俊介 | Sakae Shunsuke - Portfolio",
+        "inLanguage": "ja",
+        "publisher": {
+          "@id": "https://syukan3.github.io/#person"
+        }
+      },
+      {
+        "@type": "CollectionPage",
+        "url": "https://syukan3.github.io/projects/",
+        "name": "Projects - 栄 俊介 | Sakae Shunsuke",
+        "inLanguage": "ja",
+        "isPartOf": {
+          "@id": "https://syukan3.github.io/#website"
+        },
+        "about": {
+          "@id": "https://syukan3.github.io/#person"
+        },
+        "description": "栄 俊介の開発プロジェクト一覧 - Censify, Gaugenix, MosaicAI, OmniOCRなど"
+      }
+    ]
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Shippori+Mincho:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -53,14 +121,230 @@
 
           <div class="block">
             <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">Featured</h2>
-            <div id="featured-projects" class="grid grid-3"></div>
+            <div id="featured-projects" class="grid grid-3">
+      <!-- build:featured-projects -->
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_ai_call_eval.webp" alt="通話録音 一次評価自動化システム" loading="lazy">
+          <span class="card-badge">2026</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">通話録音 一次評価自動化システム</h3>
+          <p class="card-description">コンプラ通話の録音を文字起こしし、LLMで一次評価を自動化。FISC内部統制対応と地続きの自社稼働システム</p>
+          <div class="tag-list"><span class="tag">生成AI</span><span class="tag">LLM</span><span class="tag">文字起こし</span><span class="tag">コンプライアンス</span></div>
+          <p class="card-meta">役割 / 設計/実装/運用</p>
+          <div class="card-actions"><span class="card-action card-action-muted">コード非公開</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_ai_prompt_monitor.webp" alt="生成AIプロンプト全量モニタリング" loading="lazy">
+          <span class="card-badge">2024-2025</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">生成AIプロンプト全量モニタリング</h3>
+          <p class="card-description">社員の生成AIへの入力プロンプトを全量モニタリングし、機密情報の取り扱いリスクを可視化・統制するガバナンス基盤</p>
+          <div class="tag-list"><span class="tag">生成AI</span><span class="tag">ガバナンス</span><span class="tag">セキュリティ</span></div>
+          <p class="card-meta">役割 / 設計/実装</p>
+          <div class="card-actions"><span class="card-action card-action-muted">コード非公開</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_ai_spec_gen.webp" alt="AI仕様書自動生成" loading="lazy">
+          <span class="card-badge">2024-2025</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">AI仕様書自動生成</h3>
+          <p class="card-description">既存システムのソースから仕様書を全自動生成し、ドキュメント整備の工数を大幅に削減</p>
+          <div class="tag-list"><span class="tag">生成AI</span><span class="tag">LLM</span><span class="tag">ドキュメント自動化</span></div>
+          <p class="card-meta">役割 / 設計/実装</p>
+          <div class="card-actions"><span class="card-action card-action-muted">コード非公開</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/blog_mosaicai.webp" alt="技術ブログ 年間174万PV獲得戦略" loading="lazy">
+          <span class="card-badge">2019-現在</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">技術ブログ 年間174万PV獲得戦略</h3>
+          <p class="card-description">戦略的アプローチで2025年だけで年間174万PV・1,555 LGTMを獲得。累計252記事を公開</p>
+          <div class="tag-list"><span class="tag">Qiita</span><span class="tag">SEO</span><span class="tag">Analytics</span><span class="tag">Growth</span></div>
+          <p class="card-meta">役割 / 執筆/戦略設計</p>
+          <div class="card-actions"><a href="https://qiita.com/syukan3" target="_blank" rel="noopener noreferrer" class="card-action">Demo ↗</a></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_censify.webp" alt="Censify" loading="lazy">
+          <span class="card-badge">2024</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Censify</h3>
+          <p class="card-description">不適切な表現を検出するAPIサービス。LLMを活用した高精度な判定を実現</p>
+          <div class="tag-list"><span class="tag">TypeScript</span><span class="tag">Cloudflare Workers</span><span class="tag">AI</span><span class="tag">HonoJS</span></div>
+          <p class="card-meta">役割 / 設計/実装</p>
+          <div class="card-actions"><a href="https://censify-lp.pages.dev" target="_blank" rel="noopener noreferrer" class="card-action">Demo ↗</a></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_gaugenix.webp" alt="Gaugenix" loading="lazy">
+          <span class="card-badge">2023-2024</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Gaugenix</h3>
+          <p class="card-description">IoTデバイスで計器の画像を撮影し、AI解析で値を取得するシステム</p>
+          <div class="tag-list"><span class="tag">Next.js</span><span class="tag">Supabase</span><span class="tag">Python</span><span class="tag">AI</span></div>
+          <p class="card-meta">役割 / 設計/実装/運用</p>
+          
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_mosaicai.webp" alt="MosaicAI" loading="lazy">
+          <span class="card-badge">2024</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">MosaicAI</h3>
+          <p class="card-description">複数のAI言語モデルを統一的に利用できるオープンソースPythonライブラリ</p>
+          <div class="tag-list"><span class="tag">Python</span><span class="tag">AI</span><span class="tag">OpenSource</span></div>
+          <p class="card-meta">役割 / 設計/実装</p>
+          <div class="card-actions"><a href="https://github.com/syukan3/MosaicAI" target="_blank" rel="noopener noreferrer" class="card-action">GitHub ↗</a><a href="https://qiita.com/syukan3/items/d810f727ad223e2d60d5" target="_blank" rel="noopener noreferrer" class="card-action">Article ↗</a></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_omniocr.webp" alt="OmniOCR" loading="lazy">
+          <span class="card-badge">2024</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">OmniOCR</h3>
+          <p class="card-description">画像やPDFからテキストを抽出し、構造化データに変換するAI OCRサービス</p>
+          <div class="tag-list"><span class="tag">TypeScript</span><span class="tag">Next.js</span><span class="tag">AI</span><span class="tag">Cloudflare</span></div>
+          <p class="card-meta">役割 / 設計/実装</p>
+          <div class="card-actions"><a href="https://omni-ocr-lp.pages.dev/" target="_blank" rel="noopener noreferrer" class="card-action">Demo ↗</a></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_wolverine_ruby.webp" alt="Wolverine Ruby" loading="lazy">
+          <span class="card-badge">2023</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Wolverine Ruby</h3>
+          <p class="card-description">自律型プログラムバグ修復ツール。ChatGPT APIリリース直後に開発</p>
+          <div class="tag-list"><span class="tag">Ruby</span><span class="tag">OpenAI GPT-3.5 API</span></div>
+          <p class="card-meta">役割 / 実装</p>
+          
+        </div>
+      </article>
+      <!-- /build:featured-projects -->
+            </div>
           </div>
 
           <div class="filmstrip" aria-hidden="true"></div>
 
           <div class="block">
             <h2 class="bracket-label" style="display:inline-block; margin-bottom: var(--space-6);">All Projects</h2>
-            <div id="all-projects" class="grid grid-3"></div>
+            <div id="all-projects" class="grid grid-3">
+      <!-- build:all-projects -->
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_ai_first_reply.webp" alt="顧客問い合わせ 一次回答システム" loading="lazy">
+          <span class="card-badge">2025</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">顧客問い合わせ 一次回答システム</h3>
+          <p class="card-description">顧客からの問い合わせに対する一次回答を生成AIで自動化し、応答スピードと運用効率を向上</p>
+          <div class="tag-list"><span class="tag">生成AI</span><span class="tag">LLM</span><span class="tag">カスタマーサポート</span></div>
+          <p class="card-meta">役割 / 設計/実装</p>
+          <div class="card-actions"><span class="card-action card-action-muted">コード非公開</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_ai_assess_harness.webp" alt="アセス回答生成ハーネス（J-SOX / FISC）" loading="lazy">
+          <span class="card-badge">2026</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">アセス回答生成ハーネス（J-SOX / FISC）</h3>
+          <p class="card-description">J-SOX IT全般統制・FISC安全基準アセスメントへの回答を生成するハーネスを構築し、監査対応を効率化</p>
+          <div class="tag-list"><span class="tag">生成AI</span><span class="tag">J-SOX</span><span class="tag">FISC</span><span class="tag">内部統制</span></div>
+          <p class="card-meta">役割 / 設計/実装</p>
+          <div class="card-actions"><span class="card-action card-action-muted">コード非公開</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/project_ai_company_research.webp" alt="非上場企業 情報収集自動化ツール" loading="lazy">
+          <span class="card-badge">2025</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">非上場企業 情報収集自動化ツール</h3>
+          <p class="card-description">非上場企業の情報収集を自動化するツールを開発し、リサーチ業務を効率化</p>
+          <div class="tag-list"><span class="tag">生成AI</span><span class="tag">自動化</span><span class="tag">リサーチ</span></div>
+          <p class="card-meta">役割 / 設計/実装</p>
+          <div class="card-actions"><span class="card-action card-action-muted">コード非公開</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/hero.webp" alt="HiJoJo.com" loading="lazy">
+          <span class="card-badge">2022-現在</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">HiJoJo.com</h3>
+          <p class="card-description">オンラインファンド販売システム。Ruby 2.7→3.3、Rails 5.2→7.1 のバージョンアップを主導</p>
+          <div class="tag-list"><span class="tag">Ruby on Rails</span><span class="tag">MySQL</span><span class="tag">AWS</span><span class="tag">JavaScript</span></div>
+          <p class="card-meta">役割 / 設計/実装/運用</p>
+          
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/blog_openai_filesearch.webp" alt="OneGATE 保守管理システム" loading="lazy">
+          <span class="card-badge">2019-2022</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">OneGATE 保守管理システム</h3>
+          <p class="card-description">インシデント管理、コールセンター（Amazon Connect）、カスタマーポータル機能を実装。Ruby Association の活用事例にも掲載</p>
+          <div class="tag-list"><span class="tag">Ruby on Rails</span><span class="tag">AWS</span><span class="tag">Amazon Connect</span><span class="tag">JavaScript</span></div>
+          <p class="card-meta">役割 / 設計/実装</p>
+          <div class="card-actions"><a href="https://www.pdc-ds.com/service/onegate" target="_blank" rel="noopener noreferrer" class="card-action">Demo ↗</a><a href="https://www.ruby.or.jp/ja/showcase/case77" target="_blank" rel="noopener noreferrer" class="card-action">Article ↗</a></div>
+        </div>
+      </article>
+
+      <article class="card" data-reveal>
+        <div class="card-media">
+          <img src="/images/blog_iot.webp" alt="画像解析・属性取得システム" loading="lazy">
+          <span class="card-badge">2020-2022</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">画像解析・属性取得システム</h3>
+          <p class="card-description">画像分析による属性取得・視聴率測定システム。年齢推定モデルの作成を担当</p>
+          <div class="tag-list"><span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">OpenVINO</span><span class="tag">AWS IoT</span></div>
+          <p class="card-meta">役割 / 設計/実装</p>
+          <div class="card-actions"><a href="https://www.pdc-ds.com/service/face_authentication" target="_blank" rel="noopener noreferrer" class="card-action">Demo ↗</a></div>
+        </div>
+      </article>
+      <!-- /build:all-projects -->
+            </div>
           </div>
         </div>
       </section>
@@ -68,17 +352,6 @@
     <div id="site-footer"></div>
   </div>
 
-  <script src="/js/main.js?v=20260614"></script>
-  <script src="/js/components.js?v=20260612"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      Components.showSkeleton('featured-projects', 3);
-      Components.showSkeleton('all-projects', 3);
-
-      const projects = await DataLoader.getProjects();
-      Components.renderItems('featured-projects', projects.filter(p => p.featured), Components.createProjectCard);
-      Components.renderItems('all-projects', projects.filter(p => !p.featured), Components.createProjectCard);
-    });
-  </script>
+  <script src="/js/main.js?v=20260618"></script>
 </body>
 </html>
